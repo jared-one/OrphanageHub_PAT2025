@@ -1,0 +1,42 @@
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Maven-specific
+/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Other
+*.jar
+*.war
+*.ear
+
+# IMPORTANT: Exclude all backups and large files
+backup*/
+*.tar.gz
+*.tgz
+db/
+fix_report*.json
+*.sh
+*.py
+compile_results.txt
+project_dump.txt
+src.backup_corrupted/
+.venv/
+
+# Backup specific
+backup_before_*.tar.gz
+OpenJDK17U-jdk_x64_linux_hotspot_17.0.12_7.tar.gz
