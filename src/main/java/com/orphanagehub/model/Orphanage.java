@@ -1,97 +1,50 @@
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.model;
-
-import java.time.LocalDateTime;
 
 public class Orphanage {
     private String orphanageId;
+    private String userId;
     private String name;
     private String address;
+    private String contactPerson;
     private String contactEmail;
     private String contactPhone;
-    private String description;
-    private int capacity;
-    private int currentOccupancy;
-    private LocalDateTime dateEstablished;
-    private String status;
+    private String verificationStatus;
 
-    public String getOrphanageId() {
-        return orphanageId;
-    }
-
-    public void setOrphanageId(String orphanageId) {
+    public Orphanage(String orphanageId, String userId, String name, String address,
+                     String contactPerson, String contactEmail, String contactPhone,
+                     String verificationStatus) {
         this.orphanageId = orphanageId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+        this.userId = userId;
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
+        this.contactPerson = contactPerson;
         this.contactEmail = contactEmail;
-    }
-
-    public String getContactPhone() {
-        return contactPhone;
-    }
-
-    public void setContactPhone(String contactPhone) {
         this.contactPhone = contactPhone;
+        this.verificationStatus = verificationStatus;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    // Getters and Setters
+    public String getOrphanageId() { return orphanageId; }
+    public void setOrphanageId(String orphanageId) { this.orphanageId = orphanageId; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
-    public int getCapacity() {
-        return capacity;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public int getCurrentOccupancy() {
-        return currentOccupancy;
-    }
+    public String getContactPerson() { return contactPerson; }
+    public void setContactPerson(String contactPerson) { this.contactPerson = contactPerson; }
 
-    public void setCurrentOccupancy(int currentOccupancy) {
-        this.currentOccupancy = currentOccupancy;
-    }
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
-    public LocalDateTime getDateEstablished() {
-        return dateEstablished;
-    }
+    public String getContactPhone() { return contactPhone; }
+    public void setContactPhone(String contactPhone) { this.contactPhone = contactPhone; }
 
-    public void setDateEstablished(LocalDateTime dateEstablished) {
-        this.dateEstablished = dateEstablished;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getVerificationStatus() { return verificationStatus; }
+    public void setVerificationStatus(String verificationStatus) { this.verificationStatus = verificationStatus; }
 }

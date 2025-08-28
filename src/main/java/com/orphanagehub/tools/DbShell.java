@@ -1,20 +1,17 @@
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.tools;
 
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+import com.orphanagehub.util.DatabaseManager;
 
-import com.orphanagehub.dao.DatabaseManager;
-import java.sql.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DbShell {
-    private static final Logger logger = LoggerFactory.getLogger(DbShell.class);
-
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.err.println("Usage: make db-sql q=\"YOUR_QUERY\"");
-            System.exit(1);
+            System.out.println("Usage: java DbShell \"YOUR_SQL_QUERY\"");
+            return;
         }
         String query = args[0];
         System.out.println("Executing: " + query);
@@ -22,26 +19,16 @@ public class DbShell {
              Statement stmt = conn.createStatement()) {
             boolean hasResultSet = stmt.execute(query);
             if (hasResultSet) {
-                try (ResultSet rs = stmt.getResultSet()) {
-                    ResultSetMetaData meta = rs.getMetaData();
-                    int colCount = meta.getColumnCount();
-                    for (int i = 1; i <= colCount; i++) {
-                        System.out.printf("%-25s", meta.getColumnName(i));
-                    }
-                    System.out.println("\n" + "-".repeat(colCount * 25));
-                    while (rs.next()) {
-                        for (int i = 1; i <= colCount; i++) {
-                            System.out.printf("%-25s", rs.getString(i));
-                        }
-                        System.out.println();
-                    }
+                ResultSet rs = stmt.getResultSet();
+                while (rs.next()) {
+                    // Print first column as example
+                    System.out.println(rs.getString(1));
                 }
             } else {
-                System.out.println("Query OK, " + stmt.getUpdateCount() + " rows affected.");
+                System.out.println("Update count: " + stmt.getUpdateCount());
             }
         } catch (SQLException e) {
-            System.err.println("Query failed: " + e.getMessage());
-            System.exit(1);
+            e.printStackTrace();
         }
     }
 }

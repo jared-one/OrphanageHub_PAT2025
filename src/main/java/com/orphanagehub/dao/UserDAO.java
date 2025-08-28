@@ -1,70 +1,80 @@
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.dao;
 
 import com.orphanagehub.model.User;
+import com.orphanagehub.util.DatabaseManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.UUID;
 
 public class UserDAO {
+    private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-    private Connection getConnection() throws SQLException {
-        String dbPath = System.getProperty("user.dir") + "/db/OrphanageHub.accdb";
-        return DriverManager.getConnection("jdbc:ucanaccess://" + dbPath);
-    }
+    public void save(String username, String email, String fullName, String passwordHash, String userRole) throws SQLException {
+        String userId = "U" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String sql = "INSERT INTO TblUsers (UserID, Username, Email, FullName, PasswordHash, UserRole, DateRegistered, AccountStatus) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, NOW(), 'Active')";
 
-    public User findByUsername(String username) throws SQLException {
-        String sql = "SELECT * FROM TblUsers WHERE Username = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setUserId(rs.getString("UserID"));
-                    user.setUsername(rs.getString("Username"));
-                    user.setEmail(rs.getString("Email"));
-                    user.setFullName(rs.getString("FullName"));
-                    user.setPasswordHash(rs.getString("PasswordHash"));
-                    user.setUserRole(rs.getString("UserRole"));
-                    user.setDateRegistered(rs.getTimestamp("DateRegistered").toLocalDateTime());
-                    user.setAccountStatus(rs.getString("AccountStatus"));
-                    return user;
-                }
-                return null;
-            }
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userId);
+            pstmt.setString(2, username);
+            pstmt.setString(3, email);
+            pstmt.setString(4, fullName);
+            pstmt.setString(5, passwordHash);
+            pstmt.setString(6, userRole);
+            pstmt.executeUpdate();
+            logger.info("User saved: {}", username);
         }
     }
 
-    public boolean isFieldTaken(String field, String value) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM TblUsers WHERE " + field + " = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, value);
-            try (ResultSet rs = ps.executeQuery()) {
+    public boolean isUsernameTaken(String username) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM TblUsers WHERE Username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next() && rs.getInt(1) > 0;
             }
         }
     }
 
-    public User save(User user) throws SQLException {
-        String sql = "INSERT INTO TblUsers (UserID, Username, Email, FullName, PasswordHash, UserRole, DateRegistered, AccountStatus) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, user.getUserId());
-            ps.setString(2, user.getUsername());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getFullName());
-            ps.setString(5, user.getPasswordHash());
-            ps.setString(6, user.getUserRole());
-            ps.setTimestamp(7, Timestamp.valueOf(user.getDateRegistered()));
-            ps.setString(8, user.getAccountStatus());
-            ps.executeUpdate();
-            return user;
+    public boolean isEmailTaken(String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM TblUsers WHERE Email = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
+
+    public User findByUsername(String username) throws SQLException {
+        String sql = "SELECT * FROM TblUsers WHERE Username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                        rs.getString("UserID"),
+                        rs.getString("Username"),
+                        rs.getString("PasswordHash"),
+                        rs.getString("Email"),
+                        rs.getString("FullName"),
+                        rs.getString("UserRole"),
+                        rs.getTimestamp("DateRegistered"),
+                        rs.getString("AccountStatus")
+                    );
+                }
+                return null;
+            }
         }
     }
 }
