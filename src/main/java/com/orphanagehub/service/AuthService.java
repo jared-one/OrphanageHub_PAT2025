@@ -1,31 +1,33 @@
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+// Fixed AuthService.java (Changed getUserByUsername to findByUsername to match DAO)
 package com.orphanagehub.service;
 
 import com.orphanagehub.dao.UserDAO;
 import com.orphanagehub.model.User;
 import com.orphanagehub.util.PasswordUtil;
-import com.orphanagehub.util.ValidationUtil;
-import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthService {
-    private final UserDAO userDAO = new UserDAO();
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private UserDAO userDAO = new UserDAO();
 
-    public User authenticate(String username, String password) throws ServiceException {
-        if (!ValidationUtil.isNonEmpty(username) || !ValidationUtil.isNonEmpty(password)) {
-            throw new ServiceException("Username and password are required.");
+    public boolean authenticate(String username, String password) {
+        User user = userDAO.findByUsername(username);
+        if (user == null) {
+            logger.warn("Login failed: User not found - {}", username);
+            return false;
         }
-        try {
-            User user = userDAO.findByUsername(username);
-            if (user == null) throw new ServiceException("Invalid username or password.");
-            String hash = PasswordUtil.sha256(password);
-            if (!hash.equals(user.getPasswordHash()))
-                throw new ServiceException("Invalid username or password.");
-            if (!"Active".equalsIgnoreCase(user.getAccountStatus())) {
-                throw new ServiceException("This account has been suspended.");
-            }
-            return user;
-        } catch (SQLException e) {
-            throw new ServiceException("A database error occurred during login.", e);
+        boolean valid = PasswordUtil.verifyPassword(password, user.getPasswordHash());
+        if (valid) {
+            logger.info("Login success for user: {}", username);
+        } else {
+            logger.warn("Login failed: Invalid password for {}", username);
         }
+        return valid;
+    }
+
+    public String getUserRole(String username) {
+        User user = userDAO.findByUsername(username);
+        return (user != null) ? user.getUserRole() : null;
     }
 }

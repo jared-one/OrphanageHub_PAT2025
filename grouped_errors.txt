@@ -1,105 +1,44 @@
 ======================================================================
 COMPILATION ERROR REPORT
-Generated: 2025-08-28 11:33:06
+Generated: 2025-08-28 12:27:57
 Project Root: /home/jared/OrphanageHub_PAT2025
 ======================================================================
 
-Total Syntax Errors: 5
-Files Affected: 2
-Error Types: 2
+Total Syntax Errors: 1
+Files Affected: 1
+Error Types: 1
 
 📁 ERRORS BY FILE (sorted by count):
 ======================================================================
 
-src/main/java/com/orphanagehub/dao/OrphanageDAO.java (4 errors):
-  ❌ Line 36, Col 40: cannot find symbol
-     └─ Class: com.orphanagehub.dao.OrphanageDAO
-  ❌ Line 39, Col 40: cannot find symbol
-     └─ Class: com.orphanagehub.dao.OrphanageDAO
-  ❌ Line 45, Col 44: cannot find symbol
-     └─ Class: com.orphanagehub.dao.OrphanageDAO
-  ❌ Line 62, Col 39: constructor Orphanage in class com.orphanagehub.model.Orphanage cannot be applied to given types;
-     └─ Class: com.orphanagehub.dao.OrphanageDAO
-
-src/main/java/com/orphanagehub/service/OrphanageService.java (1 error):
-  ❌ Line 16, Col 47: cannot find symbol
-     └─ Class: com.orphanagehub.service.OrphanageService
+src/main/java/com/orphanagehub/gui/RegistrationPanel.java (1 error):
+  ❌ Line 361, Col 11: exception java.sql.SQLException is never thrown in body of corresponding try statement
+     └─ Class: com.orphanagehub.gui.RegistrationPanel
 
 ======================================================================
 📊 ERROR TYPE SUMMARY (sorted by frequency):
 ----------------------------------------
-  Symbol Not Found: 4 occurrences
-    → Affects 2 files
-  Constructor Mismatch: 1 occurrence
+  Other Compilation Error: 1 occurrence
     → Affects 1 file
-
-⚠️ OTHER ERRORS (build/config):
-----------------------------------------
-  •   symbol:   method getContactPerson()
-  •   location: variable orphanage of type com.orphanagehub.model.Orphanage
-  •   symbol:   method getVerificationStatus()
-  •   required: no arguments
-  •   found:    java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String
-  •   reason: actual and formal argument lists differ in length
-  •   symbol:   method findByStaffUserId(java.lang.String)
-  •   location: variable orphanageDAO of type com.orphanagehub.dao.OrphanageDAO
 
 ======================================================================
 📝 SOURCE CODE OF FILES WITH ERRORS:
 ======================================================================
 
-╔══ OrphanageDAO.java ══╗
-Path: src/main/java/com/orphanagehub/dao/OrphanageDAO.java
+╔══ RegistrationPanel.java ══╗
+Path: src/main/java/com/orphanagehub/gui/RegistrationPanel.java
 ----------------------------------------------------------------------
 
-📍 Error at line 36: cannot find symbol
+📍 Error at line 361: exception java.sql.SQLException is never thrown in body of corresponding try statement
 ──────────────────────────────────────────────────
-      33: 
-      34:             stmt.setString(1, orphanage.getName());
-      35:             stmt.setString(2, orphanage.getAddress());
->>>   36:             stmt.setString(3, orphanage.getContactPerson());
-                                                ^ Error here
-      37:             stmt.setString(4, orphanage.getContactEmail());
-      38:             stmt.setString(5, orphanage.getContactPhone());
-      39:             stmt.setString(6, orphanage.getVerificationStatus());
-
-📍 Error at line 45: cannot find symbol
-──────────────────────────────────────────────────
-      42:                 stmt.setString(7, orphanage.getOrphanageId());
-      43:             } else {
-      44:                 stmt.setString(1, orphanage.getOrphanageId());
->>>   45:                 stmt.setString(7, orphanage.getVerificationStatus());
-                                                    ^ Error here
-      46:             }
-      47: 
-      48:             stmt.executeUpdate();
-
-📍 Error at line 62: constructor Orphanage in class com.orphanagehub.model.Orphanage cannot be applied to given types;
-──────────────────────────────────────────────────
-      59:              ResultSet rs = stmt.executeQuery()) {
-      60:             
-      61:             while (rs.next()) {
->>>   62:                 Orphanage orphanage = new Orphanage(
-                                               ^ Error here
-      63:                     rs.getString("OrphanageID"),
-      64:                     rs.getString("Name"),
-      65:                     rs.getString("Address"),
-╚════════════════════════════════════════════════════════════════════╝
-
-╔══ OrphanageService.java ══╗
-Path: src/main/java/com/orphanagehub/service/OrphanageService.java
-----------------------------------------------------------------------
-
-📍 Error at line 16: cannot find symbol
-──────────────────────────────────────────────────
-      13: 
-      14:     public Orphanage getOrphanageForStaff(String userId) throws ServiceException {
-      15:         try {
->>>   16:             Orphanage orphanage = orphanageDAO.findByStaffUserId(userId);
-                                                       ^ Error here
-      17:             if (orphanage == null) {
-      18:                 throw new ServiceException("No orphanage associated with this staff user.");
-      19:             }
+     358:             mainApp.navigateTo(OrphanageHubApp.LOGIN_PANEL);
+     359:         } catch (IllegalArgumentException e) {
+     360:             JOptionPane.showMessageDialog(this, e.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+>>>  361:         } catch (SQLException e) {
+                   ^ Error here
+     362:             JOptionPane.showMessageDialog(this, "Registration failed due to a database error.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+     363:         }
+     364:     }
 ╚════════════════════════════════════════════════════════════════════╝
 
 ======================================================================
@@ -117,51 +56,22 @@ Path: src/main/java/com/orphanagehub/service/OrphanageService.java
 [INFO] 
 [INFO] --- compiler:3.13.0:compile (default-compile) @ OrphanageHub ---
 [INFO] Recompiling the module because of changed source code.
-[INFO] Compiling 35 source files with javac [debug release 17] to target/classes
+[INFO] Compiling 33 source files with javac [debug release 17] to target/classes
 [INFO] -------------------------------------------------------------
 [ERROR] COMPILATION ERROR : 
 [INFO] -------------------------------------------------------------
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[36,40] cannot find symbol
-  symbol:   method getContactPerson()
-  location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[39,40] cannot find symbol
-  symbol:   method getVerificationStatus()
-  location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[45,44] cannot find symbol
-  symbol:   method getVerificationStatus()
-  location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[62,39] constructor Orphanage in class com.orphanagehub.model.Orphanage cannot be applied to given types;
-  required: no arguments
-  found:    java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String
-  reason: actual and formal argument lists differ in length
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/service/OrphanageService.java:[16,47] cannot find symbol
-  symbol:   method findByStaffUserId(java.lang.String)
-  location: variable orphanageDAO of type com.orphanagehub.dao.OrphanageDAO
-[INFO] 5 errors 
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[361,11] exception java.sql.SQLException is never thrown in body of corresponding try statement
+[INFO] 1 error
 [INFO] -------------------------------------------------------------
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.784 s
-[INFO] Finished at: 2025-08-28T11:33:06+02:00
+[INFO] Total time:  1.983 s
+[INFO] Finished at: 2025-08-28T12:27:57+02:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project OrphanageHub: Compilation failure: Compilation failure: 
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[36,40] cannot find symbol
-[ERROR]   symbol:   method getContactPerson()
-[ERROR]   location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[39,40] cannot find symbol
-[ERROR]   symbol:   method getVerificationStatus()
-[ERROR]   location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[45,44] cannot find symbol
-[ERROR]   symbol:   method getVerificationStatus()
-[ERROR]   location: variable orphanage of type com.orphanagehub.model.Orphanage
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/dao/OrphanageDAO.java:[62,39] constructor Orphanage in class com.orphanagehub.model.Orphanage cannot be applied to given types;
-[ERROR]   required: no arguments
-[ERROR]   found:    java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String
-[ERROR]   reason: actual and formal argument lists differ in length
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/service/OrphanageService.java:[16,47] cannot find symbol
-[ERROR]   symbol:   method findByStaffUserId(java.lang.String)
-[ERROR]   location: variable orphanageDAO of type com.orphanagehub.dao.OrphanageDAO
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project OrphanageHub: Compilation failure
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[361,11] exception java.sql.SQLException is never thrown in body of corresponding try statement
+[ERROR] 
 [ERROR] -> [Help 1]
 [ERROR] 
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.

@@ -10,7 +10,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 
 public class RegistrationPanel extends JPanel {
 
@@ -326,7 +325,7 @@ public class RegistrationPanel extends JPanel {
         });
     }
 
-    // Updated registration logic
+    // FINAL FIXED: Correct parameter count - service expects 6 parameters
     private void registerAction() {
         String username = txtUsername.getText().trim();
         String email = txtEmail.getText().trim();
@@ -334,32 +333,51 @@ public class RegistrationPanel extends JPanel {
         String password = new String(txtPassword.getPassword());
         String confirmPassword = new String(txtConfirmPassword.getPassword());
 
-         // Simple validation example
+        // Simple validation
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-             JOptionPane.showMessageDialog(this, "Please fill in Username, Email, and Password.", "Registration Error", JOptionPane.ERROR_MESSAGE);
-             return;
+            JOptionPane.showMessageDialog(this, "Please fill in Username, Email, and Password.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         if (!password.equals(confirmPassword)) {
-             JOptionPane.showMessageDialog(this, "Passwords do not match.", "Registration Error", JOptionPane.ERROR_MESSAGE);
-             return;
+            JOptionPane.showMessageDialog(this, "Passwords do not match.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-         if (currentRole.equals("OrphanageStaff") && cmbOrphanage.getSelectedIndex() <= 0) {
-             JOptionPane.showMessageDialog(this, "Orphanage Staff must select an orphanage.", "Registration Error", JOptionPane.ERROR_MESSAGE);
-             return;
-         }
+        if (currentRole.equals("OrphanageStaff") && cmbOrphanage.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Orphanage Staff must select an orphanage.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if (!chkTerms.isSelected()) {
             JOptionPane.showMessageDialog(this, "You must agree to the Terms of Service.", "Registration Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
+            // The service expects 6 parameters and handles hashing internally
+            // Parameters: username, email, fullName, password, confirmPassword, currentRole
             new RegistrationService().registerUser(username, email, fullName, password, confirmPassword, currentRole);
+            
             JOptionPane.showMessageDialog(this, "Registration successful for " + username + " as " + currentRole, "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Clear form fields after successful registration
+            txtUsername.setText("");
+            txtEmail.setText("");
+            txtFullName.setText("");
+            txtPassword.setText("");
+            txtConfirmPassword.setText("");
+            chkTerms.setSelected(false);
+            if (cmbOrphanage != null) {
+                cmbOrphanage.setSelectedIndex(0);
+            }
+            
+            // Navigate to login
             mainApp.navigateTo(OrphanageHubApp.LOGIN_PANEL);
+            
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Registration failed due to a database error.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            // Log the actual error for debugging
+            JOptionPane.showMessageDialog(this, "Registration failed: " + e.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); // This will show in console
         }
     }
 

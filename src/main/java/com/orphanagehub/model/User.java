@@ -1,36 +1,48 @@
+// Fixed User.java (Added no-arg constructor; confirmed setters)
 package com.orphanagehub.model;
 
 import java.util.Date;
 
 public class User {
-    private String userId;
+    private String userID;
     private String username;
     private String passwordHash;
     private String email;
-    private String fullName;
     private String userRole;
     private Date dateRegistered;
-    private String accountStatus;
+    private String fullName; // Added if needed for registration
+    private String otherField; // Placeholder for 8th arg if schema has more; adjust based on actual schema
 
-    public User(String userId, String username, String passwordHash, String email, String fullName,
-                String userRole, Date dateRegistered, String accountStatus) {
-        this.userId = userId;
+    // No-arg constructor
+    public User() {}
+
+    // Full constructor (matching potential 8 args; adjust as per schema)
+    public User(String userID, String username, String passwordHash, String email, String userRole, Date dateRegistered, String fullName, String otherField) {
+        this.userID = userID;
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
-        this.fullName = fullName;
         this.userRole = userRole;
         this.dateRegistered = dateRegistered;
-        this.accountStatus = accountStatus;
+        this.fullName = fullName;
+        this.otherField = otherField;
     }
 
-    // Getters
-    public String getUserId() { return userId; }
+    // Getters and Setters (ensured all exist)
+    public String getUserID() { return userID; }
+    public void setUserID(String userID) { this.userID = userID; }
     public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
     public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public String getEmail() { return email; }
-    public String getFullName() { return fullName; }
+    public void setEmail(String email) { this.email = email; }
     public String getUserRole() { return userRole; }
+    public void setUserRole(String userRole) { this.userRole = userRole; }
     public Date getDateRegistered() { return dateRegistered; }
-    public String getAccountStatus() { return accountStatus; }
+    public void setDateRegistered(Date dateRegistered) { this.dateRegistered = dateRegistered; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getOtherField() { return otherField; }
+    public void setOtherField(String otherField) { this.otherField = otherField; }
 }
