@@ -1,0 +1,230 @@
+package com.orphanagehub.gui;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicComboBoxUI; // For potential combo box arrow styling
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+
+public class DonorDashboardPanel extends JPanel {
+
+    private OrphanageHubApp mainApp;
+    private String donorUsername = "donor_user"; // Placeholder
+
+    // --- Colors (Same as AdminDashboardPanel) ---
+    private static final Color DARK_BG_START = new Color(45, 52, 54);
+    private static final Color DARK_BG_END = new Color(35, 42, 44);
+    private static final Color TITLE_COLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXT_COLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDER_COLOR_DARK = new Color(80, 80, 80);
+    private static final Color INPUT_BG_DARK = new Color(60, 60, 60);
+    private static final Color INPUT_FG_DARK = new Color(220, 220, 220);
+    private static final Color INPUT_BORDER_DARK = new Color(90, 90, 90);
+    private static final Color BUTTON_BG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTON_FG_DARK = Color.WHITE;
+    private static final Color BUTTON_HOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color TABLE_HEADER_BG = new Color(65, 75, 77);
+    private static final Color TABLE_HEADER_FG = TITLE_COLOR_DARK;
+    private static final Color TABLE_GRID_COLOR = BORDER_COLOR_DARK;
+    private static final Color TABLE_CELL_BG = new Color(55, 62, 64);
+    private static final Color TABLE_CELL_FG = TEXT_COLOR_DARK;
+    private static final Color TABLE_CELL_SELECTED_BG = BUTTON_BG_DARK;
+    private static final Color TABLE_CELL_SELECTED_FG = BUTTON_FG_DARK;
+    private static final Color BUTTON_SEARCH_BG = new Color(72, 149, 239); // Blueish search button
+    private static final Color BUTTON_SEARCH_HOVER_BG = new Color(92, 169, 249);
+
+
+    public DonorDashboardPanel(OrphanageHubApp app) {
+        this.mainApp = app;
+        setLayout(new BorderLayout(0, 0));
+        initComponents();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARK_BG_START, 0, getHeight(), DARK_BG_END);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        // --- Header Panel ---
+        JPanel headerPanel = createHeaderPanel();
+        add(headerPanel, BorderLayout.NORTH);
+
+        // --- Main Content Area (Search + Table) ---
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 15));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(new EmptyBorder(15, 20, 20, 20)); // Padding for content area
+
+        // --- Search/Filter Panel ---
+        JPanel searchFilterPanel = createSearchFilterPanel();
+        contentPanel.add(searchFilterPanel, BorderLayout.NORTH);
+
+        // --- Results Table ---
+        JTable resultsTable = createResultsTable(); // Using placeholder data
+        JScrollPane scrollPane = new JScrollPane(resultsTable);
+        styleScrollPane(scrollPane); // Apply dark theme styling
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(contentPanel, BorderLayout.CENTER);
+    }
+
+    // --- Helper Methods ---
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout(10, 0));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(new CompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER_COLOR_DARK),
+                new EmptyBorder(10, 20, 10, 20)
+        ));
+
+        // Left side: Role Icon and Title
+        JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        titleGroup.setOpaque(false);
+        JLabel iconLabel = new JLabel("\uD83E\uDEC2"); // Coin symbol (U+1FA99) - may depend on font support
+        iconLabel.setFont(new Font("Segoe UI Symbol", Font.BOLD, 22)); // Use font known for symbols
+        iconLabel.setForeground(new Color(255, 215, 0)); // Gold color for Donor icon
+        JLabel nameLabel = new JLabel("Donor Dashboard");
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        nameLabel.setForeground(TITLE_COLOR_DARK);
+        titleGroup.add(iconLabel);
+        titleGroup.add(nameLabel);
+        headerPanel.add(titleGroup, BorderLayout.WEST);
+
+        // Right side: User info and Logout Button
+        JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userGroup.setOpaque(false);
+        JLabel userLabel = new JLabel("User: " + donorUsername);
+        userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        userLabel.setForeground(TEXT_COLOR_DARK);
+        JButton btnLogout = new JButton("Logout");
+        styleActionButton(btnLogout, "Logout and return to welcome screen");
+        btnLogout.setPreferredSize(new Dimension(100, 30));
+        btnLogout.setBackground(new Color(192, 57, 43)); // Reddish logout
+        btnLogout.addMouseListener(new MouseAdapter() {
+             @Override public void mouseEntered(MouseEvent e) { btnLogout.setBackground(new Color(231, 76, 60)); }
+             @Override public void mouseExited(MouseEvent e) { btnLogout.setBackground(new Color(192, 57, 43)); }
+        });
+        btnLogout.addActionListener(e -> mainApp.navigateTo(OrphanageHubApp.HOME_PANEL));
+        userGroup.add(userLabel);
+        userGroup.add(btnLogout);
+        headerPanel.add(userGroup, BorderLayout.EAST);
+
+        return headerPanel;
+    }
+
+    private JPanel createSearchFilterPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        panel.setOpaque(false);
+
+        JLabel lblSearch = new JLabel("Search:");
+        styleFormLabel(lblSearch);
+        JTextField txtSearch = new JTextField(20);
+        styleTextField(txtSearch);
+
+        JLabel lblFilterLocation = new JLabel("Location:");
+        styleFormLabel(lblFilterLocation);
+        String[] locations = {"Any Location", "City A", "City B", "Region C"}; // Placeholders
+        JComboBox<String> cmbLocation = new JComboBox<>(locations);
+        styleComboBox(cmbLocation);
+
+        JLabel lblFilterCategory = new JLabel("Need Category:");
+        styleFormLabel(lblFilterCategory);
+        String[] categories = {"Any Category", "Food", "Clothing", "Education", "Medical", "Funding"}; // Placeholders
+        JComboBox<String> cmbCategory = new JComboBox<>(categories);
+        styleComboBox(cmbCategory);
+
+        JButton btnSearch = new JButton("Apply Filters");
+        styleActionButton(btnSearch, "Find orphanages or requests matching criteria");
+        // Custom style for search button
+        btnSearch.setBackground(BUTTON_SEARCH_BG);
+        btnSearch.addMouseListener(new MouseAdapter() {
+             @Override public void mouseEntered(MouseEvent e) { btnSearch.setBackground(BUTTON_SEARCH_HOVER_BG); }
+             @Override public void mouseExited(MouseEvent e) { btnSearch.setBackground(BUTTON_SEARCH_BG); }
+        });
+        btnSearch.addActionListener(e -> {
+             // Placeholder action
+             JOptionPane.showMessageDialog(this, "Search/Filter logic not implemented.", "Search", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+
+        panel.add(lblSearch);
+        panel.add(txtSearch);
+        panel.add(Box.createHorizontalStrut(10)); // Spacer
+        panel.add(lblFilterLocation);
+        panel.add(cmbLocation);
+        panel.add(Box.createHorizontalStrut(10)); // Spacer
+        panel.add(lblFilterCategory);
+        panel.add(cmbCategory);
+        panel.add(Box.createHorizontalStrut(15)); // Spacer
+        panel.add(btnSearch);
+
+        return panel;
+    }
+
+     private JTable createResultsTable() {
+        // Placeholder: Table showing orphanages
+        String[] columnNames = {"Orphanage Name", "Location", "Key Needs", "Actions"};
+        Object[][] data = {
+                {"Hope Children's Home", "City A", "Food, Winter Clothing", "View Details"},
+                {"Bright Future Orphanage", "City B", "School Supplies, Funding", "View Details"},
+                {"Little Angels Shelter", "City A", "Medical Supplies", "View Details"},
+                {"Sunshine House", "Region C", "Food, Volunteers", "View Details"},
+                {"New Dawn Center", "City B", "Clothing (All Ages)", "View Details"}
+        };
+
+        JTable table = new JTable(data, columnNames) {
+             @Override
+             public boolean isCellEditable(int row, int column) {
+                return column == 3; // Allow interaction only on the last column
+             }
+        };
+
+        styleTable(table);
+
+        // Add button renderer/editor for the "Actions" column
+        table.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer(BUTTON_SEARCH_BG));
+        // *** CORRECTED LAMBDA HERE (no 'e' parameter) ***
+        table.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), BUTTON_SEARCH_BG, () -> { // Changed e -> () ->
+             int selectedRow = table.convertRowIndexToModel(table.getEditingRow());
+             String orphanageName = (String) table.getModel().getValueAt(selectedRow, 0);
+             JOptionPane.showMessageDialog(this, "View Details for: " + orphanageName + "\n(Functionality not implemented)", "View Details", JOptionPane.INFORMATION_MESSAGE);
+         }));
+
+        // Adjust column widths
+        table.getColumnModel().getColumn(0).setPreferredWidth(200); // Name
+        table.getColumnModel().getColumn(1).setPreferredWidth(120); // Location
+        table.getColumnModel().getColumn(2).setPreferredWidth(250); // Needs
+        table.getColumnModel().getColumn(3).setPreferredWidth(120); // Actions
+
+        return table;
+    }
+
+
+    // --- Styling Helpers (Unchanged from previous version) ---
+    private void styleFormLabel(JLabel label) { /* ... */ label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); label.setForeground(TEXT_COLOR_DARK); }
+    private void styleTextField(JTextField field) { /* ... */ field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); field.setForeground(INPUT_FG_DARK); field.setBackground(INPUT_BG_DARK); Border p=new EmptyBorder(4,6,4,6); field.setBorder(new CompoundBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1),p)); field.setCaretColor(Color.LIGHT_GRAY); }
+    private void styleComboBox(JComboBox<?> comboBox) { /* ... */ comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); comboBox.setForeground(INPUT_FG_DARK); comboBox.setBackground(INPUT_BG_DARK); comboBox.setBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1)); for(Component c:comboBox.getComponents()){if(c instanceof JButton){((JButton)c).setBackground(BUTTON_BG_DARK);((JButton)c).setBorder(BorderFactory.createEmptyBorder());break;}} Object p=comboBox.getUI().getAccessibleChild(comboBox,0); if(p instanceof JPopupMenu){JPopupMenu pm=(JPopupMenu)p;pm.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); for(Component comp:pm.getComponents()){if(comp instanceof JScrollPane){JScrollPane sp=(JScrollPane)comp;sp.getViewport().setBackground(INPUT_BG_DARK);applyScrollbarUI(sp.getVerticalScrollBar()); Component l=sp.getViewport().getView(); if(l instanceof JList){((JList<?>)l).setBackground(INPUT_BG_DARK);((JList<?>)l).setForeground(INPUT_FG_DARK);((JList<?>)l).setSelectionBackground(BUTTON_BG_DARK);((JList<?>)l).setSelectionForeground(BUTTON_FG_DARK);}}}}}
+    private void styleTable(JTable table) { /* ... */ table.setBackground(TABLE_CELL_BG); table.setForeground(TABLE_CELL_FG); table.setGridColor(TABLE_GRID_COLOR); table.setRowHeight(28); table.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,13)); table.setFillsViewportHeight(true); table.setSelectionBackground(TABLE_CELL_SELECTED_BG); table.setSelectionForeground(TABLE_CELL_SELECTED_FG); table.setShowGrid(true); table.setIntercellSpacing(new Dimension(0,1)); JTableHeader h=table.getTableHeader(); h.setBackground(TABLE_HEADER_BG); h.setForeground(TABLE_HEADER_FG); h.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14)); h.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); h.setReorderingAllowed(true); h.setResizingAllowed(true); DefaultTableCellRenderer r=new DefaultTableCellRenderer(); r.setHorizontalAlignment(SwingConstants.LEFT); r.setVerticalAlignment(SwingConstants.CENTER); r.setBorder(new EmptyBorder(2,5,2,5)); for(int i=0;i<table.getColumnCount()-1;i++){table.getColumnModel().getColumn(i).setCellRenderer(r);} }
+    private void styleScrollPane(JScrollPane scrollPane) { /* ... */ scrollPane.setOpaque(false); scrollPane.getViewport().setOpaque(false); scrollPane.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); applyScrollbarUI(scrollPane.getVerticalScrollBar()); applyScrollbarUI(scrollPane.getHorizontalScrollBar()); }
+    private void applyScrollbarUI(JScrollBar scrollBar) { /* ... */ scrollBar.setUI(new BasicScrollBarUI() { @Override protected void configureScrollBarColors(){this.thumbColor=BUTTON_BG_DARK; this.trackColor=DARK_BG_END;} @Override protected JButton createDecreaseButton(int o){return createZeroButton();} @Override protected JButton createIncreaseButton(int o){return createZeroButton();} private JButton createZeroButton(){JButton b=new JButton(); b.setPreferredSize(new Dimension(0,0)); b.setMaximumSize(new Dimension(0,0)); b.setMinimumSize(new Dimension(0,0));return b;} @Override protected void paintThumb(Graphics g, JComponent c, Rectangle r){g.setColor(thumbColor);g.fillRect(r.x,r.y,r.width,r.height);} @Override protected void paintTrack(Graphics g, JComponent c, Rectangle r){g.setColor(trackColor);g.fillRect(r.x,r.y,r.width,r.height);} }); scrollBar.setUnitIncrement(16); }
+    private void styleActionButton(JButton btn, String tooltip) { /* ... */ btn.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12)); btn.setToolTipText(tooltip); btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); btn.setForeground(BUTTON_FG_DARK); btn.setFocusPainted(false); btn.setBackground(BUTTON_BG_DARK); Border p=new EmptyBorder(6,12,6,12); btn.setBorder(new CompoundBorder(BorderFactory.createLineBorder(BUTTON_BG_DARK.darker()),p)); btn.addMouseListener(new MouseAdapter(){@Override public void mouseEntered(MouseEvent e){if(btn.getBackground().equals(BUTTON_BG_DARK)){btn.setBackground(BUTTON_HOVER_BG_DARK);}}@Override public void mouseExited(MouseEvent e){if(btn.getBackground().equals(BUTTON_HOVER_BG_DARK)){btn.setBackground(BUTTON_BG_DARK);}}}); }
+
+    // --- Inner classes for Table Button (Unchanged) ---
+    static class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer { /* ... */ private Color defaultBg; public ButtonRenderer(Color background){setOpaque(true);this.defaultBg=background;setForeground(BUTTON_FG_DARK);setBackground(defaultBg);setBorder(new EmptyBorder(2,5,2,5));setFont(new Font(Font.SANS_SERIF,Font.BOLD,11));} @Override public Component getTableCellRendererComponent(JTable t,Object v,boolean s,boolean f,int r,int c){setText((v==null)?"":v.toString());setBackground(s?defaultBg.brighter():defaultBg);return this;} }
+    static class ButtonEditor extends DefaultCellEditor { /* ... */ protected JButton button; private String label; private boolean isPushed; private Runnable action; private Color bgColor; public ButtonEditor(JCheckBox c,Color bg,Runnable act){super(c);this.action=act;this.bgColor=bg;button=new JButton();button.setOpaque(true);button.setForeground(BUTTON_FG_DARK);button.setBackground(bgColor);button.setBorder(new EmptyBorder(2,5,2,5));button.setFont(new Font(Font.SANS_SERIF,Font.BOLD,11));button.addActionListener(e->fireEditingStopped());} @Override public Component getTableCellEditorComponent(JTable t,Object v,boolean s,int r,int c){label=(v==null)?"":v.toString();button.setText(label);isPushed=true;return button;} @Override public Object getCellEditorValue(){if(isPushed&&action!=null){action.run();}isPushed=false;return label;} @Override public boolean stopCellEditing(){isPushed=false;return super.stopCellEditing();} @Override protected void fireEditingStopped(){super.fireEditingStopped();} }
+
+    // --- Integration Notes (Unchanged) ---
+}

@@ -1,90 +1,97 @@
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.model;
 
-public class Orphanage() {
-  private String orphanageID,
-      registeredByUserID,
-      name,
-      address,
-      contactPerson,
-      contactEmail,
-      contactPhone,
-      description,
-      verificationStatus;
+import java.time.LocalDateTime;
 
-  public String getOrphanageID() {
-    return orphanageID;
-  }
+public class Orphanage {
+    private String orphanageId;
+    private String name;
+    private String address;
+    private String contactEmail;
+    private String contactPhone;
+    private String description;
+    private int capacity;
+    private int currentOccupancy;
+    private LocalDateTime dateEstablished;
+    private String status;
 
-  public void setOrphanageID(String orphanageID) {
-    this.orphanageID = orphanageID;
-  }
+    public String getOrphanageId() {
+        return orphanageId;
+    }
 
-  public String getRegisteredByUserID() {
-    return registeredByUserID;
-  }
+    public void setOrphanageId(String orphanageId) {
+        this.orphanageId = orphanageId;
+    }
 
-  public void setRegisteredByUserID(String registeredByUserID) {
-    this.registeredByUserID = registeredByUserID;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getAddress() {
+        return address;
+    }
 
-  public String getAddress() {
-    return address;
-  }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+    public String getContactEmail() {
+        return contactEmail;
+    }
 
-  public String getContactPerson() {
-    return contactPerson;
-  }
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
 
-  public void setContactPerson(String contactPerson) {
-    this.contactPerson = contactPerson;
-  }
+    public String getContactPhone() {
+        return contactPhone;
+    }
 
-  public String getContactEmail() {
-    return contactEmail;
-  }
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
 
-  public void setContactEmail(String contactEmail) {
-    this.contactEmail = contactEmail;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public String getContactPhone() {
-    return contactPhone;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public void setContactPhone(String contactPhone) {
-    this.contactPhone = contactPhone;
-  }
+    public int getCapacity() {
+        return capacity;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public int getCurrentOccupancy() {
+        return currentOccupancy;
+    }
 
-  public String getVerificationStatus() {
-    return verificationStatus;
-  }
+    public void setCurrentOccupancy(int currentOccupancy) {
+        this.currentOccupancy = currentOccupancy;
+    }
 
-  public void setVerificationStatus(String verificationStatus) {
-    this.verificationStatus = verificationStatus;
-  }
+    public LocalDateTime getDateEstablished() {
+        return dateEstablished;
+    }
 
-  @Override
-  public String toString() {
-    return this.name;
-  }
+    public void setDateEstablished(LocalDateTime dateEstablished) {
+        this.dateEstablished = dateEstablished;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+echo "🚀 Running Pre-Commit Checks..."
+make check
+echo "✅ All checks passed. Proceeding with commit."

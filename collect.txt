@@ -1,0 +1,1 @@
+./mvnw compile -DskipTests > compile_errors.log 2>&1; python3 scripts/parse_errors.py --log compile_errors.log --verbose

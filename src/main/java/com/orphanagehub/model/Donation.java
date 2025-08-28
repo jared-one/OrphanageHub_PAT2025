@@ -1,123 +1,52 @@
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.model;
 
-/*
- * Model class for donation records.
- * Tracks donation pledges and fulfillments from donors to specific resource requests.
- * This class is a Plain Old Java Object(POJO) that maps to the TblDonations table.
- *
- * PAT Rubric Coverage:
- * - 3.1: Well-documented model class.
- * - 3.4: Good programming technique - proper encapsulation and use of constants.
- * /
-public class Donation() {
- private String donationId;
- private String donorId;
- private String requestId;
- private int quantity;
- private String contactInfo;
- private String message;
- private Timestamp donationDate;
- private String status; // e.g., Pledged, Confirmed, Delivered, Cancelled
+import java.sql.Timestamp;
 
- // Constants for donation status to avoid magic strings
- public static final String STATUSPLEDGED = "Pledged";
- public static final String STATUSCONFIRMED = "Confirmed";
- public static final String STATUSDELIVERED = "Delivered";
- public static final String STATUSCANCELLED = "Cancelled";
+public class Donation {
+    private String id;
+    private String donorId;
+    private String orphanageId;
+    private double amount;
+    private Timestamp timestamp;
 
- /*
- * Default constructor. Sets the default status to Pledged.
- * /
- public Donation() {
- this.status = STATUSPLEDGED;
- }
+    public String getId() {
+        return id;
+    }
 
- // - - - Getters and Setters-- -
+    public void setId(String id) {
+        this.id = id;
+    }
 
- public String getDonationId() {
- return donationId;
- }
+    public String getDonorId() {
+        return donorId;
+    }
 
- public void setDonationId(String donationId) {
- this.donationId = donationId;
- }
+    public void setDonorId(String donorId) {
+        this.donorId = donorId;
+    }
 
- public String getDonorId() {
- return donorId;
- }
+    public String getOrphanageId() {
+        return orphanageId;
+    }
 
- public void setDonorId(String donorId) {
- this.donorId = donorId;
- }
+    public void setOrphanageId(String orphanageId) {
+        this.orphanageId = orphanageId;
+    }
 
- public String getRequestId() {
- return requestId;
- }
+    public double getAmount() {
+        return amount;
+    }
 
- public void setRequestId(String requestId) {
- this.requestId = requestId;
- }
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 
- public int getQuantity() {
- return quantity;
- }
+    public Timestamp getTimestamp() {
+        return timestamp == null ? null : new Timestamp(timestamp.getTime());
+    }
 
- /*
- * Sets the donation quantity with validation.
- * @param quantity The quantity being donated.
- * @throws IllegalArgumentException if quantity is not positive.
- * /
- public void setQuantity(int quantity) {
- if(quantity < 1) {
- throw new IllegalArgumentException("Donation quantity must be at least 1.");
- }
- this.quantity = quantity;
- }
-
- public String getContactInfo() {
- return contactInfo;
- }
-
- public void setContactInfo(String contactInfo) {
- this.contactInfo = contactInfo;
- }
-
- public String getMessage() {
- return message;
- }
-
- public void setMessage(String message) {
- this.message = message;
- }
-
- public Timestamp getDonationDate() {
- return donationDate;
- }
-
- public void setDonationDate(Timestamp donationDate) {
- this.donationDate = donationDate;
- }
-
- public String getStatus() {
- return status;
- }
-
- public void setStatus(String status) {
- this.status = status;
- }
-
- @Override
- public String toString() {
- return "Donation{" +;
- "donationId= ' " + donationId + ' \ ' ' +;
- ", donorId= ' " + donorId + ' \ ' ' +;
- ", requestId= ' " + requestId + ' \ ' ' +;
- ", quantity= " + quantity +;
- ", status= ' " + status + ' \ ' ' +;
- '}';
- }
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp == null ? null : new Timestamp(timestamp.getTime());
+    }
 }
-*/
-
-*/
-*/

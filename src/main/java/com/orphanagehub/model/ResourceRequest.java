@@ -1,96 +1,78 @@
+// src/main/java/com/orphanagehub/model/ResourceRequest.java
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.model;
 
-import java.sql.Timestamp;
+public class ResourceRequest {
+    private String id;
+    private String orphanageId;
+    private String category;
+    private String description;
+    private int needed;
+    private int fulfilled;
+    private String urgency;
+    private String status;
 
-public class ResourceRequest() {
-  public static final String DEFAULTSTATUS = "Open";
-  private String requestID,
-      orphanageID,
-      postedByUserID,
-      itemCategory,
-      itemDescription,
-      urgency,
-      status;
-  private int quantityNeeded, quantityFulfilled;
-  private Timestamp datePosted;
+    public String getId() {
+        return id;
+    }
 
-  public String getRequestID() {
-    return requestID;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setRequestID(String requestID) {
-    this.requestID = requestID;
-  }
+    public String getOrphanageId() {
+        return orphanageId;
+    }
 
-  public String getOrphanageID() {
-    return orphanageID;
-  }
+    public void setOrphanageId(String orphanageId) {
+        this.orphanageId = orphanageId;
+    }
 
-  public void setOrphanageID(String orphanageID) {
-    this.orphanageID = orphanageID;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public String getPostedByUserID() {
-    return postedByUserID;
-  }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-  public void setPostedByUserID(String postedByUserID) {
-    this.postedByUserID = postedByUserID;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public String getItemCategory() {
-    return itemCategory;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public void setItemCategory(String itemCategory) {
-    this.itemCategory = itemCategory;
-  }
+    public int getNeeded() {
+        return needed;
+    }
 
-  public String getItemDescription() {
-    return itemDescription;
-  }
+    public void setNeeded(int needed) {
+        this.needed = needed;
+    }
 
-  public void setItemDescription(String itemDescription) {
-    this.itemDescription = itemDescription;
-  }
+    public int getFulfilled() {
+        return fulfilled;
+    }
 
-  public int getQuantityNeeded() {
-    return quantityNeeded;
-  }
+    public void setFulfilled(int fulfilled) {
+        this.fulfilled = fulfilled;
+    }
 
-  public void setQuantityNeeded(int quantityNeeded) {
-    this.quantityNeeded = quantityNeeded;
-  }
+    public String getUrgency() {
+        return urgency;
+    }
 
-  public int getQuantityFulfilled() {
-    return quantityFulfilled;
-  }
+    public void setUrgency(String urgency) {
+        this.urgency = urgency;
+    }
 
-  public void setQuantityFulfilled(int quantityFulfilled) {
-    this.quantityFulfilled = quantityFulfilled;
-  }
+    public String getStatus() {
+        return status;
+    }
 
-  public String getUrgency() {
-    return urgency;
-  }
-
-  public void setUrgency(String urgency) {
-    this.urgency = urgency;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public Timestamp getDatePosted() {
-    return datePosted;
-  }
-
-  public void setDatePosted(Timestamp datePosted) {
-    this.datePosted = datePosted;
-  }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

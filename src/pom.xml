@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.orphanagehub</groupId>
+    <artifactId>OrphanageHub</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+        <project.build.year>${maven.build.timestamp}</project.build.year>
+    </properties>
+
+    <dependencies>
+        <!-- Core Application Dependencies -->
+        <dependency>
+            <groupId>net.sf.ucanaccess</groupId>
+            <artifactId>ucanaccess</artifactId>
+            <version>5.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.26.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <!-- Centralized plugin version management for consistency -->
+            <plugins>
+                <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-enforcer-plugin</artifactId><version>3.5.0</version></plugin>
+                <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version></plugin>
+                <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.3.0</version></plugin>
+                <plugin><groupId>com.diffplug.spotless</groupId><artifactId>spotless-maven-plugin</artifactId><version>2.43.0</version></plugin>
+                <plugin><groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><version>3.3.0</version></plugin>
+                <plugin><groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId><version>4.8.6.2</version></plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-enforcer-plugin</artifactId><executions><execution><id>enforce-versions</id><goals><goal>enforce</goal></goals><configuration><rules><requireJavaVersion><version>[17,18)</version></requireJavaVersion><requireMavenVersion><version>[3.8.0,)</version></requireMavenVersion></rules></configuration></execution></executions></plugin>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId></plugin>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId></plugin>
+            <plugin><groupId>com.diffplug.spotless</groupId><artifactId>spotless-maven-plugin</artifactId><configuration><java><googleJavaFormat><version>1.17.0</version><style>AOSP</style></googleJavaFormat><removeUnusedImports/><licenseHeader><content>/* Copyright (C) ${project.build.year} Jared Wisdom - All Rights Reserved */</content></licenseHeader></java></configuration><executions><execution><id>spotless-check</id><goals><goal>check</goal></goals><phase>verify</phase></execution></executions></plugin>
+            <plugin><groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId><configuration><effort>Max</effort><threshold>Low</threshold><failOnError>false</failOnError></configuration><executions><execution><goals><goal>check</goal></goals></execution></executions></plugin>
+            <plugin><groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><configuration><mainClass>com.orphanagehub.gui.OrphanageHubApp</mainClass><jvmArguments><jvmArgument>${exec.jvmArgs}</jvmArgument></jvmArguments></configuration></plugin>
+        </plugins>
+    </build>
+</project>

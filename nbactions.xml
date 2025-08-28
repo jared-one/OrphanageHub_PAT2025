@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-resources</goal>
+            </goals>
+            <properties>
+                
+                <exec.args>make debug</exec.args>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>exec.executable=wsl</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-resources</goal>
+            </goals>
+            <properties>
+                <exec.executable>wsl.exe</exec.executable>
+                <exec.args>-d kali-linux --cd /home/jared/OrphanageHub_PAT2025 make debug</exec.args>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>exec.executable=wsl</activatedProfile>
+            </activatedProfiles>
+        </action>
+    </actions>

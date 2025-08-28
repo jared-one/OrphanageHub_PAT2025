@@ -1,0 +1,3255 @@
+.:
+compile_errors.log
+context.txt
+db
+DonorDashboardPanel.java
+errors_to_review.txt
+google-java-format-1.15.0-all-deps.jar
+google-java-format-1.17.0-all-deps.jar
+grouped_errors.txt
+info.txt
+javac.20250814_035926.args
+javac.20250814_035927.args
+javac.20250814_035928.args
+logs
+Makefile
+mvnw
+mvnw.cmd
+nbactions.xml
+pom.xml
+README.md
+scripts
+src
+target
+
+./db:
+OrphanageHub.accdb
+template.accdb
+
+./logs:
+orphanagehub.log
+
+./scripts:
+db_manager.py
+doctor_chimera.py
+fix_all_panels.sh
+fix_errors.py
+fix_syntax.py
+log_analyzer.py
+parse_errors.py
+quick_patch.sh
+refactor_logging.py
+requirements.txt
+sanitize_sources.py
+section_build.py
+smart.py
+verify_setup.py
+
+./src:
+all_code.txt
+all_code.txt.bak
+all_source_code.txt
+export_all_code.sh
+main
+Makefile
+pom.xml
+src
+test
+
+./src/main:
+java
+resources
+
+./src/main/java:
+com
+
+./src/main/java/com:
+orphanagehub
+
+./src/main/java/com/orphanagehub:
+dao
+gui
+model
+OrphanageHubApp.java
+service
+tools
+util
+
+./src/main/java/com/orphanagehub/dao:
+DatabaseManager.java
+DonationDAO.java
+info.txt
+OrphanageDAO.java
+ResourceRequestDAO.java
+UserDAO.java
+
+./src/main/java/com/orphanagehub/gui:
+AdminDashboardPanel.java
+DonorDashboardPanel.java
+DonorDashboardPanel.java.bak
+HomePanel.java
+LoginPanel.java
+OrphanageDashboardPanel.java
+OrphanageDashboardPanel.java.bak
+OrphanageHubApp.java
+RegistrationPanel.java
+RegistrationPanel.java.bak
+VolunteerDashboardPanel.java
+VolunteerDashboardPanel.java.bak
+
+./src/main/java/com/orphanagehub/model:
+Donation.java
+OrphanageInfo.java
+Orphanage.java
+ResourceRequest.java
+User.java
+User.java.bak
+
+./src/main/java/com/orphanagehub/service:
+AdminService.java
+AuthService.java
+DonorService.java
+OrphanageHubApp.java
+OrphanageService.java
+RegistrationService.java
+ServiceException.java
+
+./src/main/java/com/orphanagehub/tools:
+DbDoctor.java
+DbShell.java
+DbShell.java.bak
+
+./src/main/java/com/orphanagehub/util:
+EdtGuard.java
+GlobalExceptionHandler.java
+PasswordUtil.java
+PasswordUtil.java.broken
+ValidationUtil.java
+
+./src/main/resources:
+app.properties
+com
+frmHome.png
+home.png
+
+./src/main/resources/com:
+orphanagehub
+
+./src/main/resources/com/orphanagehub:
+gui
+
+./src/main/resources/com/orphanagehub/gui:
+frmHome.png
+home.png
+
+./src/src:
+main
+test
+
+./src/src/main:
+java
+
+./src/src/main/java:
+com
+
+./src/src/main/java/com:
+orphanagehub
+
+./src/src/main/java/com/orphanagehub:
+tools
+
+./src/src/main/java/com/orphanagehub/tools:
+DbDoctor.java
+DbShell.java
+
+./src/src/test:
+java
+
+./src/src/test/java:
+
+./src/test:
+java
+
+./src/test/java:
+
+./target:
+classes
+ext-cp.txt
+generated-sources
+generated-test-sources
+maven-archiver
+maven-status
+OrphanageHub-1.0.0.jar
+test-classes
+
+./target/classes:
+app.properties
+com
+frmHome.png
+home.png
+
+./target/classes/com:
+orphanagehub
+
+./target/classes/com/orphanagehub:
+dao
+EdtGuard$CheckThreadViolationRepaintManager.class
+EdtGuard.class
+GlobalExceptionHandler.class
+gui
+LoginFrame.class
+MainWindow.class
+model
+OrphanageHubApp.class
+service
+SimpleLogger.class
+tools
+util
+
+./target/classes/com/orphanagehub/dao:
+DatabaseManager.class
+DonationDAO.class
+OrphanageDAO.class
+ResourceRequestDAO.class
+UserDAO.class
+
+./target/classes/com/orphanagehub/gui:
+frmHome.png
+home.png
+
+./target/classes/com/orphanagehub/model:
+Donation.class
+Orphanage.class
+ResourceRequest.class
+User.class
+
+./target/classes/com/orphanagehub/service:
+
+./target/classes/com/orphanagehub/tools:
+
+./target/classes/com/orphanagehub/util:
+
+./target/generated-sources:
+annotations
+
+./target/generated-sources/annotations:
+
+./target/generated-test-sources:
+test-annotations
+
+./target/generated-test-sources/test-annotations:
+
+./target/maven-archiver:
+pom.properties
+
+./target/maven-status:
+maven-compiler-plugin
+
+./target/maven-status/maven-compiler-plugin:
+compile
+testCompile
+
+./target/maven-status/maven-compiler-plugin/compile:
+default-compile
+
+./target/maven-status/maven-compiler-plugin/compile/default-compile:
+createdFiles.lst
+inputFiles.lst
+
+./target/maven-status/maven-compiler-plugin/testCompile:
+default-testCompile
+
+./target/maven-status/maven-compiler-plugin/testCompile/default-testCompile:
+createdFiles.lst
+inputFiles.lst
+
+./target/test-classes:
+
+
+Issues to address:
+- model/User.java (fix starts here—add all fields/getters/setters).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.model;
+
+import java.time.LocalDateTime;
+
+public class User {
+    private String id;
+    private String username;
+    private String password; // Plain text for input (not persisted)
+    private String passwordHash; // Stored hashed
+    private String email;
+    private String fullName;
+    private String role;
+    private LocalDateTime dateRegistered;
+
+    // Getters and setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public LocalDateTime getDateRegistered() { return dateRegistered; }
+    public void setDateRegistered(LocalDateTime dateRegistered) { this.dateRegistered = dateRegistered; }
+}
+
+- service/RegistrationService.java (lines 47-53,67 have most errors).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.OrphanageDAO;
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.model.Orphanage;
+import com.orphanagehub.model.User;
+import com.orphanagehub.util.PasswordUtil;
+import com.orphanagehub.util.ValidationUtil;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
+
+public class RegistrationService {
+    private final UserDAO userDAO = new UserDAO();
+    private final OrphanageDAO orphanageDAO = new OrphanageDAO();
+
+    public User registerUser(
+            String username,
+            String email,
+            String fullName,
+            String password,
+            String confirmPassword,
+            String role,
+            String selectedOrphanageName)
+            throws ServiceException {
+        if (!ValidationUtil.isNonEmpty(username)
+                || !ValidationUtil.isNonEmpty(fullName)
+                || !ValidationUtil.isNonEmpty(password)) {
+            throw new ServiceException("Username, Full Name, and Password are required.");
+        }
+        if (!ValidationUtil.isValidEmail(email)) {
+            throw new ServiceException("Please enter a valid email address.");
+        }
+        if (!password.equals(confirmPassword)) {
+            throw new ServiceException("Passwords do not match.");
+        }
+        try {
+            if (userDAO.isFieldTaken("Username", username)) {
+                throw new ServiceException("This username is already taken.");
+            }
+            if (userDAO.isFieldTaken("Email", email)) {
+                throw new ServiceException("This email is already registered.");
+            }
+            User newUser = new User();
+            newUser.setUserId("USR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+            newUser.setUsername(username);
+            newUser.setPasswordHash(PasswordUtil.sha256(password));
+            newUser.setEmail(email);
+            newUser.setUserRole(role);
+            newUser.setDateRegistered(new Timestamp(System.currentTimeMillis()));
+            newUser.setAccountStatus("Active");
+            userDAO.insert(newUser);
+
+            if ("OrphanageStaff".equals(role) && ValidationUtil.isNonEmpty(selectedOrphanageName)) {
+                List<Orphanage> orphanages = orphanageDAO.findAllUnassigned();
+                Orphanage selected = null;
+                for (Orphanage o : orphanages) {
+                    if (selectedOrphanageName.equals(o.getName())) {
+                        selected = o;
+                        break;
+                    }
+                }
+                if (selected != null) {
+                    orphanageDAO.linkUserToOrphanage(
+                            newUser.getUserId(), selected.getOrphanageID());
+                } else {
+                    throw new ServiceException(
+                            "Selected orphanage could not be found or is already assigned.");
+                }
+            }
+            return newUser;
+        } catch (SQLException e) {
+            throw new ServiceException("Registration failed due to a database error.", e);
+        }
+    }
+
+    public List<Orphanage> getUnassignedOrphanages() throws ServiceException {
+        try {
+            return orphanageDAO.findAllUnassigned();
+        } catch (SQLException e) {
+            throw new ServiceException("Could not load list of orphanages.", e);
+        }
+    }
+}
+
+- service/AuthService.java (lines 20,23).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.model.User;
+import com.orphanagehub.util.PasswordUtil;
+import com.orphanagehub.util.ValidationUtil;
+import java.sql.SQLException;
+
+public class AuthService {
+    private final UserDAO userDAO = new UserDAO();
+
+    public User authenticate(String username, String password) throws ServiceException {
+        if (!ValidationUtil.isNonEmpty(username) || !ValidationUtil.isNonEmpty(password)) {
+            throw new ServiceException("Username and password are required.");
+        }
+        try {
+            User user = userDAO.findByUsername(username);
+            if (user == null) throw new ServiceException("Invalid username or password.");
+            String hash = PasswordUtil.sha256(password);
+            if (!hash.equals(user.getPasswordHash()))
+                throw new ServiceException("Invalid username or password.");
+            if (!"Active".equalsIgnoreCase(user.getAccountStatus())) {
+                throw new ServiceException("This account has been suspended.");
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new ServiceException("A database error occurred during login.", e);
+        }
+    }
+}
+
+- gui/LoginPanel.java (line 206).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.User;
+import com.orphanagehub.service.AuthService;
+import com.orphanagehub.service.ServiceException;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class LoginPanel extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(LoginPanel.class);
+
+    private final Consumer<User> loginSuccessConsumer;
+    private final Runnable registerAction;
+    private final Runnable backAction;
+    private final Consumer<String> showDashboardAction;
+    private final JTextField txtUsername;
+    private final JPasswordField txtPassword;
+    private final AuthService authService;
+
+    private static final Color DARKBGSTART = new Color(45, 52, 54);
+    private static final Color DARKBGEND = new Color(35, 42, 44);
+    private static final Color TITLECOLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXTCOLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDERCOLOR_DARK = new Color(80, 80, 80);
+    private static final Color INPUTBG_DARK = new Color(60, 60, 60);
+    private static final Color INPUTFG_DARK = new Color(220, 220, 220);
+    private static final Color INPUTBORDER_DARK = new Color(90, 90, 90);
+    private static final Color BUTTONBG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTONFG_DARK = Color.WHITE;
+    private static final Color BUTTONHOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color LINKCOLOR = new Color(100, 180, 255);
+
+    public LoginPanel(
+            Consumer<User> loginSuccessConsumer,
+            Runnable registerAction,
+            Runnable backAction,
+            Consumer<String> showDashboardAction) {
+        this.loginSuccessConsumer = loginSuccessConsumer;
+        this.registerAction = registerAction;
+        this.backAction = backAction;
+        this.showDashboardAction = showDashboardAction;
+        this.authService = new AuthService();
+        setLayout(new GridBagLayout());
+        setBorder(new EmptyBorder(40, 60, 40, 60));
+
+        txtUsername = new JTextField(20);
+        txtPassword = new JPasswordField(20);
+
+        try {
+            initComponents();
+        } catch (Exception e) {
+            logger.error("Failed to initialize LoginPanel", e);
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARKBGSTART, 0, getHeight(), DARKBGEND);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        JLabel lblTitle = new JLabel("User Login", SwingConstants.CENTER);
+        lblTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        lblTitle.setForeground(TITLECOLOR_DARK);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 5, 25, 5);
+        add(lblTitle, gbc);
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(8, 5, 8, 5);
+
+        JLabel lblUsername = new JLabel("Username:");
+        styleFormLabel(lblUsername);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        add(lblUsername, gbc);
+
+        styleTextField(txtUsername);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        add(txtUsername, gbc);
+
+        JLabel lblPassword = new JLabel("Password:");
+        styleFormLabel(lblPassword);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        add(lblPassword, gbc);
+
+        styleTextField(txtPassword);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        add(txtPassword, gbc);
+
+        JButton btnLogin = new JButton("Login");
+        styleActionButton(btnLogin, "Authenticate and access your dashboard");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(20, 5, 10, 5);
+        add(btnLogin, gbc);
+
+        JPanel linksPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        linksPanel.setOpaque(false);
+
+        JLabel lblForgotPassword = createHyperlinkLabel("Forgot Password?");
+        lblForgotPassword.setToolTipText("Click here to reset your password");
+        lblForgotPassword.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        JOptionPane.showMessageDialog(
+                                LoginPanel.this,
+                                "Password reset functionality not yet implemented.",
+                                "Forgot Password",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+
+        JLabel lblRegister = createHyperlinkLabel("Need an account? Register");
+        lblRegister.setToolTipText("Click here to go to the registration page");
+        lblRegister.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        registerAction.run();
+                    }
+                });
+
+        linksPanel.add(lblForgotPassword);
+        linksPanel.add(lblRegister);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(5, 5, 15, 5);
+        add(linksPanel, gbc);
+
+        JButton btnBack = new JButton("Back");
+        styleActionButton(btnBack, "Return to the welcome screen");
+        btnBack.setBackground(BUTTONBG_DARK.darker());
+        btnBack.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnBack.setBackground(BUTTONHOVER_BG_DARK);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnBack.setBackground(BUTTONBG_DARK.darker());
+                    }
+                });
+        btnBack.addActionListener(e -> backAction.run());
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 5, 5, 5);
+        add(btnBack, gbc);
+
+        btnLogin.addActionListener(e -> performLogin());
+        txtPassword.addActionListener(e -> performLogin());
+    }
+
+    private void performLogin() {
+        String username = txtUsername.getText().trim();
+        String password = new String(txtPassword.getPassword());
+
+        try {
+            User user = authService.authenticate(username, password);
+            loginSuccessConsumer.accept(user);
+            String role = user.getUserRole();
+            String targetPanel;
+
+            switch (role) {
+                case "Admin":
+                    targetPanel = OrphanageHubApp.ADMINDASHBOARDPANEL;
+                    break;
+                case "OrphanageStaff":
+                    targetPanel = OrphanageHubApp.ORPHANAGEDASHBOARDPANEL;
+                    break;
+                case "Donor":
+                    targetPanel = OrphanageHubApp.DONOR_DASHBOARDPANEL;
+                    break;
+                case "Volunteer":
+                    targetPanel = OrphanageHubApp.VOLUNTEER_DASHBOARDPANEL;
+                    break;
+                default:
+                    throw new ServiceException("Unknown user role found in database: " + role);
+            }
+
+            showDashboardAction.accept(targetPanel);
+            txtUsername.setText("");
+            txtPassword.setText("");
+
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(
+                    this, ex.getMessage(), "Login Failed", JOptionPane.ERROR_MESSAGE);
+            txtPassword.setText("");
+            txtUsername.requestFocusInWindow();
+        }
+    }
+
+    private JLabel createHyperlinkLabel(String text) {
+        JLabel label = new JLabel("<html><a href=''>" + text + "</a></html>");
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.setForeground(LINKCOLOR);
+        return label;
+    }
+
+    private void styleFormLabel(JLabel label) {
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        label.setForeground(TEXTCOLOR_DARK);
+    }
+
+    private void styleTextField(JComponent field) {
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        field.setForeground(INPUTFG_DARK);
+        field.setBackground(INPUTBG_DARK);
+        Border p = new EmptyBorder(5, 8, 5, 8);
+        field.setBorder(new CompoundBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1), p));
+        if (field instanceof JTextField) {
+            ((JTextField) field).setCaretColor(Color.LIGHT_GRAY);
+        } else if (field instanceof JPasswordField) {
+            ((JPasswordField) field).setCaretColor(Color.LIGHT_GRAY);
+        }
+    }
+
+    private void styleActionButton(JButton btn, String tooltip) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        btn.setPreferredSize(new Dimension(130, 40));
+        btn.setToolTipText(tooltip);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setBackground(BUTTONBG_DARK);
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+        Border l = BorderFactory.createLineBorder(BUTTONBG_DARK.darker());
+        Border p = new EmptyBorder(5, 15, 5, 15);
+        btn.setBorder(new CompoundBorder(l, p));
+        btn.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONBG_DARK)
+                                || btn.getBackground().equals(BUTTONBG_DARK.darker())) {
+                            btn.setBackground(BUTTONHOVER_BG_DARK);
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONHOVER_BG_DARK)) {
+                            btn.setBackground(BUTTONBG_DARK);
+                        }
+                    }
+                });
+    }
+}
+
+- service/OrphanageService.java (line 18).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.OrphanageDAO;
+import com.orphanagehub.dao.ResourceRequestDAO;
+import com.orphanagehub.model.Orphanage;
+import com.orphanagehub.model.ResourceRequest;
+import com.orphanagehub.model.User;
+import java.sql.SQLException;
+import java.util.List;
+
+public class OrphanageService {
+    private final OrphanageDAO orphanageDAO = new OrphanageDAO();
+    private final ResourceRequestDAO requestDAO = new ResourceRequestDAO();
+
+    public Orphanage getOrphanageForStaff(User staffUser) throws ServiceException {
+        try {
+            return orphanageDAO.findByStaffUserId(staffUser.getUserId());
+        } catch (SQLException e) {
+            throw new ServiceException("Could not load orphanage for staff user.", e);
+        }
+    }
+
+    public List<ResourceRequest> getRequestsForOrphanage(String orphanageId)
+            throws ServiceException {
+        try {
+            return requestDAO.findByOrphanageId(orphanageId);
+        } catch (SQLException e) {
+            throw new ServiceException("Could not load requests.", e);
+        }
+    }
+}
+
+- gui/OrphanageHubApp.java (line 273).
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.User;
+import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
+import javax.swing.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Main application frame that manages navigation between different panels. PAT Rubric Coverage: -
+ * 3.2: Separation of UI components from business logic - 3.3: Inter-code communication through
+ * typed methods - 3.8: User experience through smooth navigation
+ */
+public class OrphanageHubApp extends JFrame {
+    private static final Logger logger = LoggerFactory.getLogger(OrphanageHubApp.class);
+
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+
+    // PAT 3.2: Store current user session data
+    private User currentUser;
+    private long loginTime;
+    private Timer sessionTimer;
+    private static final long SESSIONTIMEOUT = 30 * 60 * 1000; // 30 minutes
+    private static final long SESSIONCHECKINTERVAL = 60 * 1000; // Check every minute
+
+    // Panel Instances (keep references)
+    private HomePanel homePanel;
+    private LoginPanel loginPanel;
+    private RegistrationPanel registrationPanel;
+    private OrphanageDashboardPanel orphanageDashboardPanel;
+    private DonorDashboardPanel donorDashboardPanel;
+    private VolunteerDashboardPanel volunteerDashboardPanel;
+    private AdminDashboardPanel adminDashboardPanel;
+
+    // Panel names for CardLayout
+    public static final String HOMEPANEL = "Home";
+    public static final String LOGINPANEL = "Login";
+    public static final String REGISTRATIONPANEL = "Registration";
+    public static final String ORPHANAGEDASHBOARDPANEL = "OrphanageDashboard";
+    public static final String DONOR_DASHBOARDPANEL = "DonorDashboard";
+    public static final String VOLUNTEER_DASHBOARDPANEL = "VolunteerDashboard";
+    public static final String ADMINDASHBOARDPANEL = "AdminDashboard";
+
+    /**
+     * Constructor initializes the main application window. Sets up the Look and Feel and
+     * initializes all components.
+     */
+    public OrphanageHubApp() {
+        super("OrphanageHub - Connecting Hearts, Changing Lives");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Log application start
+        logger.info("OrphanageHub application started");
+
+        // Set Nimbus Look and Feel for professional appearance
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    logger.info("Nimbus Look and Feel applied successfully");
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to set Nimbus Look and Feel: " + e.getMessage());
+            System.err.println(
+                    "WARNING: Cannot set Nimbus Look and Feel. UI may appear different.");
+        }
+
+        initComponents();
+        initSessionManager();
+
+        setPreferredSize(new Dimension(900, 700));
+        pack();
+        setMinimumSize(new Dimension(750, 550));
+        setLocationRelativeTo(null);
+        setResizable(true);
+
+        // Add window closing handler for cleanup
+        addWindowListener(
+                new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        cleanup();
+                        logger.info("Application closed");
+                    }
+                });
+    }
+
+    /**
+     * Initializes all GUI components and sets up the card layout. PAT 3.4: Good programming
+     * technique - modular initialization
+     */
+    private void initComponents() {
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        // Instantiate CORE panels immediately
+        homePanel =
+                new HomePanel(() -> navigateTo(LOGINPANEL), () -> navigateTo(REGISTRATIONPANEL));
+        loginPanel =
+                new LoginPanel(
+                        this::setCurrentUser,
+                        () -> navigateTo(REGISTRATIONPANEL),
+                        () -> navigateTo(HOMEPANEL),
+                        this::showDashboard);
+        registrationPanel =
+                new RegistrationPanel(
+                        () -> navigateTo(HOMEPANEL),
+                        () -> navigateTo(LOGINPANEL),
+                        this::getSelectedRole);
+
+        // Add core panels to the CardLayout container
+        mainPanel.add(homePanel, HOMEPANEL);
+        mainPanel.add(loginPanel, LOGINPANEL);
+        mainPanel.add(registrationPanel, REGISTRATIONPANEL);
+
+        setContentPane(mainPanel);
+
+        logger.debug("Core panels initialized");
+    }
+
+    /**
+     * Initializes the session management system. PAT 3.6: Defensive programming - session timeout
+     * for security
+     */
+    private void initSessionManager() {
+        sessionTimer = new Timer(true); // Daemon thread
+        sessionTimer.scheduleAtFixedRate(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        checkSession();
+                    }
+                },
+                SESSIONCHECKINTERVAL,
+                SESSIONCHECKINTERVAL);
+    }
+
+    /**
+     * Checks if the current session has expired. Automatically logs out user if session timeout is
+     * reached. PAT 3.6: Defensive programming - automatic session expiry
+     */
+    private void checkSession() {
+        if (currentUser != null && System.currentTimeMillis() - loginTime > SESSIONTIMEOUT) {
+            SwingUtilities.invokeLater(
+                    () -> {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Your session has expired for security reasons.
+Please log in again.",
+                                "Session Expired",
+                                JOptionPane.WARNING_MESSAGE);
+                        logger.info("Session expired for user: " + currentUser.getUsername());
+                        logout();
+                    });
+        }
+    }
+
+    /**
+     * Navigates directly to a panel already added to the CardLayout. PAT 3.3: Inter-code
+     * communication through parameters
+     *
+     * @param panelName The name constant of the panel to show
+     */
+    public void navigateTo(String panelName) {
+        logger.debug("Navigating to: " + panelName);
+        cardLayout.show(mainPanel, panelName);
+    }
+
+    /**
+     * Creates (if necessary) and navigates to a dashboard panel. Handles lazy instantiation of
+     * dashboard panels for memory efficiency. PAT 3.2: Separation of concerns - UI creation
+     * separated from navigation
+     *
+     * @param panelName The name constant of the dashboard panel to show
+     */
+    public void showDashboard(String panelName) {
+        logger.info(
+                "Showing dashboard: "
+                        + panelName
+                        + " for user: "
+                        + (currentUser != null ? currentUser.getUsername() : "unknown"));
+
+        boolean panelAdded = false;
+
+        try {
+            switch (panelName) {
+                case ORPHANAGEDASHBOARDPANEL:
+                    if (orphanageDashboardPanel == null) {
+                        orphanageDashboardPanel = new OrphanageDashboardPanel(this::logout);
+                        mainPanel.add(orphanageDashboardPanel, ORPHANAGEDASHBOARDPANEL);
+                        panelAdded = true;
+                    }
+                    if (currentUser != null) {
+                        orphanageDashboardPanel.setStaffUser(currentUser);
+                    }
+                    break;
+
+                case DONOR_DASHBOARDPANEL:
+                    if (donorDashboardPanel == null) {
+                        donorDashboardPanel = new DonorDashboardPanel(this::logout);
+                        mainPanel.add(donorDashboardPanel, DONOR_DASHBOARDPANEL);
+                        panelAdded = true;
+                    }
+                    if (currentUser != null) {
+                        donorDashboardPanel.setDonorUser(currentUser);
+                    }
+                    break;
+
+                case VOLUNTEER_DASHBOARDPANEL:
+                    if (volunteerDashboardPanel == null) {
+                        volunteerDashboardPanel = new VolunteerDashboardPanel(this::logout);
+                        mainPanel.add(volunteerDashboardPanel, VOLUNTEER_DASHBOARDPANEL);
+                        panelAdded = true;
+                    }
+                    if (currentUser != null) {
+                        volunteerDashboardPanel.setVolunteerUser(currentUser);
+                    }
+                    break;
+
+                case ADMINDASHBOARDPANEL:
+                    if (adminDashboardPanel == null) {
+                        adminDashboardPanel = new AdminDashboardPanel(this::logout);
+                        mainPanel.add(adminDashboardPanel, ADMINDASHBOARDPANEL);
+                        panelAdded = true;
+                    }
+                    if (currentUser != null) {
+                        adminDashboardPanel.setAdminUser(currentUser);
+                    }
+                    break;
+
+                default:
+                    logger.error("Attempted to show unknown dashboard: " + panelName);
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Unable to load the requested dashboard.",
+                            "Navigation Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    navigateTo(HOMEPANEL);
+                    return;
+            }
+
+            if (panelAdded) {
+                mainPanel.revalidate();
+                mainPanel.repaint();
+                logger.debug(panelName + " panel created and added");
+            }
+
+            navigateTo(panelName);
+
+        } catch (Exception e) {
+            logger.error("Error showing dashboard: " + e.getMessage());
+            JOptionPane.showMessageDialog(
+                    this,
+                    "An error occurred while loading the dashboard.
+" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Sets the current user after successful authentication. PAT 3.3: Typed method with parameter
+     *
+     * @param user The authenticated user object
+     */
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        this.loginTime = System.currentTimeMillis();
+        logger.info("User logged in: " + user.getUsername() + " with role: " + user.getUserRole());
+    }
+
+    /**
+     * Gets the currently logged-in user. PAT 3.3: Typed method with return value
+     *
+     * @return The current user or null if not logged in
+     */
+    public User getCurrentUser() {
+        return this.currentUser;
+    }
+
+    /**
+     * Gets the selected role from the home panel. PAT 3.3: Inter-panel communication
+     *
+     * @return The selected role string
+     */
+    public String getSelectedRole() {
+        return (homePanel != null) ? homePanel.getSelectedRole() : "Unknown";
+    }
+
+    /** Performs logout and cleanup operations. PAT 3.6: Defensive programming - proper cleanup */
+    public void logout() {
+        if (currentUser != null) {
+            logger.info("User logged out: " + currentUser.getUsername());
+        }
+
+        // Clear user session
+        this.currentUser = null;
+        this.loginTime = 0;
+
+        // Clear cached dashboard panels to free memory and reset state
+        orphanageDashboardPanel = null;
+        donorDashboardPanel = null;
+        volunteerDashboardPanel = null;
+        adminDashboardPanel = null;
+
+        // Navigate to home
+        navigateTo(HOMEPANEL);
+    }
+
+    /**
+     * Cleanup method called when application closes. PAT 3.6: Defensive programming - resource
+     * cleanup
+     */
+    private void cleanup() {
+        if (sessionTimer != null) {
+            sessionTimer.cancel();
+        }
+        if (currentUser != null) {
+            logger.info(
+                    "Application closed while user "
+                            + currentUser.getUsername()
+                            + " was logged in");
+        }
+    }
+
+    /**
+     * Main entry point of the application.
+     *
+     * @param args Command line arguments (not used)
+     */
+    public static void main(String[] args) {
+        // PAT 3.6: Defensive programming - set a default uncaught exception handler
+        Thread.setDefaultUncaughtExceptionHandler(
+                (thread, exception) -> {
+                    LoggerFactory.getLogger(OrphanageHubApp.class)
+                            .error(
+                                    "An uncaught exception occurred in thread " + thread.getName(),
+                                    exception);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "A critical error occurred. Please check the logs and restart the application.
+"
+                                    + "Error: "
+                                    + exception.getMessage(),
+                            "Critical Error",
+                            JOptionPane.ERROR_MESSAGE);
+                });
+
+        // Run the application on the Event Dispatch Thread (EDT) for thread safety
+        SwingUtilities.invokeLater(
+                () -> {
+                    try {
+                        OrphanageHubApp app = new OrphanageHubApp();
+                        app.setVisible(true);
+                    } catch (Exception e) {
+                        LoggerFactory.getLogger(OrphanageHubApp.class)
+                                .error("Failed to start application", e);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Could not start the OrphanageHub application. Please see logs for details.",
+                                "Startup Failure",
+                                JOptionPane.ERROR_MESSAGE);
+                        System.exit(1); // Exit if startup fails
+                    }
+                });
+    }
+}
+
+- gui/AdminDashboardPanel.java (line 67), DonorDashboardPanel.java (71), OrphanageDashboardPanel.java (71), VolunteerDashboardPanel.java (64)—these have constructor issues.
+AdminDashboardPanel.java:
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.User;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.function.BiConsumer;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class AdminDashboardPanel extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(AdminDashboardPanel.class);
+
+    private final Runnable logoutAction;
+    private User currentUser;
+    private JLabel userLabel;
+
+    // Define Colors
+    private static final Color DARKBGSTART = new Color(45, 52, 54);
+    private static final Color DARKBGEND = new Color(35, 42, 44);
+    private static final Color TITLECOLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXTCOLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDERCOLOR_DARK = new Color(80, 80, 80);
+    private static final Color INPUTBG_DARK = new Color(60, 60, 60);
+    private static final Color INPUTFG_DARK = new Color(220, 220, 220);
+    private static final Color INPUTBORDER_DARK = new Color(90, 90, 90);
+    private static final Color BUTTONBG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTONFG_DARK = Color.WHITE;
+    private static final Color BUTTONHOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color TAB_BGSELECTED = new Color(70, 80, 82);
+    private static final Color TAB_BG_UNSELECTED = new Color(55, 62, 64);
+    private static final Color TAB_FG = TITLECOLOR_DARK;
+    private static final Color TABLEHEADER_BG = new Color(65, 75, 77);
+    private static final Color TABLEHEADER_FG = TITLECOLOR_DARK;
+    private static final Color TABLEGRIDCOLOR = BORDERCOLOR_DARK;
+    private static final Color TABLECELLBG = new Color(55, 62, 64);
+    private static final Color TABLECELLFG = TEXTCOLOR_DARK;
+    private static final Color TABLECELLSELECTED_BG = BUTTONBG_DARK;
+    private static final Color TABLECELLSELECTED_FG = BUTTONFG_DARK;
+    private static final Color BUTTONAPPROVEBG = new Color(60, 179, 113);
+    private static final Color BUTTONAPPROVEHOVER_BG = new Color(70, 190, 123);
+    private static final Color BUTTONREJECTBG = new Color(192, 57, 43);
+    private static final Color BUTTONREJECTHOVER_BG = new Color(231, 76, 60);
+    private static final Color BUTTONSUSPEND_BG = BUTTONREJECTBG;
+    private static final Color BUTTONSUSPEND_HOVER_BG = BUTTONREJECTHOVER_BG;
+
+    public AdminDashboardPanel(Runnable logoutAction) {
+        this.logoutAction = logoutAction;
+        setLayout(new BorderLayout(0, 0));
+        try {
+            initComponents();
+        } catch (Exception e) {
+            logger.error("Failed to initialize AdminDashboardPanel", e);
+        }
+    }
+
+    public void setAdminUser(User user) {
+        this.currentUser = new User(user);
+        if (user != null && userLabel != null) {
+            this.userLabel.setText("Admin User: " + user.getUsername());
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARKBGSTART, 0, getHeight(), DARKBGEND);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        JPanel headerPanel = createHeaderPanel();
+        add(headerPanel, BorderLayout.NORTH);
+
+        JTabbedPane tabbedPane = createTabbedPane();
+        add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout(10, 0));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 1, 0, BORDERCOLOR_DARK),
+                        new EmptyBorder(10, 20, 10, 20)));
+
+        JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        titleGroup.setOpaque(false);
+        JLabel iconLabel = new JLabel("⚙");
+        iconLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        iconLabel.setForeground(TITLECOLOR_DARK);
+        JLabel nameLabel = new JLabel("Administrator Dashboard");
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        nameLabel.setForeground(TITLECOLOR_DARK);
+        titleGroup.add(iconLabel);
+        titleGroup.add(nameLabel);
+        headerPanel.add(titleGroup, BorderLayout.WEST);
+
+        JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userGroup.setOpaque(false);
+
+        userLabel = new JLabel("Welcome, Admin");
+        userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        userLabel.setForeground(TEXTCOLOR_DARK);
+
+        JButton btnLogout = new JButton("Logout");
+        styleActionButton(btnLogout, "Logout and return to welcome screen");
+        btnLogout.setPreferredSize(new Dimension(100, 30));
+        btnLogout.setBackground(BUTTONREJECTBG);
+        btnLogout.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnLogout.setBackground(BUTTONREJECTHOVER_BG);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnLogout.setBackground(BUTTONREJECTBG);
+                    }
+                });
+        btnLogout.addActionListener(e -> logoutAction.run());
+
+        userGroup.add(userLabel);
+        userGroup.add(btnLogout);
+        headerPanel.add(userGroup, BorderLayout.EAST);
+
+        return headerPanel;
+    }
+
+    private JTabbedPane createTabbedPane() {
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setOpaque(false);
+        tabbedPane.setForeground(TAB_FG);
+        tabbedPane.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        tabbedPane.setUI(
+                new javax.swing.plaf.basic.BasicTabbedPaneUI() {
+                    @Override
+                    protected void installDefaults() {
+                        super.installDefaults();
+                        lightHighlight = TAB_BGSELECTED;
+                        shadow = BORDERCOLOR_DARK;
+                        darkShadow = DARKBGEND;
+                        focus = TAB_BGSELECTED;
+                    }
+
+                    @Override
+                    protected void paintTabBackground(
+                            Graphics g, int p, int i, int x, int y, int w, int h, boolean s) {
+                        g.setColor(s ? TAB_BGSELECTED : TAB_BG_UNSELECTED);
+                        g.fillRoundRect(x, y, w, h + 5, 5, 5);
+                    }
+
+                    @Override
+                    protected void paintTabBorder(
+                            Graphics g, int p, int i, int x, int y, int w, int h, boolean s) {
+                        /* Minimal border */
+                    }
+
+                    @Override
+                    protected void paintContentBorder(Graphics g, int p, int i) {
+                        int w = tabPane.getWidth();
+                        int h = tabPane.getHeight();
+                        Insets ins = tabPane.getInsets();
+                        int th = calculateTabAreaHeight(p, runCount, maxTabHeight);
+                        int x = ins.left;
+                        int y = ins.top + th - (lightHighlight.getAlpha() > 0 ? 1 : 0);
+                        int cw = w - ins.right - ins.left;
+                        int ch = h - ins.top - ins.bottom - th;
+                        g.setColor(BORDERCOLOR_DARK);
+                        g.drawRect(x, y, cw - 1, ch - 1);
+                    }
+                });
+
+        tabbedPane.addTab("Orphanage Verification", createVerificationTab());
+        tabbedPane.addTab("User Management", createUserManagementTab());
+        tabbedPane.addTab("System Overview", createSystemOverviewTab());
+
+        return tabbedPane;
+    }
+
+    private JPanel createVerificationTab() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        String[] columnNames = {
+            "Orphanage Name", "Contact", "Email", "Registered", "Status", "Actions"
+        };
+        Object[][] data = {
+            {
+                "New Hope Center",
+                "Alice Smith",
+                "alice@newhope.org",
+                "2025-05-10",
+                "Pending",
+                "Verify"
+            },
+            {"Future Stars", "Bob Jones", "bob@futurestars.net", "2025-05-08", "Pending", "Verify"},
+            {
+                "Safe Haven Kids",
+                "Charlie P.",
+                "contact@safehaven.com",
+                "2025-04-20",
+                "Verified",
+                "View"
+            },
+            {
+                "Distant Dreams",
+                "Diana Ross",
+                "info@distdreams.org",
+                "2025-05-11",
+                "Pending",
+                "Verify"
+            }
+        };
+
+        JTable table =
+                new JTable(data, columnNames) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return column == 5;
+                    }
+                };
+        styleTable(table);
+
+        JPanel buttonPanelRenderer = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
+        buttonPanelRenderer.setOpaque(false);
+        JButton approveBtnRend = new JButton("✓");
+        JButton rejectBtnRend = new JButton("✕");
+        JButton detailsBtnRend = new JButton("...");
+        styleMiniButton(approveBtnRend, BUTTONAPPROVEBG);
+        styleMiniButton(rejectBtnRend, BUTTONREJECTBG);
+        styleMiniButton(detailsBtnRend, BUTTONBG_DARK);
+        buttonPanelRenderer.add(approveBtnRend);
+        buttonPanelRenderer.add(rejectBtnRend);
+        buttonPanelRenderer.add(detailsBtnRend);
+
+        table.getColumnModel()
+                .getColumn(5)
+                .setCellRenderer(
+                        (tbl, value, isSelected, hasFocus, row, column) -> buttonPanelRenderer);
+        table.getColumnModel()
+                .getColumn(5)
+                .setCellEditor(
+                        new ActionPanelEditor(
+                                new JCheckBox(),
+                                (actionCommand, row) -> {
+                                    String orphanageName =
+                                            (String) table.getModel().getValueAt(row, 0);
+                                    switch (actionCommand) {
+                                        case "approve":
+                                            JOptionPane.showMessageDialog(
+                                                    this,
+                                                    "Approve: " + orphanageName,
+                                                    "Approve",
+                                                    JOptionPane.INFORMATION_MESSAGE);
+                                            break;
+                                        case "reject":
+                                            if (JOptionPane.showConfirmDialog(
+                                                            this,
+                                                            "Reject " + orphanageName + "?",
+                                                            "Confirm Reject",
+                                                            JOptionPane.YES_NO_OPTION,
+                                                            JOptionPane.WARNING_MESSAGE)
+                                                    == JOptionPane.YES_OPTION) {
+                                                JOptionPane.showMessageDialog(
+                                                        this,
+                                                        "Reject: " + orphanageName,
+                                                        "Reject",
+                                                        JOptionPane.INFORMATION_MESSAGE);
+                                            }
+                                            break;
+                                        case "details":
+                                            JOptionPane.showMessageDialog(
+                                                    this,
+                                                    "View Details for: " + orphanageName,
+                                                    "Details",
+                                                    JOptionPane.INFORMATION_MESSAGE);
+                                            break;
+                                    }
+                                }));
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(180);
+        table.getColumnModel().getColumn(1).setPreferredWidth(120);
+        table.getColumnModel().getColumn(2).setPreferredWidth(180);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(80);
+        table.getColumnModel().getColumn(5).setPreferredWidth(120);
+        table.setRowHeight(approveBtnRend.getPreferredSize().height + 4);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        styleScrollPane(scrollPane);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel createUserManagementTab() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        searchPanel.setOpaque(false);
+        JLabel lblSearchUser = new JLabel("Search User:");
+        JTextField txtUserSearch = new JTextField(20);
+        styleFormLabel(lblSearchUser);
+        styleTextField(txtUserSearch);
+        searchPanel.add(lblSearchUser);
+        searchPanel.add(txtUserSearch);
+        panel.add(searchPanel, BorderLayout.NORTH);
+
+        String[] columnNames = {"Username", "Email", "Role", "Status", "Registered", "Actions"};
+        Object[][] data = {
+            {"staff_user", "staff@example.com", "OrphanageStaff", "Active", "2025-01-15", "Manage"},
+            {"donor_user", "donor@mail.net", "Donor", "Active", "2025-02-10", "Manage"},
+            {"volunteerA", "vol@provider.org", "Volunteer", "Active", "2025-03-01", "Manage"},
+            {"old_staff", "old@example.com", "OrphanageStaff", "Suspended", "2024-11-20", "Manage"},
+            {"admin_user", "admin@orphanagehub.com", "Admin", "Active", "2024-10-01", "Manage"}
+        };
+        JTable table =
+                new JTable(data, columnNames) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return column == 5;
+                    }
+                };
+        styleTable(table);
+
+        JPanel userActionPanelRenderer = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
+        userActionPanelRenderer.setOpaque(false);
+        JButton activateBtnRend = new JButton("✓");
+        JButton suspendBtnRend = new JButton("✕");
+        JButton viewBtnRend = new JButton("...");
+        styleMiniButton(activateBtnRend, BUTTONAPPROVEBG);
+        styleMiniButton(suspendBtnRend, BUTTONSUSPEND_BG);
+        styleMiniButton(viewBtnRend, BUTTONBG_DARK);
+        userActionPanelRenderer.add(activateBtnRend);
+        userActionPanelRenderer.add(suspendBtnRend);
+        userActionPanelRenderer.add(viewBtnRend);
+
+        table.getColumnModel()
+                .getColumn(5)
+                .setCellRenderer(
+                        (tbl, value, isSelected, hasFocus, row, column) -> userActionPanelRenderer);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        styleScrollPane(scrollPane);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private JPanel createSystemOverviewTab() {
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        JLabel comingSoonLabel = new JLabel("System Overview and Analytics - Coming Soon!");
+        comingSoonLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        comingSoonLabel.setForeground(TEXTCOLOR_DARK);
+        panel.add(comingSoonLabel);
+        return panel;
+    }
+
+    private void styleFormLabel(JLabel label) {
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        label.setForeground(TEXTCOLOR_DARK);
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        field.setForeground(INPUTFG_DARK);
+        field.setBackground(INPUTBG_DARK);
+        Border p = new EmptyBorder(4, 6, 4, 6);
+        field.setBorder(new CompoundBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1), p));
+        field.setCaretColor(Color.LIGHT_GRAY);
+    }
+
+    private void styleComboBox(JComboBox<?> comboBox) {
+        comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        comboBox.setForeground(INPUTFG_DARK);
+        comboBox.setBackground(INPUTBG_DARK);
+        comboBox.setBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1));
+        for (Component c : comboBox.getComponents()) {
+            if (c instanceof JButton) {
+                ((JButton) c).setBackground(BUTTONBG_DARK);
+                ((JButton) c).setBorder(BorderFactory.createEmptyBorder());
+                break;
+            }
+        }
+        Object p = comboBox.getUI().getAccessibleChild(comboBox, 0);
+        if (p instanceof JPopupMenu) {
+            JPopupMenu pm = (JPopupMenu) p;
+            pm.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+            for (Component comp : pm.getComponents()) {
+                if (comp instanceof JScrollPane) {
+                    JScrollPane sp = (JScrollPane) comp;
+                    sp.getViewport().setBackground(INPUTBG_DARK);
+                    applyScrollbarUI(sp.getVerticalScrollBar());
+                    Component l = sp.getViewport().getView();
+                    if (l instanceof JList) {
+                        ((JList<?>) l).setBackground(INPUTBG_DARK);
+                        ((JList<?>) l).setForeground(INPUTFG_DARK);
+                        ((JList<?>) l).setSelectionBackground(BUTTONBG_DARK);
+                        ((JList<?>) l).setSelectionForeground(BUTTONFG_DARK);
+                    }
+                }
+            }
+        }
+    }
+
+    private void styleTable(JTable table) {
+        table.setBackground(TABLECELLBG);
+        table.setForeground(TABLECELLFG);
+        table.setGridColor(TABLEGRIDCOLOR);
+        table.setRowHeight(28);
+        table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        table.setFillsViewportHeight(true);
+        table.setSelectionBackground(TABLECELLSELECTED_BG);
+        table.setSelectionForeground(TABLECELLSELECTED_FG);
+        table.setShowGrid(true);
+        table.setIntercellSpacing(new Dimension(0, 1));
+        JTableHeader h = table.getTableHeader();
+        h.setBackground(TABLEHEADER_BG);
+        h.setForeground(TABLEHEADER_FG);
+        h.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        h.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        h.setReorderingAllowed(true);
+        h.setResizingAllowed(true);
+        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
+        r.setHorizontalAlignment(SwingConstants.LEFT);
+        r.setVerticalAlignment(SwingConstants.CENTER);
+        r.setBorder(new EmptyBorder(2, 5, 2, 5));
+        for (int i = 0; i < table.getColumnCount() - 1; i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(r);
+        }
+    }
+
+    private void styleScrollPane(JScrollPane scrollPane) {
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        applyScrollbarUI(scrollPane.getVerticalScrollBar());
+        applyScrollbarUI(scrollPane.getHorizontalScrollBar());
+    }
+
+    private void applyScrollbarUI(JScrollBar scrollBar) {
+        scrollBar.setUI(
+                new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = BUTTONBG_DARK;
+                        this.trackColor = DARKBGEND;
+                    }
+
+                    @Override
+                    protected JButton createDecreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    @Override
+                    protected JButton createIncreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    private JButton createZeroButton() {
+                        JButton b = new JButton();
+                        b.setPreferredSize(new Dimension(0, 0));
+                        b.setMaximumSize(new Dimension(0, 0));
+                        b.setMinimumSize(new Dimension(0, 0));
+                        return b;
+                    }
+
+                    @Override
+                    protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
+                        g.setColor(thumbColor);
+                        g.fillRect(r.x, r.y, r.width, r.height);
+                    }
+
+                    @Override
+                    protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
+                        g.setColor(trackColor);
+                        g.fillRect(r.x, r.y, r.width, r.height);
+                    }
+                });
+        scrollBar.setUnitIncrement(16);
+    }
+
+    private void styleActionButton(JButton btn, String tooltip) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        btn.setToolTipText(tooltip);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+        btn.setBackground(BUTTONBG_DARK);
+        Border p = new EmptyBorder(6, 12, 6, 12);
+        btn.setBorder(
+                new CompoundBorder(BorderFactory.createLineBorder(BUTTONBG_DARK.darker()), p));
+        btn.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONBG_DARK)) {
+                            btn.setBackground(BUTTONHOVER_BG_DARK);
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONHOVER_BG_DARK)) {
+                            btn.setBackground(BUTTONBG_DARK);
+                        }
+                    }
+                });
+    }
+
+    private void styleMiniButton(JButton btn, Color color) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        btn.setMargin(new Insets(0, 0, 0, 0));
+        btn.setBackground(color);
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+    }
+
+    static class ActionPanelEditor extends DefaultCellEditor {
+        private final JPanel panel;
+        private final BiConsumer<String, Integer> actionConsumer;
+        private int editingRow;
+
+        public ActionPanelEditor(JCheckBox checkBox, BiConsumer<String, Integer> actionConsumer) {
+            super(checkBox);
+            this.actionConsumer = actionConsumer;
+            panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
+            panel.setOpaque(false);
+
+            JButton approveBtn = new JButton("✓");
+            JButton rejectBtn = new JButton("✕");
+            JButton detailsBtn = new JButton("...");
+
+            styleMiniButton(approveBtn, BUTTONAPPROVEBG);
+            styleMiniButton(rejectBtn, BUTTONREJECTBG);
+            styleMiniButton(detailsBtn, BUTTONBG_DARK);
+
+            approveBtn.setActionCommand("approve");
+            rejectBtn.setActionCommand("reject");
+            detailsBtn.setActionCommand("details");
+
+            ActionListener al =
+                    e -> {
+                        fireEditingStopped();
+                        actionConsumer.accept(e.getActionCommand(), editingRow);
+                    };
+
+            approveBtn.addActionListener(al);
+            rejectBtn.addActionListener(al);
+            detailsBtn.addActionListener(al);
+
+            panel.add(approveBtn);
+            panel.add(rejectBtn);
+            panel.add(detailsBtn);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(
+                JTable table, Object value, boolean isSelected, int row, int column) {
+            this.editingRow = row;
+            return panel;
+        }
+
+        private static void styleMiniButton(JButton btn, Color color) {
+            btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+            btn.setMargin(new Insets(0, 0, 0, 0));
+            btn.setBackground(color);
+            btn.setForeground(Color.WHITE);
+            btn.setFocusPainted(false);
+            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+    }
+}
+
+DonorDashboardPanel.java:
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.*;
+import com.orphanagehub.service.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class DonorDashboardPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(DonorDashboardPanel.class);
+
+    private final transient Runnable logoutAction;
+    private transient User donorUser;
+    private JLabel userLabel;
+    private JTable resultsTable;
+    private DefaultTableModel tableModel;
+    private JTextField txtSearch;
+    private JComboBox<String> cmbLocation;
+    private JComboBox<String> cmbCategory;
+
+    private transient DonorService donorService;
+
+    private static final Color DARKBGSTART = new Color(45, 52, 54);
+    private static final Color DARKBGEND = new Color(35, 42, 44);
+    private static final Color TITLECOLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXTCOLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDERCOLOR_DARK = new Color(80, 80, 80);
+    private static final Color INPUTBG_DARK = new Color(60, 60, 60);
+    private static final Color INPUTFG_DARK = new Color(220, 220, 220);
+    private static final Color INPUTBORDER_DARK = new Color(90, 90, 90);
+    private static final Color BUTTONBG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTONFG_DARK = Color.WHITE;
+    private static final Color BUTTONHOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color TABLEHEADER_BG = new Color(65, 75, 77);
+    private static final Color TABLEHEADER_FG = TITLECOLOR_DARK;
+    private static final Color TABLEGRIDCOLOR = BORDERCOLOR_DARK;
+    private static final Color TABLECELLBG = new Color(55, 62, 64);
+    private static final Color TABLECELLFG = TEXTCOLOR_DARK;
+    private static final Color TABLECELLSELECTED_BG = BUTTONBG_DARK;
+    private static final Color TABLECELLSELECTED_FG = BUTTONFG_DARK;
+    private static final Color BUTTONSEARCH_BG = new Color(72, 149, 239);
+    private static final Color BUTTONSEARCH_HOVER_BG = new Color(92, 169, 249);
+    private static final Color BUTTONDONATEBG = new Color(60, 179, 113);
+    private static final Color BUTTONDONATEHOVER_BG = new Color(70, 190, 123);
+
+    public DonorDashboardPanel(Runnable logoutAction) {
+        this.logoutAction = logoutAction;
+        this.donorService = new DonorService();
+        setLayout(new BorderLayout(0, 0));
+        try {
+            initComponents();
+        } catch (Exception e) {
+            logger.error("Failed to initialize DonorDashboardPanel", e);
+        }
+        logger.debug("DonorDashboard initialized");
+    }
+
+    public void setDonorUser(User user) {
+        this.donorUser = new User(user);
+        logger.info("Donor user set: {}", user.getUsername());
+        refreshUI();
+        loadOrphanageData();
+    }
+
+    private void refreshUI() {
+        if (donorUser != null && userLabel != null) {
+            userLabel.setText("User: " + donorUser.getUsername());
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARKBGSTART, 0, getHeight(), DARKBGEND);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        add(createHeaderPanel(), BorderLayout.NORTH);
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 15));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(new EmptyBorder(15, 20, 20, 20));
+        contentPanel.add(createSearchFilterPanel(), BorderLayout.NORTH);
+        createResultsTable();
+        JScrollPane scrollPane = new JScrollPane(resultsTable);
+        styleScrollPane(scrollPane);
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout(10, 0));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 1, 0, BORDERCOLOR_DARK),
+                        new EmptyBorder(10, 20, 10, 20)));
+        JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        titleGroup.setOpaque(false);
+        JLabel iconLabel = new JLabel("❤");
+        iconLabel.setFont(new Font("Segoe UI Symbol", Font.BOLD, 22));
+        iconLabel.setForeground(new Color(255, 105, 180));
+        JLabel nameLabel = new JLabel("Donor Dashboard");
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        nameLabel.setForeground(TITLECOLOR_DARK);
+        titleGroup.add(iconLabel);
+        titleGroup.add(nameLabel);
+        headerPanel.add(titleGroup, BorderLayout.WEST);
+
+        JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userGroup.setOpaque(false);
+        userLabel = new JLabel("User: Loading...");
+        userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        userLabel.setForeground(TEXTCOLOR_DARK);
+        JButton btnLogout = new JButton("Logout");
+        styleActionButton(btnLogout, "Logout and return to welcome screen");
+        btnLogout.setPreferredSize(new Dimension(100, 30));
+        btnLogout.setBackground(new Color(192, 57, 43));
+        btnLogout.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnLogout.setBackground(new Color(231, 76, 60));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnLogout.setBackground(new Color(192, 57, 43));
+                    }
+                });
+        btnLogout.addActionListener(
+                e -> {
+                    int confirm =
+                            JOptionPane.showConfirmDialog(
+                                    this,
+                                    "Are you sure you want to logout?",
+                                    "Confirm Logout",
+                                    JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        logoutAction.run();
+                    }
+                });
+        userGroup.add(userLabel);
+        userGroup.add(btnLogout);
+        headerPanel.add(userGroup, BorderLayout.EAST);
+        return headerPanel;
+    }
+
+    private JPanel createSearchFilterPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        panel.setOpaque(false);
+        JLabel lblSearch = new JLabel("Search:");
+        styleFormLabel(lblSearch);
+        txtSearch = new JTextField(20);
+        styleTextField(txtSearch);
+        JLabel lblFilterLocation = new JLabel("Location:");
+        styleFormLabel(lblFilterLocation);
+        cmbLocation = new JComboBox<>(new String[] {"Any Location"});
+        styleComboBox(cmbLocation);
+        JLabel lblFilterCategory = new JLabel("Need Category:");
+        styleFormLabel(lblFilterCategory);
+        cmbCategory =
+                new JComboBox<>(
+                        new String[] {
+                            "Any Category",
+                            "Food",
+                            "Clothing",
+                            "Education",
+                            "Medical",
+                            "Funding",
+                            "Other"
+                        });
+        styleComboBox(cmbCategory);
+        JButton btnSearch = new JButton("Apply Filters");
+        styleActionButton(btnSearch, "Find orphanages or requests matching criteria");
+        btnSearch.setBackground(BUTTONSEARCH_BG);
+        btnSearch.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnSearch.setBackground(BUTTONSEARCH_HOVER_BG);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnSearch.setBackground(BUTTONSEARCH_BG);
+                    }
+                });
+        btnSearch.addActionListener(e -> performSearch());
+        panel.add(lblSearch);
+        panel.add(txtSearch);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(lblFilterLocation);
+        panel.add(cmbLocation);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(lblFilterCategory);
+        panel.add(cmbCategory);
+        panel.add(Box.createHorizontalStrut(15));
+        panel.add(btnSearch);
+        return panel;
+    }
+
+    private void createResultsTable() {
+        String[] columnNames = {
+            "Orphanage Name", "Location", "Contact", "Current Needs", "Actions"
+        };
+        tableModel =
+                new DefaultTableModel(columnNames, 0) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return column == 4;
+                    }
+                };
+        resultsTable = new JTable(tableModel);
+        styleTable(resultsTable);
+        resultsTable.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());
+        resultsTable.getColumnModel().getColumn(4).setCellEditor(new ButtonEditor(new JCheckBox()));
+        resultsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+        resultsTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        resultsTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+        resultsTable.getColumnModel().getColumn(3).setPreferredWidth(250);
+        resultsTable.getColumnModel().getColumn(4).setPreferredWidth(120);
+    }
+
+    private void loadOrphanageData() {
+        List<OrphanageInfo> orphanages = new ArrayList<>();
+        // Add sample data
+        orphanages.add(
+                new OrphanageInfo(
+                        "Hope Children's Home", "New York, NY", "John Doe", "Food, Clothing"));
+        orphanages.add(
+                new OrphanageInfo(
+                        "Sunshine Orphanage",
+                        "Los Angeles, CA",
+                        "Jane Smith",
+                        "Education materials"));
+        orphanages.add(
+                new OrphanageInfo(
+                        "Future Stars", "Chicago, IL", "Bob Johnson", "Medical supplies"));
+
+        updateTable(orphanages);
+        updateLocationFilter(orphanages);
+    }
+
+    private void updateTable(List<OrphanageInfo> orphanages) {
+        tableModel.setRowCount(0);
+        for (OrphanageInfo info : orphanages) {
+            Object[] row = {
+                info.getName(),
+                info.getAddress(),
+                info.getContactPerson(),
+                info.getCurrentNeeds(),
+                "View Details"
+            };
+            tableModel.addRow(row);
+        }
+    }
+
+    private void updateLocationFilter(List<OrphanageInfo> orphanages) {
+        cmbLocation.removeAllItems();
+        cmbLocation.addItem("Any Location");
+        List<String> locations =
+                orphanages.stream()
+                        .map(info -> extractCity(info.getAddress()))
+                        .distinct()
+                        .collect(Collectors.toList());
+        for (String location : locations) {
+            cmbLocation.addItem(location);
+        }
+    }
+
+    private String extractCity(String address) {
+        if (address != null && address.contains(",")) {
+            return address.split(",")[0].trim();
+        }
+        return address != null ? address : "Unknown";
+    }
+
+    private void performSearch() {
+        String searchText = txtSearch.getText();
+        String location = (String) cmbLocation.getSelectedItem();
+        String category = (String) cmbCategory.getSelectedItem();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Searching for: "
+                        + searchText
+                        + "
+Location: "
+                        + location
+                        + "
+Category: "
+                        + category,
+                "Search",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showOrphanageDetails(int row) {
+        String orphanageName = (String) tableModel.getValueAt(row, 0);
+        JOptionPane.showMessageDialog(
+                this,
+                "Showing details for: " + orphanageName,
+                "Orphanage Details",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void styleTable(JTable table) {
+        table.setBackground(TABLECELLBG);
+        table.setForeground(TABLECELLFG);
+        table.setGridColor(TABLEGRIDCOLOR);
+        table.setRowHeight(35);
+        table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        table.setFillsViewportHeight(true);
+        table.setSelectionBackground(TABLECELLSELECTED_BG);
+        table.setSelectionForeground(TABLECELLSELECTED_FG);
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(TABLEHEADER_BG);
+        header.setForeground(TABLEHEADER_FG);
+        header.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        header.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+    }
+
+    private void styleScrollPane(JScrollPane scrollPane) {
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        applyScrollbarUI(scrollPane.getVerticalScrollBar());
+        applyScrollbarUI(scrollPane.getHorizontalScrollBar());
+    }
+
+    private void applyScrollbarUI(JScrollBar scrollBar) {
+        scrollBar.setUI(
+                new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = BUTTONBG_DARK;
+                        this.trackColor = DARKBGEND;
+                    }
+
+                    @Override
+                    protected JButton createDecreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    @Override
+                    protected JButton createIncreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    private JButton createZeroButton() {
+                        JButton b = new JButton();
+                        b.setPreferredSize(new Dimension(0, 0));
+                        return b;
+                    }
+                });
+        scrollBar.setUnitIncrement(16);
+    }
+
+    private void styleActionButton(JButton btn, String tooltip) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        btn.setToolTipText(tooltip);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+        btn.setBackground(BUTTONBG_DARK);
+        btn.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createLineBorder(BUTTONBG_DARK.darker()),
+                        new EmptyBorder(6, 12, 6, 12)));
+    }
+
+    private void styleFormLabel(JLabel label) {
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        label.setForeground(TEXTCOLOR_DARK);
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        field.setForeground(INPUTFG_DARK);
+        field.setBackground(INPUTBG_DARK);
+        field.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createLineBorder(INPUTBORDER_DARK, 1),
+                        new EmptyBorder(4, 6, 4, 6)));
+        field.setCaretColor(Color.LIGHT_GRAY);
+    }
+
+    private void styleComboBox(JComboBox<?> comboBox) {
+        comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        comboBox.setForeground(INPUTFG_DARK);
+        comboBox.setBackground(INPUTBG_DARK);
+        comboBox.setBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1));
+    }
+
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
+        private static final long serialVersionUID = 1L;
+        public ButtonRenderer() {
+            setOpaque(true);
+            setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+            setForeground(BUTTONFG_DARK);
+            setBackground(BUTTONSEARCH_BG);
+            setBorder(new EmptyBorder(2, 5, 2, 5));
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            setText((value == null) ? " " : value.toString());
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+        private static final long serialVersionUID = 1L;
+        protected JButton button;
+        private String label;
+        private boolean isPushed;
+        private int currentRow;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+            button.setForeground(BUTTONFG_DARK);
+            button.setBackground(BUTTONSEARCH_BG);
+            button.setBorder(new EmptyBorder(2, 5, 2, 5));
+            button.addActionListener(e -> fireEditingStopped());
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(
+                JTable table, Object value, boolean isSelected, int row, int column) {
+            label = (value == null) ? " " : value.toString();
+            button.setText(label);
+            isPushed = true;
+            currentRow = row;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                showOrphanageDetails(currentRow);
+            }
+            isPushed = false;
+            return label;
+        }
+    }
+
+    // Placeholder model class
+    static class OrphanageInfo {
+        private String name;
+        private String address;
+        private String contactPerson;
+        private String currentNeeds;
+
+        public OrphanageInfo(
+                String name, String address, String contactPerson, String currentNeeds) {
+            this.name = name;
+            this.address = address;
+            this.contactPerson = contactPerson;
+            this.currentNeeds = currentNeeds;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public String getContactPerson() {
+            return contactPerson;
+        }
+
+        public String getCurrentNeeds() {
+            return currentNeeds;
+        }
+    }
+}
+
+OrphanageDashboardPanel.java:
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.*;
+import com.orphanagehub.service.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class OrphanageDashboardPanel extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(OrphanageDashboardPanel.class);
+
+    private final Runnable logoutAction;
+    private JLabel orphanageNameLabel;
+    private JLabel userLabel;
+    private JLabel statActiveRequests;
+    private JLabel statPendingDonations;
+    private JLabel statActiveVolunteers;
+    private JTable resourceTable;
+    private DefaultTableModel tableModel;
+    private JTabbedPane tabbedPane;
+
+    private User staffUser;
+    private Orphanage orphanage;
+    private OrphanageService orphanageService;
+
+    private static final Color DARKBGSTART = new Color(45, 52, 54);
+    private static final Color DARKBGEND = new Color(35, 42, 44);
+    private static final Color TITLECOLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXTCOLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDERCOLOR_DARK = new Color(80, 80, 80);
+    private static final Color BUTTONBG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTONFG_DARK = Color.WHITE;
+    private static final Color BUTTONHOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color TAB_BGSELECTED = new Color(70, 80, 82);
+    private static final Color TAB_BG_UNSELECTED = new Color(55, 62, 64);
+    private static final Color TAB_FG = TITLECOLOR_DARK;
+    private static final Color TABLEHEADER_BG = new Color(65, 75, 77);
+    private static final Color TABLEHEADER_FG = TITLECOLOR_DARK;
+    private static final Color TABLEGRIDCOLOR = BORDERCOLOR_DARK;
+    private static final Color TABLECELLBG = new Color(55, 62, 64);
+    private static final Color TABLECELLFG = TEXTCOLOR_DARK;
+    private static final Color TABLECELLSELECTED_BG = BUTTONBG_DARK;
+    private static final Color TABLECELLSELECTED_FG = BUTTONFG_DARK;
+    private static final Color ACCENTCOLORORANGE = new Color(230, 145, 56);
+    private static final Color ACCENTCOLOR_BLUE = new Color(72, 149, 239);
+    private static final Color ACCENTCOLOR_GREEN = new Color(87, 190, 106);
+    private static final Color INPUTBG_DARK = new Color(60, 60, 60);
+    private static final Color INPUTFG_DARK = new Color(220, 220, 220);
+    private static final Color INPUTBORDER_DARK = new Color(90, 90, 90);
+
+    public OrphanageDashboardPanel(Runnable logoutAction) {
+        this.logoutAction = logoutAction;
+        this.orphanageService = new OrphanageService();
+        setLayout(new BorderLayout(0, 0));
+        try {
+            initComponents();
+        } catch (Exception e) {
+            logger.error("Failed to initialize OrphanageDashboardPanel", e);
+        }
+        logger.debug("OrphanageDashboard initialized");
+    }
+
+    public void setStaffUser(User user) {
+        this.staffUser = new User(user);
+        logger.info("Staff user set: {}", user.getUsername());
+        loadOrphanageData();
+        refreshUI();
+        if (tabbedPane != null) {
+            tabbedPane.setSelectedIndex(0);
+        }
+    }
+
+    private void loadOrphanageData() {
+        if (staffUser == null) {
+            logger.warn("Attempted to load orphanage data with null user");
+            return;
+        }
+        try {
+            orphanage = orphanageService.getOrphanageForStaff(staffUser);
+            if (orphanage == null) {
+                logger.error("No orphanage found for user: {}", staffUser.getUsername());
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No orphanage is associated with your account.
+"
+                                + "Please contact the system administrator.",
+                        "Configuration Error",
+                        JOptionPane.ERROR_MESSAGE);
+                logoutAction.run();
+            } else {
+                logger.info("Loaded orphanage: {}", orphanage.getName());
+            }
+        } catch (ServiceException e) {
+            logger.error("Failed to load orphanage data", e);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error loading orphanage data:
+" + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+            logoutAction.run();
+        }
+    }
+
+    private void refreshUI() {
+        if (orphanage != null && orphanageNameLabel != null) {
+            orphanageNameLabel.setText(orphanage.getName());
+        }
+        if (staffUser != null && userLabel != null) {
+            userLabel.setText("User: " + staffUser.getUsername());
+        }
+        loadResourceRequests();
+        updateStatistics();
+    }
+
+    private void updateStatistics() {
+        if (orphanage == null) return;
+        try {
+            List<ResourceRequest> requests =
+                    orphanageService.getRequestsForOrphanage(orphanage.getOrphanageID());
+            long activeRequests =
+                    requests.stream().filter(r -> "Open".equalsIgnoreCase(r.getCategory())).count();
+            long pendingDonations = 0;
+
+            if (statActiveRequests != null)
+                statActiveRequests.setText(String.valueOf(activeRequests));
+            if (statPendingDonations != null)
+                statPendingDonations.setText(String.valueOf(pendingDonations));
+            if (statActiveVolunteers != null) statActiveVolunteers.setText("8");
+        } catch (ServiceException e) {
+            logger.error("Failed to update statistics", e);
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARKBGSTART, 0, getHeight(), DARKBGEND);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        add(createHeaderPanel(), BorderLayout.NORTH);
+        tabbedPane = createTabbedPane();
+        add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout(10, 0));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 1, 0, BORDERCOLOR_DARK),
+                        new EmptyBorder(10, 20, 10, 20)));
+        JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        titleGroup.setOpaque(false);
+        JLabel iconLabel = new JLabel("⌂");
+        iconLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        iconLabel.setForeground(new Color(135, 206, 250));
+        orphanageNameLabel = new JLabel("Loading...");
+        orphanageNameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        orphanageNameLabel.setForeground(TITLECOLOR_DARK);
+        titleGroup.add(iconLabel);
+        titleGroup.add(orphanageNameLabel);
+        headerPanel.add(titleGroup, BorderLayout.WEST);
+
+        JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userGroup.setOpaque(false);
+        userLabel = new JLabel("User: Loading...");
+        userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        userLabel.setForeground(TEXTCOLOR_DARK);
+        JButton btnLogout = new JButton("Logout");
+        styleActionButton(btnLogout, "Logout and return to welcome screen");
+        btnLogout.setPreferredSize(new Dimension(100, 30));
+        btnLogout.setBackground(new Color(192, 57, 43));
+        btnLogout.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnLogout.setBackground(new Color(231, 76, 60));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnLogout.setBackground(new Color(192, 57, 43));
+                    }
+                });
+        btnLogout.addActionListener(
+                e -> {
+                    int confirm =
+                            JOptionPane.showConfirmDialog(
+                                    this,
+                                    "Are you sure you want to logout?",
+                                    "Confirm Logout",
+                                    JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        logger.info("User logged out: {}", staffUser.getUsername());
+                        logoutAction.run();
+                    }
+                });
+        userGroup.add(userLabel);
+        userGroup.add(btnLogout);
+        headerPanel.add(userGroup, BorderLayout.EAST);
+        return headerPanel;
+    }
+
+    private JTabbedPane createTabbedPane() {
+        JTabbedPane pane = new JTabbedPane();
+        pane.setOpaque(false);
+        pane.setForeground(TAB_FG);
+        pane.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        pane.setUI(
+                new javax.swing.plaf.basic.BasicTabbedPaneUI() {
+                    @Override
+                    protected void installDefaults() {
+                        super.installDefaults();
+                        lightHighlight = TAB_BGSELECTED;
+                        shadow = BORDERCOLOR_DARK;
+                        darkShadow = DARKBGEND;
+                        focus = TAB_BGSELECTED;
+                    }
+
+                    @Override
+                    protected void paintTabBackground(
+                            Graphics g, int p, int i, int x, int y, int w, int h, boolean s) {
+                        g.setColor(s ? TAB_BGSELECTED : TAB_BG_UNSELECTED);
+                        g.fillRoundRect(x, y, w, h + 5, 5, 5);
+                    }
+
+                    @Override
+                    protected void paintTabBorder(
+                            Graphics g, int p, int i, int x, int y, int w, int h, boolean s) {}
+
+                    @Override
+                    protected void paintContentBorder(
+                            Graphics g, int tabPlacement, int selectedIndex) {
+                        int width = tabPane.getWidth();
+                        int height = tabPane.getHeight();
+                        Insets insets = tabPane.getInsets();
+                        int tabAreaHeight =
+                                calculateTabAreaHeight(tabPlacement, runCount, maxTabHeight);
+                        int x = insets.left;
+                        int y = insets.top + tabAreaHeight - 1;
+                        int w = width - insets.right - insets.left;
+                        int h = height - insets.top - insets.bottom - tabAreaHeight;
+                        g.setColor(BORDERCOLOR_DARK);
+                        g.drawRect(x, y, w - 1, h - 1);
+                    }
+                });
+        pane.addTab("Overview", createOverviewTab());
+        pane.addTab("Resource Requests", createResourceRequestsTab());
+        pane.addTab("Orphanage Profile", createProfileTab());
+        return pane;
+    }
+
+    private JPanel createOverviewTab() {
+        JPanel panel = new JPanel(new GridLayout(1, 3, 20, 20));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(25, 25, 25, 25));
+
+        statActiveRequests = new JLabel("0", SwingConstants.CENTER);
+        statPendingDonations = new JLabel("0", SwingConstants.CENTER);
+        statActiveVolunteers = new JLabel("0", SwingConstants.CENTER);
+
+        JPanel activeRequestsCard =
+                createStatCard("Active Requests", statActiveRequests, ACCENTCOLORORANGE);
+        JPanel pendingDonationsCard =
+                createStatCard("Pending Donations", statPendingDonations, ACCENTCOLOR_BLUE);
+        JPanel activeVolunteersCard =
+                createStatCard("Active Volunteers", statActiveVolunteers, ACCENTCOLOR_GREEN);
+
+        panel.add(activeRequestsCard);
+        panel.add(pendingDonationsCard);
+        panel.add(activeVolunteersCard);
+        return panel;
+    }
+
+    private JPanel createStatCard(String title, JLabel valueLabel, Color accentColor) {
+        JPanel card = new JPanel(new BorderLayout(5, 5));
+        card.setBackground(TAB_BG_UNSELECTED);
+        card.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 3, 0, accentColor),
+                        new EmptyBorder(15, 20, 15, 20)));
+
+        valueLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 36));
+        valueLabel.setForeground(TITLECOLOR_DARK);
+        card.add(valueLabel, BorderLayout.CENTER);
+
+        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
+        titleLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        titleLabel.setForeground(TEXTCOLOR_DARK);
+        card.add(titleLabel, BorderLayout.SOUTH);
+
+        return card;
+    }
+
+    private JPanel createResourceRequestsTab() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        // Add toolbar
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        toolbar.setOpaque(false);
+        JButton btnNewRequest = new JButton("New Request");
+        styleActionButton(btnNewRequest, "Create a new resource request");
+        toolbar.add(btnNewRequest);
+        panel.add(toolbar, BorderLayout.NORTH);
+
+        // Create table
+        String[] columnNames = {"Item", "Category", "Quantity", "Priority", "Status", "Date"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        resourceTable = new JTable(tableModel);
+        styleTable(resourceTable);
+
+        JScrollPane scrollPane = new JScrollPane(resourceTable);
+        styleScrollPane(scrollPane);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private void loadResourceRequests() {
+        if (tableModel != null) {
+            tableModel.setRowCount(0);
+            // Add sample data
+            tableModel.addRow(
+                    new Object[] {
+                        "School Supplies", "Education", "50", "High", "Open", "2025-01-15"
+                    });
+            tableModel.addRow(
+                    new Object[] {
+                        "Winter Clothes", "Clothing", "30", "Medium", "Partial", "2025-01-10"
+                    });
+        }
+    }
+
+    private JPanel createProfileTab() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false);
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Add form fields
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel lblName = new JLabel("Orphanage Name:");
+        styleFormLabel(lblName);
+        formPanel.add(lblName, gbc);
+
+        gbc.gridx = 1;
+        JTextField txtName = new JTextField(20);
+        styleTextField(txtName);
+        formPanel.add(txtName, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel lblAddress = new JLabel("Address:");
+        styleFormLabel(lblAddress);
+        formPanel.add(lblAddress, gbc);
+
+        gbc.gridx = 1;
+        JTextArea txtAddress = new JTextArea(3, 20);
+        styleTextArea(txtAddress);
+        formPanel.add(new JScrollPane(txtAddress), gbc);
+
+        panel.add(formPanel, BorderLayout.NORTH);
+        return panel;
+    }
+
+    private void styleTable(JTable table) {
+        table.setBackground(TABLECELLBG);
+        table.setForeground(TABLECELLFG);
+        table.setGridColor(TABLEGRIDCOLOR);
+        table.setRowHeight(28);
+        table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        table.setFillsViewportHeight(true);
+        table.setSelectionBackground(TABLECELLSELECTED_BG);
+        table.setSelectionForeground(TABLECELLSELECTED_FG);
+    }
+
+    private void styleScrollPane(JScrollPane scrollPane) {
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        applyScrollbarUI(scrollPane.getVerticalScrollBar());
+        applyScrollbarUI(scrollPane.getHorizontalScrollBar());
+    }
+
+    private void applyScrollbarUI(JScrollBar scrollBar) {
+        scrollBar.setUI(
+                new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = BUTTONBG_DARK;
+                        this.trackColor = DARKBGEND;
+                    }
+
+                    @Override
+                    protected JButton createDecreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    @Override
+                    protected JButton createIncreaseButton(int o) {
+                        return createZeroButton();
+                    }
+
+                    private JButton createZeroButton() {
+                        JButton b = new JButton();
+                        b.setPreferredSize(new Dimension(0, 0));
+                        return b;
+                    }
+                });
+    }
+
+    private void styleActionButton(JButton btn, String tooltip) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        btn.setToolTipText(tooltip);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+        btn.setBackground(BUTTONBG_DARK);
+        btn.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createLineBorder(BUTTONBG_DARK.darker()),
+                        new EmptyBorder(6, 12, 6, 12)));
+    }
+
+    private void styleFormLabel(JLabel label) {
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        label.setForeground(TEXTCOLOR_DARK);
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        field.setForeground(INPUTFG_DARK);
+        field.setBackground(INPUTBG_DARK);
+        field.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createLineBorder(INPUTBORDER_DARK, 1),
+                        new EmptyBorder(4, 6, 4, 6)));
+        field.setCaretColor(Color.LIGHT_GRAY);
+    }
+
+    private void styleTextArea(JTextArea area) {
+        area.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        area.setForeground(INPUTFG_DARK);
+        area.setBackground(INPUTBG_DARK);
+        area.setBorder(new EmptyBorder(4, 6, 4, 6));
+        area.setCaretColor(Color.LIGHT_GRAY);
+    }
+}
+
+VolunteerDashboardPanel.java:
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.gui;
+
+import com.orphanagehub.model.User;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class VolunteerDashboardPanel extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(VolunteerDashboardPanel.class);
+
+    private final Runnable logoutAction; // To store the logged-in user's data
+    private User currentUser; // To store the logged-in user's data
+    private JLabel userLabel; // To update the user's name on the display
+
+    // --- Colors (Same as AdminDashboardPanel) ---
+    private static final Color DARKBGSTART = new Color(45, 52, 54);
+    private static final Color DARKBGEND = new Color(35, 42, 44);
+    private static final Color TITLECOLOR_DARK = new Color(223, 230, 233);
+    private static final Color TEXTCOLOR_DARK = new Color(200, 200, 200);
+    private static final Color BORDERCOLOR_DARK = new Color(80, 80, 80);
+    private static final Color INPUTBG_DARK = new Color(60, 60, 60);
+    private static final Color INPUTFG_DARK = new Color(220, 220, 220);
+    private static final Color INPUTBORDER_DARK = new Color(90, 90, 90);
+    private static final Color BUTTONBG_DARK = new Color(99, 110, 114);
+    private static final Color BUTTONFG_DARK = Color.WHITE;
+    private static final Color BUTTONHOVER_BG_DARK = new Color(120, 130, 134);
+    private static final Color TABLEHEADER_BG = new Color(65, 75, 77);
+    private static final Color TABLEHEADER_FG = TITLECOLOR_DARK;
+    private static final Color TABLEGRIDCOLOR = BORDERCOLOR_DARK;
+    private static final Color TABLECELLBG = new Color(55, 62, 64);
+    private static final Color TABLECELLFG = TEXTCOLOR_DARK;
+    private static final Color TABLECELLSELECTED_BG = BUTTONBG_DARK;
+    private static final Color TABLECELLSELECTED_FG = BUTTONFG_DARK;
+    private static final Color BUTTONAPPLY_BG = new Color(87, 190, 106);
+    private static final Color BUTTONAPPLY_HOVER_BG = new Color(97, 200, 116);
+
+    public VolunteerDashboardPanel(Runnable logoutAction) {
+        this.logoutAction = logoutAction;
+        setLayout(new BorderLayout(0, 0));
+        try {
+            initComponents();
+        } catch (Exception e) {
+            logger.error("Failed to initialize VolunteerDashboardPanel", e);
+        }
+    }
+
+    /**
+     * Sets the currently logged-in volunteer user for this panel. This method updates the UI with
+     * the user's information.
+     *
+     * @param user The logged-in volunteer.
+     */
+    public void setVolunteerUser(User user) {
+        this.currentUser = new User(user);
+        if (user != null) {
+            this.userLabel.setText("User: " + user.getUsername());
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        GradientPaint gp = new GradientPaint(0, 0, DARKBGSTART, 0, getHeight(), DARKBGEND);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    private void initComponents() {
+        // --- Header Panel ---
+        JPanel headerPanel = createHeaderPanel();
+        add(headerPanel, BorderLayout.NORTH);
+
+        // --- Main Content Area (Search + Table + Status) ---
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 15));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(new EmptyBorder(15, 20, 20, 20));
+
+        // --- Search/Filter Panel ---
+        JPanel searchFilterPanel = createSearchFilterPanel();
+        contentPanel.add(searchFilterPanel, BorderLayout.NORTH);
+
+        // --- Opportunities Table ---
+        JTable opportunitiesTable = createOpportunitiesTable();
+        JScrollPane scrollPane = new JScrollPane(opportunitiesTable);
+        styleScrollPane(scrollPane);
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // --- Application Status Panel (Placeholder) ---
+        JPanel statusPanel = createStatusPanel();
+        contentPanel.add(statusPanel, BorderLayout.SOUTH);
+
+        add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout(10, 0));
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(0, 0, 1, 0, BORDERCOLOR_DARK),
+                        new EmptyBorder(10, 20, 10, 20)));
+
+        // Left side: Role Icon and Title
+        JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        titleGroup.setOpaque(false);
+        JLabel iconLabel = new JLabel("★"); // Star symbol
+        iconLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        iconLabel.setForeground(new Color(255, 215, 0)); // Gold color
+        JLabel nameLabel = new JLabel("Volunteer Dashboard");
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        nameLabel.setForeground(TITLECOLOR_DARK);
+        titleGroup.add(iconLabel);
+        titleGroup.add(nameLabel);
+        headerPanel.add(titleGroup, BorderLayout.WEST);
+
+        // Right side: User info and Logout Button
+        JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userGroup.setOpaque(false);
+
+        userLabel = new JLabel("Welcome, Volunteer");
+        userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        userLabel.setForeground(TEXTCOLOR_DARK);
+
+        JButton btnLogout = new JButton("Logout");
+        styleActionButton(btnLogout, "Logout and return to welcome screen");
+        btnLogout.setPreferredSize(new Dimension(100, 30));
+        btnLogout.setBackground(new Color(192, 57, 43)); // Reddish logout
+        btnLogout.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btnLogout.setBackground(new Color(231, 76, 60));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btnLogout.setBackground(new Color(192, 57, 43));
+                    }
+                });
+        btnLogout.addActionListener(e -> logoutAction.run());
+
+        userGroup.add(userLabel);
+        userGroup.add(btnLogout);
+        headerPanel.add(userGroup, BorderLayout.EAST);
+
+        return headerPanel;
+    }
+
+    private JPanel createSearchFilterPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        panel.setOpaque(false);
+
+        JLabel lblFilterLocation = new JLabel("Location:");
+        styleFormLabel(lblFilterLocation);
+        String[] locations = {"Any Location", "City A", "City B", "Region C"}; // Placeholders
+        JComboBox<String> cmbLocation = new JComboBox<>(locations);
+        styleComboBox(cmbLocation);
+
+        JLabel lblFilterSkills = new JLabel("Skills:");
+        styleFormLabel(lblFilterSkills);
+        JTextField txtSkills = new JTextField(15); // Text field for skills keywords
+        styleTextField(txtSkills);
+
+        JLabel lblFilterTime = new JLabel("Commitment:");
+        styleFormLabel(lblFilterTime);
+        String[] times = {
+            "Any Time", "Weekends", "Weekdays", "Flexible", "Event-Based"
+        }; // Placeholders
+        JComboBox<String> cmbTime = new JComboBox<>(times);
+        styleComboBox(cmbTime);
+
+        JButton btnSearch = new JButton("Find Opportunities");
+        styleActionButton(btnSearch, "Search for volunteer roles matching criteria");
+        btnSearch.addActionListener(
+                e ->
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Search logic not implemented.",
+                                "Search",
+                                JOptionPane.INFORMATION_MESSAGE));
+
+        panel.add(lblFilterLocation);
+        panel.add(cmbLocation);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(lblFilterSkills);
+        panel.add(txtSkills);
+        panel.add(Box.createHorizontalStrut(10));
+        panel.add(lblFilterTime);
+        panel.add(cmbTime);
+        panel.add(Box.createHorizontalStrut(15));
+        panel.add(btnSearch);
+
+        return panel;
+    }
+
+    private JTable createOpportunitiesTable() {
+        String[] columnNames = {
+            "Orphanage", "Opportunity", "Location", "Skills Needed", "Time Commitment", "Action"
+        };
+        Object[][] data = {
+            {
+                "Hope Children's Home",
+                "Weekend Tutor",
+                "City A",
+                "Teaching, Patience",
+                "Weekends",
+                "Apply"
+            },
+            {
+                "Bright Future Orphanage",
+                "Event Helper",
+                "City B",
+                "Organizing, Energetic",
+                "Event-Based",
+                "Apply"
+            },
+            {
+                "Little Angels Shelter",
+                "After-School Care",
+                "City A",
+                "Childcare, First Aid",
+                "Weekdays",
+                "Applied"
+            },
+            {"Sunshine House", "Gardening Assistant", "Region C", "Gardening", "Flexible", "Apply"},
+            {
+                "Hope Children's Home",
+                "Reading Buddy",
+                "City A",
+                "Reading, Communication",
+                "Weekdays",
+                "Apply"
+            }
+        };
+
+        JTable table =
+                new JTable(data, columnNames) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return column == 5 && "Apply".equals(getValueAt(row, column));
+                    }
+                };
+
+        styleTable(table);
+
+        // Add button renderer/editor for the "Action" column
+        table.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer(BUTTONAPPLY_BG));
+        table.getColumnModel()
+                .getColumn(5)
+                .setCellEditor(
+                        new ButtonEditor(
+                                new JCheckBox(),
+                                BUTTONAPPLY_BG,
+                                () -> {
+                                    int selectedRow =
+                                            table.convertRowIndexToModel(table.getEditingRow());
+                                    String oppName =
+                                            (String) table.getModel().getValueAt(selectedRow, 1);
+                                    String orphName =
+                                            (String) table.getModel().getValueAt(selectedRow, 0);
+                                    JOptionPane.showMessageDialog(
+                                            this,
+                                            "Apply for: "
+                                                    + oppName
+                                                    + " at "
+                                                    + orphName
+                                                    + "
+(Functionality not implemented)",
+                                            "Apply",
+                                            JOptionPane.INFORMATION_MESSAGE);
+
+                                    // Example to update status using DefaultTableModel:
+                                    // ((DefaultTableModel) table.getModel()).setValueAt("Applied",
+                                    // selectedRow, 5);
+                                }));
+
+        // Adjust column widths
+        table.getColumnModel().getColumn(0).setPreferredWidth(150); // Orphanage
+        table.getColumnModel().getColumn(1).setPreferredWidth(150); // Opportunity
+        table.getColumnModel().getColumn(2).setPreferredWidth(100); // Location
+        table.getColumnModel().getColumn(3).setPreferredWidth(180); // Skills
+        table.getColumnModel().getColumn(4).setPreferredWidth(120); // Time
+        table.getColumnModel().getColumn(5).setPreferredWidth(90); // Action
+
+        return table;
+    }
+
+    private JPanel createStatusPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.setOpaque(false);
+        panel.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createMatteBorder(
+                                1, 0, 0, 0, BORDERCOLOR_DARK), // Top border separator
+                        new EmptyBorder(10, 5, 5, 5) // Padding
+                        ));
+
+        JLabel lblStatus = new JLabel("Status: 3 applications pending, 1 opportunity active");
+        lblStatus.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 13));
+        lblStatus.setForeground(TEXTCOLOR_DARK);
+        panel.add(lblStatus);
+
+        return panel;
+    }
+
+    // --- Styling Helpers ---
+    private void styleFormLabel(JLabel label) {
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        label.setForeground(TEXTCOLOR_DARK);
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        field.setForeground(INPUTFG_DARK);
+        field.setBackground(INPUTBG_DARK);
+        Border padding = new EmptyBorder(4, 6, 4, 6);
+        field.setBorder(
+                new CompoundBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1), padding));
+        field.setCaretColor(Color.LIGHT_GRAY);
+    }
+
+    private void styleComboBox(JComboBox<?> comboBox) {
+        comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        comboBox.setForeground(INPUTFG_DARK);
+        comboBox.setBackground(INPUTBG_DARK);
+        comboBox.setBorder(BorderFactory.createLineBorder(INPUTBORDER_DARK, 1));
+
+        for (Component c : comboBox.getComponents()) {
+            if (c instanceof JButton) {
+                ((JButton) c).setBackground(BUTTONBG_DARK);
+                ((JButton) c).setBorder(BorderFactory.createEmptyBorder());
+                break;
+            }
+        }
+
+        Object p = comboBox.getUI().getAccessibleChild(comboBox, 0);
+        if (p instanceof JPopupMenu) {
+            JPopupMenu pm = (JPopupMenu) p;
+            pm.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+            for (Component comp : pm.getComponents()) {
+                if (comp instanceof JScrollPane) {
+                    JScrollPane sp = (JScrollPane) comp;
+                    sp.getViewport().setBackground(INPUTBG_DARK);
+                    applyScrollbarUI(sp.getVerticalScrollBar());
+                    Component l = sp.getViewport().getView();
+                    if (l instanceof JList) {
+                        @SuppressWarnings("rawtypes")
+                        JList list = (JList) l;
+                        list.setBackground(INPUTBG_DARK);
+                        list.setForeground(INPUTFG_DARK);
+                        list.setSelectionBackground(BUTTONBG_DARK);
+                        list.setSelectionForeground(BUTTONFG_DARK);
+                    }
+                }
+            }
+        }
+    }
+
+    private void styleTable(JTable table) {
+        table.setBackground(TABLECELLBG);
+        table.setForeground(TABLECELLFG);
+        table.setGridColor(TABLEGRIDCOLOR);
+        table.setRowHeight(28);
+        table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        table.setFillsViewportHeight(true);
+        table.setSelectionBackground(TABLECELLSELECTED_BG);
+        table.setSelectionForeground(TABLECELLSELECTED_FG);
+        table.setShowGrid(true);
+        table.setIntercellSpacing(new Dimension(0, 1));
+
+        JTableHeader h = table.getTableHeader();
+        h.setBackground(TABLEHEADER_BG);
+        h.setForeground(TABLEHEADER_FG);
+        h.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        h.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        h.setReorderingAllowed(true);
+        h.setResizingAllowed(true);
+
+        DefaultTableCellRenderer r = new DefaultTableCellRenderer();
+        r.setHorizontalAlignment(SwingConstants.LEFT);
+        r.setVerticalAlignment(SwingConstants.CENTER);
+        r.setBorder(new EmptyBorder(2, 5, 2, 5));
+        for (int i = 0; i < table.getColumnCount() - 1; i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(r);
+        }
+    }
+
+    private void styleScrollPane(JScrollPane scrollPane) {
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createLineBorder(BORDERCOLOR_DARK));
+        applyScrollbarUI(scrollPane.getVerticalScrollBar());
+        applyScrollbarUI(scrollPane.getHorizontalScrollBar());
+    }
+
+    private void applyScrollbarUI(JScrollBar scrollBar) {
+        scrollBar.setUI(
+                new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = BUTTONBG_DARK;
+                        this.trackColor = DARKBGEND;
+                    }
+
+                    @Override
+                    protected JButton createDecreaseButton(int orientation) {
+                        return createZeroButton();
+                    }
+
+                    @Override
+                    protected JButton createIncreaseButton(int orientation) {
+                        return createZeroButton();
+                    }
+
+                    private JButton createZeroButton() {
+                        JButton b = new JButton();
+                        b.setPreferredSize(new Dimension(0, 0));
+                        b.setMaximumSize(new Dimension(0, 0));
+                        b.setMinimumSize(new Dimension(0, 0));
+                        return b;
+                    }
+
+                    @Override
+                    protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
+                        g.setColor(thumbColor);
+                        g.fillRect(r.x, r.y, r.width, r.height);
+                    }
+
+                    @Override
+                    protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
+                        g.setColor(trackColor);
+                        g.fillRect(r.x, r.y, r.width, r.height);
+                    }
+                });
+        scrollBar.setUnitIncrement(16);
+    }
+
+    private void styleActionButton(JButton btn, String tooltip) {
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        btn.setToolTipText(tooltip);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setForeground(BUTTONFG_DARK);
+        btn.setFocusPainted(false);
+        btn.setBackground(BUTTONBG_DARK);
+        Border padding = new EmptyBorder(6, 12, 6, 12);
+        btn.setBorder(
+                new CompoundBorder(
+                        BorderFactory.createLineBorder(BUTTONBG_DARK.darker()), padding));
+        btn.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONBG_DARK)) {
+                            btn.setBackground(BUTTONHOVER_BG_DARK);
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        if (btn.getBackground().equals(BUTTONHOVER_BG_DARK)) {
+                            btn.setBackground(BUTTONBG_DARK);
+                        }
+                    }
+                });
+    }
+
+    // --- Inner classes for Table Button ---
+    static class ButtonRenderer extends JButton implements javax.swing.table.TableCellRenderer {
+        private final Color defaultBg;
+
+        public ButtonRenderer(Color background) {
+            setOpaque(true);
+            this.defaultBg = background;
+            setForeground(BUTTONFG_DARK);
+            setBackground(defaultBg);
+            setBorder(new EmptyBorder(2, 5, 2, 5));
+            setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable t, Object v, boolean s, boolean f, int r, int c) {
+            setText(v == null ? "" : v.toString());
+            setBackground(s ? defaultBg.brighter() : defaultBg);
+            return this;
+        }
+    }
+
+    static class ButtonEditor extends DefaultCellEditor {
+        protected JButton button;
+        private String label;
+        private boolean isPushed;
+        private final Runnable action;
+        private final Color bgColor;
+
+        public ButtonEditor(JCheckBox c, Color bg, Runnable act) {
+            super(c);
+            this.action = act;
+            this.bgColor = bg;
+            button = new JButton();
+            button.setOpaque(true);
+            button.setForeground(BUTTONFG_DARK);
+            button.setBackground(bgColor);
+            button.setBorder(new EmptyBorder(2, 5, 2, 5));
+            button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
+            button.addActionListener(e -> fireEditingStopped());
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable t, Object v, boolean s, int r, int c) {
+            label = (v == null) ? "" : v.toString();
+            button.setText(label);
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed && action != null) {
+                action.run();
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
+}

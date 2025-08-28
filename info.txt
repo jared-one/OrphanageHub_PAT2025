@@ -1,0 +1,443 @@
+total 7.1M
+drwxr-xr-x 11 jared jared 4.0K Aug 27 11:39 .
+drwx------ 59 jared jared 4.0K Aug 22 15:16 ..
+-rw-r--r--  1 jared jared 2.3K Aug 27 11:13 compile_errors.log
+drwxr-xr-x  2 jared jared 4.0K Aug 13 23:29 db
+-rw-r--r--  1 jared jared  18K Aug 14 03:58 DonorDashboardPanel.java
+-rw-r--r--  1 jared jared  97K Aug 27 11:01 errors_to_review.txt
+drwxr-xr-x  8 jared jared 4.0K Aug 19 20:09 .git
+-rw-r--r--  1 jared jared  106 Aug 13 13:40 .gitattributes
+drwxr-xr-x  2 jared jared 4.0K Aug 13 13:40 .githooks
+drwxr-xr-x  3 jared jared 4.0K Aug 13 13:55 .github
+-rw-r--r--  1 jared jared 1.1K Aug 13 13:40 .gitignore
+-rw-r--r--  1 jared jared 3.4M Mar  7  2022 google-java-format-1.15.0-all-deps.jar
+-rw-r--r--  1 jared jared 3.4M Aug  9 13:30 google-java-format-1.17.0-all-deps.jar
+-rw-r--r--  1 jared jared 3.7K Aug 27 11:13 grouped_errors.txt
+-rw-r--r--  1 jared jared    0 Aug 27 11:39 info.txt
+-rw-r--r--  1 jared jared 4.0K Aug 14 03:59 javac.20250814_035926.args
+-rw-r--r--  1 jared jared 1.4K Aug 14 03:59 javac.20250814_035927.args
+-rw-r--r--  1 jared jared 1.4K Aug 14 03:59 javac.20250814_035928.args
+drwxr-xr-x  2 jared jared 4.0K Aug  9 09:34 logs
+-rw-r--r--  1 jared jared 7.3K Aug 14 03:30 Makefile
+drwxr-xr-x  3 jared jared 4.0K Aug 13 13:41 .mvn
+-rwxr-xr-x  1 jared jared  11K May 21  2024 mvnw
+-rw-r--r--  1 jared jared 6.9K May 21  2024 mvnw.cmd
+-rw-r--r--  1 jared jared 1.2K Aug 19 20:22 nbactions.xml
+-rw-r--r--  1 jared jared 5.7K Aug 27 11:12 pom.xml
+-rw-r--r--  1 jared jared  68K Aug 14 01:31 README.md
+drwxr-xr-x  3 jared jared 4.0K Aug 27 11:17 scripts
+drwxr-xr-x  5 jared jared 4.0K Aug 19 23:27 src
+drwxr-xr-x  8 jared jared 4.0K Aug 27 11:36 target
+.
+├── compile_errors.log
+├── db
+├── DonorDashboardPanel.java
+├── errors_to_review.txt
+├── google-java-format-1.15.0-all-deps.jar
+├── google-java-format-1.17.0-all-deps.jar
+├── grouped_errors.txt
+├── info.txt
+├── javac.20250814_035926.args
+├── javac.20250814_035927.args
+├── javac.20250814_035928.args
+├── logs
+│   └── orphanagehub.log
+├── Makefile
+├── mvnw
+├── mvnw.cmd
+├── nbactions.xml
+├── pom.xml
+├── README.md
+├── scripts
+│   ├── db_manager.py
+│   ├── doctor_chimera.py
+│   ├── fix_all_panels.sh
+│   ├── fix_errors.py
+│   ├── fix_syntax.py
+│   ├── log_analyzer.py
+│   ├── parse_errors.py
+│   ├── quick_patch.sh
+│   ├── refactor_logging.py
+│   ├── requirements.txt
+│   ├── sanitize_sources.py
+│   ├── section_build.py
+│   ├── smart.py
+│   └── verify_setup.py
+├── src
+│   ├── all_code.txt
+│   ├── all_code.txt.bak
+│   ├── all_source_code.txt
+│   ├── export_all_code.sh
+│   ├── main
+│   │   ├── java
+│   │   └── resources
+│   ├── Makefile
+│   ├── pom.xml
+│   ├── src
+│   │   ├── main
+│   │   └── test
+│   └── test
+│       └── java
+└── target
+    ├── classes
+    │   ├── app.properties
+    │   ├── com
+    │   ├── frmHome.png
+    │   └── home.png
+    ├── generated-sources
+    │   └── annotations
+    ├── generated-test-sources
+    │   └── test-annotations
+    ├── maven-archiver
+    │   └── pom.properties
+    ├── maven-status
+    │   └── maven-compiler-plugin
+    ├── OrphanageHub-1.0.0.jar
+    └── test-classes
+
+24 directories, 42 files
+
+
+==pom.xml==
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.orphanagehub</groupId>
+    <artifactId>OrphanageHub</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+        <project.build.year>${maven.build.timestamp}</project.build.year>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.ucanaccess</groupId>
+            <artifactId>ucanaccess</artifactId>
+            <version>5.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Added: SLF4J API for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+        <!-- Added: Logback implementation for SLF4J (required at runtime) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.6</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <!-- Centralized plugin version management for consistency -->
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.43.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>4.8.6.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals><goal>enforce</goal></goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion><version>[17,)</version></requireJavaVersion>
+                                <requireMavenVersion><version>[3.8.0,)</version></requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.19.2</version>
+                            <style>AOSP</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports/>
+                        <licenseHeader>
+                            <content>/* Copyright (C) ${project.build.year} Jared Wisdom - All Rights Reserved */</content>
+                        </licenseHeader>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <goals><goal>check</goal></goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.orphanagehub.gui.OrphanageHubApp</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+
+==Makefile==
+
+# OrphanageHub - Definitive Workflow
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+
+APP_MAIN_CLASS := com.orphanagehub.gui.OrphanageHubApp
+DEBUG_PORT ?= 5005
+
+# OS detection
+ifeq ($(OS),Windows_NT)
+	MAVEN := ./mvnw.cmd
+	SEP := ;
+	PYTHON := python
+else
+	MAVEN := ./mvnw
+	SEP := :
+	PYTHON := python3
+endif
+
+# PID detection
+ifeq ($(OS),Windows_NT)
+	PID := $(shell jps -l | findstr $(APP_MAIN_CLASS) | awk '{print $$1}')
+else
+	PID := $(shell jps -l | grep $(APP_MAIN_CLASS) | awk '{print $$1}')
+endif
+
+.PHONY: help build run clean format check test ci run-dev debug jdb pid thread-dump heap-dump diag \
+        python-setup db-reset db-ping db-sql log-analyze setup sanitize \
+        section-compile section-watch section-clean section-rebuild section-run classpath \
+        doctor doctor-diagnose doctor-interactive doctor-fix doctor-watch doctor-report doctor-fortify dr df dft
+
+# =============================================================================
+# HELP
+# =============================================================================
+help:
+	@echo "OrphanageHub Project Commands"
+	@echo ""
+	@grep -E '^[a-zA-Z0-9_.-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
+
+# =============================================================================
+# CORE
+# =============================================================================
+build: ## Build with Maven (package, skip tests)
+	$(MAVEN) -B -q package -DskipTests
+
+run: build ## Run via Maven (slower)
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS)
+
+clean: ## Clean Maven artifacts
+	$(MAVEN) -B -q clean
+
+# =============================================================================
+# QUALITY & TESTS
+# =============================================================================
+format: ## Apply Spotless formatting
+	$(MAVEN) -B spotless:apply
+
+check: ## Spotless + SpotBugs check
+	$(MAVEN) -B spotless:check spotbugs:check
+
+test: db-reset ## Run all JUnit tests
+	$(MAVEN) -B test
+
+ci: ## Full CI pipeline
+	$(MAKE) check
+	$(MAKE) test
+	$(MAKE) build
+
+# =============================================================================
+# DEBUG & DIAGNOSTICS
+# =============================================================================
+run-dev: build ## Run with assertions and dev flag
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS) -Dexec.jvmArgs="-ea -Dapp.env=dev"
+
+debug: build ## Run with JDWP open on $(DEBUG_PORT)
+	$(MAVEN) -q exec:java -Dexec.mainClass=$(APP_MAIN_CLASS) -Dexec.jvmArgs="-ea -Dapp.env=dev -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT}"
+
+jdb: ## Attach CLI debugger
+	jdb -attach localhost:$(DEBUG_PORT)
+
+pid: ## Print PID
+	@if [ -n "$(PID)" ]; then echo "PID: $(PID)"; else echo "App not running."; fi
+
+thread-dump: ## Thread dump
+	@if [ -n "$(PID)" ]; then jcmd $(PID) Thread.print > logs/thread-dump-`date +%s`.txt && echo "Saved to logs/"; else echo "App not running."; fi
+
+heap-dump: ## Heap histogram
+	@if [ -n "$(PID)" ]; then jcmd $(PID) GC.class_histogram > logs/heap-histo-`date +%s`.txt && echo "Saved to logs/"; else echo "App not running."; fi
+
+diag: ## Bundle diagnostics
+	$(MAKE) thread-dump && $(MAKE) heap-dump
+
+# =============================================================================
+# UTILITIES & SETUP
+# =============================================================================
+python-setup: scripts/.venv/bin/activate ## Setup venv and deps
+	@echo "Python environment is ready."
+
+scripts/.venv/bin/activate: scripts/requirements.txt
+	@echo "Creating Python virtual environment..."
+	@$(PYTHON) -m venv scripts/.venv
+	@./scripts/.venv/bin/pip install -r scripts/requirements.txt
+	@touch scripts/.venv/bin/activate
+
+setup: python-setup ## Create dirs and DB template if not present
+	@mkdir -p logs db target
+	@if [ ! -f db/template.accdb ] && [ -f db/OrphanageHub.accdb ]; then \
+		echo "Creating template from OrphanageHub.accdb"; \
+		cp db/OrphanageHub.accdb db/template.accdb; \
+	fi
+	@echo "✅ Setup complete."
+
+sanitize: python-setup ## Remove fence artifacts and fix package lines
+	@./scripts/.venv/bin/python scripts/sanitize_sources.py
+
+# =============================================================================
+# DATABASE (raw java, no Maven exec plugin confusion)
+# =============================================================================
+classpath: ## Print runtime classpath for raw java
+	@$(MAVEN) -q -B dependency:build-classpath \
+		-Dmdep.outputFile=target/ext-cp.txt \
+		-Dmdep.includeScope=compile \
+		-Dmdep.outputAbsoluteArtifactFilename=true \
+		-Dmdep.pathSeparator='$(SEP)' >/dev/null 2>&1 || true
+	@CP="target/section-classes$(SEP)target/classes"; \
+	if [ -f target/ext-cp.txt ]; then \
+		EXT=$$(cat target/ext-cp.txt); \
+		CP="$$CP$(SEP)$$EXT"; \
+	fi; \
+	echo $$CP
+
+db-ping: ## Test DB connectivity headlessly
+	@CP=$$($(MAKE) -s classpath); \
+	java -cp "$$CP" com.orphanagehub.tools.DbDoctor
+
+db-reset: ## Reset DB from template
+	@if [ ! -f db/template.accdb ]; then echo "ERROR: db/template.accdb not found"; exit 2; fi
+	@cp db/template.accdb db/OrphanageHub.accdb
+	@echo "✅ Database reset."
+
+db-sql: ## Run SQL: make db-sql q="SELECT COUNT(*) FROM TblUsers"
+	@[ -n "$(q)" ] || (echo 'Usage: make db-sql q="YOUR_QUERY"'; exit 2)
+	@CP=$$($(MAKE) -s classpath); \
+	java -cp "$$CP" com.orphanagehub.tools.DbShell "$(q)"
+
+log-analyze: python-setup ## Analyze logs via Python
+	@./scripts/.venv/bin/python scripts/log_analyzer.py
+
+# =============================================================================
+# ULTRA-FAST SECTION-BASED COMPILATION
+# =============================================================================
+section-compile: python-setup ## Fast incremental compile
+	@./scripts/.venv/bin/python scripts/section_build.py
+
+section-watch: python-setup ## Watch compile with dashboard
+	@./scripts/.venv/bin/python scripts/section_build.py --watch
+
+section-clean: python-setup ## Clean section artifacts
+	@./scripts/.venv/bin/python scripts/section_build.py --clean
+
+section-rebuild: python-setup ## Force rebuild all
+	@./scripts/.venv/bin/python scripts/section_build.py --force
+
+section-run: ## Run instantly using precompiled classes
+	@CP=$$($(MAKE) -s classpath); \
+	echo "🚀 Launching with pre-compiled classes..."; \
+	java -cp "$$CP" $(APP_MAIN_CLASS)
+
+# =============================================================================
+# DOCTOR CHIMERA
+# =============================================================================
+doctor: doctor-interactive ## Run interactively
+
+doctor-diagnose: python-setup ## Diagnose only
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java diagnose
+
+doctor-interactive: python-setup ## Diagnose & fix interactively
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java interactive
+
+doctor-fix: python-setup ## Auto-fix (high-confidence)
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java fix
+
+doctor-watch: python-setup ## Watch and fix on save
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java watch
+
+doctor-report: python-setup ## Generate report
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py java report
+
+doctor-fortify: python-setup ## Fortify file (AI optional)
+	@./scripts/.venv/bin/python scripts/doctor_chimera.py fortify $(file)
+
+# Short aliases
+dr: doctor-interactive
+df: doctor-fix
+dft: doctor-fortify

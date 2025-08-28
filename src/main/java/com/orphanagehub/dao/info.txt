@@ -1,0 +1,135 @@
+total 28K
+drwxr-xr-x 2 jared jared 4.0K Aug 27 11:54 .
+drwxr-xr-x 8 jared jared 4.0K Aug 20 00:21 ..
+-rw-r--r-- 1 jared jared 1001 Aug 27 09:22 DatabaseManager.java
+-rw-r--r-- 1 jared jared  358 Aug 27 09:22 DonationDAO.java
+-rw-r--r-- 1 jared jared    0 Aug 27 11:54 info.txt
+-rw-r--r-- 1 jared jared  595 Aug 27 09:22 OrphanageDAO.java
+-rw-r--r-- 1 jared jared  389 Aug 27 09:22 ResourceRequestDAO.java
+-rw-r--r-- 1 jared jared  492 Aug 27 09:22 UserDAO.java
+
+
+==tree==
+
+.
+├── DatabaseManager.java
+├── DonationDAO.java
+├── info.txt
+├── OrphanageDAO.java
+├── ResourceRequestDAO.java
+└── UserDAO.java
+
+1 directory, 6 files
+
+
+==DatabaseManager.java==
+
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.dao;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties; // Added missing import
+
+public final class DatabaseManager {
+    private DatabaseManager() {}
+
+    public static Connection getConnection() throws SQLException {
+        Properties p = new Properties();
+        try (InputStream in = DatabaseManager.class.getResourceAsStream("/app.properties")) {
+            if (in != null) {
+                p.load(in);
+            }
+        } catch (IOException e) { // Changed to catch specific IOException
+            // Log the error or handle it appropriately
+            System.err.println("Error loading properties: " + e.getMessage());
+        }
+        String url = p.getProperty("db.url", "jdbc:ucanaccess://db/OrphanageHub.accdb");
+        return DriverManager.getConnection(url);
+    }
+}
+
+
+==DonationDAO.java==
+
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.dao;
+
+import com.orphanagehub.model.Donation;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DonationDAO {
+    public List<Donation> findByDonor(String donorId) throws SQLException {
+        return new ArrayList<>();
+    }
+}
+
+
+==OrphanageDAO.java==
+
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.dao;
+
+import com.orphanagehub.model.Orphanage;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrphanageDAO {
+    public List<Orphanage> findAllUnassigned() throws SQLException {
+        return new ArrayList<>();
+    }
+
+    public void linkUserToOrphanage(String userId, String orphanageId) throws SQLException {
+        // Implementation to be added
+    }
+
+    public Orphanage findByStaffUserId(String userId) throws SQLException {
+        return null;
+    }
+}
+
+
+==ResourceRequestDAO.java==
+
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.dao;
+
+import com.orphanagehub.model.ResourceRequest;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ResourceRequestDAO {
+    public List<ResourceRequest> findByOrphanageId(String orphanageId) throws SQLException {
+        return new ArrayList<>();
+    }
+}
+
+
+==UserDAO.java==
+
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.dao;
+
+import com.orphanagehub.model.User;
+import java.sql.SQLException;
+
+public class UserDAO {
+    public User findByUsername(String username) throws SQLException {
+        return null;
+    }
+
+    public boolean isFieldTaken(String field, String value) throws SQLException {
+        return false;
+    }
+
+    public void insert(User user) throws SQLException {
+        // Implementation to be added
+    }
+}
