@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WelcomePanel extends JPanel {
+    private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(WelcomePanel.class);
 
     private static final Color DARKBGSTART = new Color(45, 52, 54);

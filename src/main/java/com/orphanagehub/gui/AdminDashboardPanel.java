@@ -1,7 +1,8 @@
-// src/main/java/com/orphanagehub/gui/AdminDashboardPanel.java
 package com.orphanagehub.gui;
 
 import com.orphanagehub.service.AdminService;
+import com.orphanagehub.util.SessionManager;
+import io.vavr.control.Try;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -9,16 +10,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.function.BiConsumer;
 
 public class AdminDashboardPanel extends JPanel {
-    private OrphanageHubApp mainApp;
-    private String adminUsername = "admin_user";
+    private final OrphanageHubApp mainApp;
+    private final AdminService adminService;
+    private DefaultTableModel verificationModel;
+    private DefaultTableModel userModel;
     private static final Color DARK_BG_START = new Color(45, 52, 54);
     private static final Color DARK_BG_END = new Color(35, 42, 44);
     private static final Color TITLE_COLOR_DARK = new Color(223, 230, 233);
@@ -49,6 +52,7 @@ public class AdminDashboardPanel extends JPanel {
 
     public AdminDashboardPanel(OrphanageHubApp app) {
         this.mainApp = app;
+        this.adminService = new AdminService();
         setLayout(new BorderLayout(0, 0));
         initComponents();
     }
@@ -68,6 +72,7 @@ public class AdminDashboardPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
         JTabbedPane tabbedPane = createTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
+        loadData();
     }
 
     private JPanel createHeaderPanel() {
@@ -77,6 +82,7 @@ public class AdminDashboardPanel extends JPanel {
                 BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER_COLOR_DARK),
                 new EmptyBorder(10, 20, 10, 20)
         ));
+        
         JPanel titleGroup = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         titleGroup.setOpaque(false);
         JLabel iconLabel = new JLabel("\u2699");
@@ -88,23 +94,36 @@ public class AdminDashboardPanel extends JPanel {
         titleGroup.add(iconLabel);
         titleGroup.add(nameLabel);
         headerPanel.add(titleGroup, BorderLayout.WEST);
+        
         JPanel userGroup = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         userGroup.setOpaque(false);
+        
+        String adminUsername = SessionManager.getInstance()
+            .getAttribute("currentUser")
+            .map(Object::toString)
+            .getOrElse("Admin");
+        
         JLabel userLabel = new JLabel("Admin User: " + adminUsername);
         userLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         userLabel.setForeground(TEXT_COLOR_DARK);
+        
         JButton btnLogout = new JButton("Logout");
         styleActionButton(btnLogout, "Logout and return to welcome screen");
         btnLogout.setPreferredSize(new Dimension(100, 30));
         btnLogout.setBackground(BUTTON_REJECT_BG);
         btnLogout.addMouseListener(new MouseAdapter() {
-             @Override public void mouseEntered(MouseEvent e) { btnLogout.setBackground(BUTTON_REJECT_HOVER_BG); }
-             @Override public void mouseExited(MouseEvent e) { btnLogout.setBackground(BUTTON_REJECT_BG); }
+            @Override public void mouseEntered(MouseEvent e) { btnLogout.setBackground(BUTTON_REJECT_HOVER_BG); }
+            @Override public void mouseExited(MouseEvent e) { btnLogout.setBackground(BUTTON_REJECT_BG); }
         });
-        btnLogout.addActionListener(e -> mainApp.navigateTo(OrphanageHubApp.HOME_PANEL));
+        btnLogout.addActionListener(e -> {
+            SessionManager.getInstance().clear();
+            mainApp.navigateTo("Home");
+        });
+        
         userGroup.add(userLabel);
         userGroup.add(btnLogout);
         headerPanel.add(userGroup, BorderLayout.EAST);
+        
         return headerPanel;
     }
 
@@ -113,15 +132,11 @@ public class AdminDashboardPanel extends JPanel {
         tabbedPane.setOpaque(false);
         tabbedPane.setForeground(TAB_FG);
         tabbedPane.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-        tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
-             @Override protected void installDefaults() { super.installDefaults(); lightHighlight=TAB_BG_SELECTED; shadow=BORDER_COLOR_DARK; darkShadow=DARK_BG_END; focus=TAB_BG_SELECTED; }
-             @Override protected void paintTabBackground(Graphics g, int p, int i, int x, int y, int w, int h, boolean s) { g.setColor(s ? TAB_BG_SELECTED : TAB_BG_UNSELECTED); g.fillRoundRect(x, y, w, h+5, 5, 5); }
-             @Override protected void paintTabBorder(Graphics g, int p, int i, int x, int y, int w, int h, boolean s) { /* Minimal border */ }
-             @Override protected void paintContentBorder(Graphics g, int p, int i) { int w=tabPane.getWidth(); int h=tabPane.getHeight(); Insets ins=tabPane.getInsets(); int th=calculateTabAreaHeight(p, runCount, maxTabHeight); int x=ins.left; int y=ins.top+th-(lightHighlight.getAlpha()>0?1:0); int cw=w-ins.right-ins.left; int ch=h-ins.top-ins.bottom-y; g.setColor(BORDER_COLOR_DARK); g.drawRect(x, y, cw-1, ch-1); }
-        });
+        
         tabbedPane.addTab("Orphanage Verification", createVerificationTab());
         tabbedPane.addTab("User Management", createUserManagementTab());
         tabbedPane.addTab("System Overview", createSystemOverviewTab());
+        
         return tabbedPane;
     }
 
@@ -129,58 +144,18 @@ public class AdminDashboardPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setOpaque(false);
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
         String[] columnNames = {"Orphanage Name", "Contact", "Email", "Registered", "Status", "Actions"};
-        Object[][] data = {
-            {"New Hope Center", "Alice Smith", "alice@newhope.org", "2024-05-10", "Pending", "Verify"},
-            {"Future Stars", "Bob Jones", "bob@futurestars.net", "2024-05-08", "Pending", "Verify"},
-            {"Safe Haven Kids", "Charlie P.", "contact@safehaven.com", "2024-04-20", "Verified", "View"},
-            {"Distant Dreams", "Diana Ross", "info@distdreams.org", "2024-05-11", "Pending", "Verify"}
-        };
-        JTable table = new JTable(data, columnNames) {
+        verificationModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(verificationModel) {
             @Override public boolean isCellEditable(int row, int column) { return column == 5; }
         };
         styleTable(table);
-        JPanel buttonPanelRenderer = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
-        buttonPanelRenderer.setOpaque(false);
-        JButton approveBtnRend = new JButton("✓");
-        JButton rejectBtnRend = new JButton("✕");
-        JButton detailsBtnRend = new JButton("...");
-        styleMiniButton(approveBtnRend, BUTTON_APPROVE_BG);
-        styleMiniButton(rejectBtnRend, BUTTON_REJECT_BG);
-        styleMiniButton(detailsBtnRend, BUTTON_BG_DARK);
-        buttonPanelRenderer.add(approveBtnRend);
-        buttonPanelRenderer.add(rejectBtnRend);
-        buttonPanelRenderer.add(detailsBtnRend);
-        table.getColumnModel().getColumn(5).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> buttonPanelRenderer);
-        table.getColumnModel().getColumn(5).setCellEditor(new ActionPanelEditor(new JCheckBox(), (actionCommand, row) -> {
-            String orphanageName = (String) table.getModel().getValueAt(row, 0);
-            AdminService adminService = new AdminService();
-            switch(actionCommand) {
-                case "approve":
-                    JOptionPane.showMessageDialog(this, "Approved: " + orphanageName, "Approve", JOptionPane.INFORMATION_MESSAGE);
-                    table.getModel().setValueAt("Verified", row, 4);
-                    break;
-                case "reject":
-                     if (JOptionPane.showConfirmDialog(this, "Reject " + orphanageName + "?", "Confirm Reject", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                         JOptionPane.showMessageDialog(this, "Rejected: " + orphanageName, "Reject", JOptionPane.INFORMATION_MESSAGE);
-                         table.getModel().setValueAt("Rejected", row, 4);
-                     }
-                    break;
-                case "details":
-                    JOptionPane.showMessageDialog(this, "Details for: " + orphanageName, "Details", JOptionPane.INFORMATION_MESSAGE);
-                    break;
-            }
-        }));
-        table.getColumnModel().getColumn(0).setPreferredWidth(180);
-        table.getColumnModel().getColumn(1).setPreferredWidth(120);
-        table.getColumnModel().getColumn(2).setPreferredWidth(180);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(80);
-        table.getColumnModel().getColumn(5).setPreferredWidth(120);
-        table.setRowHeight(approveBtnRend.getPreferredSize().height + 4);
+        
         JScrollPane scrollPane = new JScrollPane(table);
         styleScrollPane(scrollPane);
         panel.add(scrollPane, BorderLayout.CENTER);
+        
         return panel;
     }
 
@@ -188,90 +163,40 @@ public class AdminDashboardPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setOpaque(false);
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         searchPanel.setOpaque(false);
+        
         JLabel lblSearchUser = new JLabel("Search User:");
         JTextField txtUserSearch = new JTextField(20);
         JLabel lblUserRole = new JLabel("Role:");
         JComboBox<String> cmbUserRole = new JComboBox<>(new String[]{"Any Role", "Admin", "OrphanageStaff", "Donor", "Volunteer"});
         JButton btnUserSearch = new JButton("Search");
+        
         styleFormLabel(lblSearchUser);
         styleTextField(txtUserSearch);
         styleFormLabel(lblUserRole);
         styleComboBox(cmbUserRole);
         styleActionButton(btnUserSearch, "Find users");
+        
         searchPanel.add(lblSearchUser);
         searchPanel.add(txtUserSearch);
         searchPanel.add(lblUserRole);
         searchPanel.add(cmbUserRole);
         searchPanel.add(btnUserSearch);
         panel.add(searchPanel, BorderLayout.NORTH);
+        
         String[] columnNames = {"Username", "Email", "Role", "Status", "Registered", "Actions"};
-        Object[][] data = {
-            {"staff_user", "staff@example.com", "OrphanageStaff", "Active", "2024-01-15", "Manage"},
-            {"donor_user", "donor@mail.net", "Donor", "Active", "2024-02-10", "Manage"},
-            {"volunteer_A", "vol@provider.org", "Volunteer", "Active", "2024-03-01", "Manage"},
-            {"old_staff", "old@example.com", "OrphanageStaff", "Suspended", "2023-11-20", "Manage"},
-            {"admin_user", "admin@orphanagehub.com", "Admin", "Active", "2023-10-01", "Manage"}
-        };
-        JTable table = new JTable(data, columnNames) {
+        userModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(userModel) {
             @Override public boolean isCellEditable(int row, int column) { return column == 5; }
         };
         styleTable(table);
-        JPanel userActionPanelRenderer = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
-        userActionPanelRenderer.setOpaque(false);
-        JButton activateBtnRend = new JButton("✓");
-        JButton suspendBtnRend = new JButton("✕");
-        JButton viewBtnRend = new JButton("...");
-        styleMiniButton(activateBtnRend, BUTTON_APPROVE_BG);
-        styleMiniButton(suspendBtnRend, BUTTON_SUSPEND_BG);
-        styleMiniButton(viewBtnRend, BUTTON_BG_DARK);
-        userActionPanelRenderer.add(activateBtnRend);
-        userActionPanelRenderer.add(suspendBtnRend);
-        userActionPanelRenderer.add(viewBtnRend);
-         table.getColumnModel().getColumn(5).setCellRenderer((tbl, value, isSelected, hasFocus, row, column) -> {
-             String currentStatus = (String) tbl.getValueAt(row, 3);
-             activateBtnRend.setVisible("Suspended".equals(currentStatus));
-             suspendBtnRend.setVisible("Active".equals(currentStatus));
-             String username = (String) tbl.getValueAt(row, 0);
-             if (username.equals(adminUsername)) {
-                 activateBtnRend.setVisible(false);
-                 suspendBtnRend.setVisible(false);
-             }
-            return userActionPanelRenderer;
-        });
-        table.getColumnModel().getColumn(5).setCellEditor(new ActionPanelEditor(new JCheckBox(), (actionCommand, row) -> {
-             String username = (String) table.getModel().getValueAt(row, 0);
-             if (username.equals(adminUsername)) return;
-             String currentStatus = (String) table.getModel().getValueAt(row, 3);
-             switch(actionCommand) {
-                 case "activate":
-                      if ("Suspended".equals(currentStatus)) {
-                          JOptionPane.showMessageDialog(this, "Activate User: " + username, "Activate", JOptionPane.INFORMATION_MESSAGE);
-                      }
-                     break;
-                 case "suspend":
-                     if ("Active".equals(currentStatus)) {
-                         if (JOptionPane.showConfirmDialog(this, "Suspend User: " + username + "?", "Confirm Suspend", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                             JOptionPane.showMessageDialog(this, "Suspend User: " + username, "Suspend", JOptionPane.INFORMATION_MESSAGE);
-                         }
-                     }
-                     break;
-                 case "view":
-                     JOptionPane.showMessageDialog(this, "View User Profile: " + username, "View User", JOptionPane.INFORMATION_MESSAGE);
-                     break;
-             }
-         }));
-        table.getColumnModel().getColumn(0).setPreferredWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(180);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(80);
-        table.getColumnModel().getColumn(4).setPreferredWidth(100);
-        table.getColumnModel().getColumn(5).setPreferredWidth(120);
-        table.setRowHeight(activateBtnRend.getPreferredSize().height + 4);
+        
         JScrollPane scrollPane = new JScrollPane(table);
         styleScrollPane(scrollPane);
         panel.add(scrollPane, BorderLayout.CENTER);
+        
         return panel;
     }
 
@@ -280,6 +205,7 @@ public class AdminDashboardPanel extends JPanel {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(false);
         panel.setBorder(new EmptyBorder(25, 30, 25, 30));
+        
         panel.add(createOverviewStat("Total Registered Users:", "157"));
         panel.add(Box.createVerticalStrut(10));
         panel.add(createOverviewStat("Verified Orphanages:", "34"));
@@ -290,6 +216,7 @@ public class AdminDashboardPanel extends JPanel {
         panel.add(Box.createVerticalStrut(10));
         panel.add(createOverviewStat("Active Volunteers:", "22"));
         panel.add(Box.createVerticalGlue());
+        
         return panel;
     }
 
@@ -300,67 +227,119 @@ public class AdminDashboardPanel extends JPanel {
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         label.setForeground(TEXT_COLOR_DARK);
         JLabel value = new JLabel(valueText);
-       value.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        value.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         value.setForeground(TITLE_COLOR_DARK);
         statPanel.add(label);
         statPanel.add(value);
         return statPanel;
     }
 
-    private void styleFormLabel(JLabel label) { label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); label.setForeground(TEXT_COLOR_DARK); }
-    private void styleTextField(JTextField field) { field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); field.setForeground(INPUT_FG_DARK); field.setBackground(INPUT_BG_DARK); Border p=new EmptyBorder(4,6,4,6); field.setBorder(new CompoundBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1),p)); field.setCaretColor(Color.LIGHT_GRAY); }
-    private void styleComboBox(JComboBox<?> comboBox) { comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); comboBox.setForeground(INPUT_FG_DARK); comboBox.setBackground(INPUT_BG_DARK); comboBox.setBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1)); Object p=comboBox.getUI().getAccessibleChild(comboBox,0); if(p instanceof JPopupMenu){JPopupMenu pm=(JPopupMenu)p;pm.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); for(Component comp:pm.getComponents()){if(comp instanceof JScrollPane){JScrollPane sp=(JScrollPane)comp;sp.getViewport().setBackground(INPUT_BG_DARK);applyScrollbarUI(sp.getVerticalScrollBar()); Component l=sp.getViewport().getView(); if(l instanceof JList){((JList<?>)l).setBackground(INPUT_BG_DARK);((JList<?>)l).setForeground(INPUT_FG_DARK);((JList<?>)l).setSelectionBackground(BUTTON_BG_DARK);((JList<?>)l).setSelectionForeground(BUTTON_FG_DARK);}}}}}
-    private void styleTable(JTable table) { table.setBackground(TABLE_CELL_BG); table.setForeground(TABLE_CELL_FG); table.setGridColor(TABLE_GRID_COLOR); table.setRowHeight(28); table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); table.setFillsViewportHeight(true); table.setSelectionBackground(TABLE_CELL_SELECTED_BG); table.setSelectionForeground(TABLE_CELL_SELECTED_FG); table.setShowGrid(true); table.setIntercellSpacing(new Dimension(0,1)); JTableHeader h=table.getTableHeader(); h.setBackground(TABLE_HEADER_BG); h.setForeground(TABLE_HEADER_FG); h.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14)); h.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); h.setReorderingAllowed(true); h.setResizingAllowed(true); DefaultTableCellRenderer r=new DefaultTableCellRenderer(); r.setHorizontalAlignment(SwingConstants.LEFT); r.setVerticalAlignment(SwingConstants.CENTER); r.setBorder(new EmptyBorder(2,5,2,5)); for(int i=0; i<table.getColumnCount()-1; i++){table.getColumnModel().getColumn(i).setCellRenderer(r);} }
-    private void styleScrollPane(JScrollPane scrollPane) { scrollPane.setOpaque(false); scrollPane.getViewport().setOpaque(false); scrollPane.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); applyScrollbarUI(scrollPane.getVerticalScrollBar()); applyScrollbarUI(scrollPane.getHorizontalScrollBar()); }
-    private void applyScrollbarUI(JScrollBar scrollBar) { scrollBar.setUI(new BasicScrollBarUI() { @Override protected void configureScrollBarColors(){this.thumbColor=BUTTON_BG_DARK; this.trackColor=DARK_BG_END;} @Override protected JButton createDecreaseButton(int o){return createZeroButton();} @Override protected JButton createIncreaseButton(int o){return createZeroButton();} private JButton createZeroButton(){JButton b=new JButton(); b.setPreferredSize(new Dimension(0,0)); return b;} }); scrollBar.setUnitIncrement(16); }
-    private void styleActionButton(JButton btn, String tooltip) { btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12)); btn.setToolTipText(tooltip); btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); btn.setForeground(BUTTON_FG_DARK); btn.setFocusPainted(false); btn.setBackground(BUTTON_BG_DARK); Border p=new EmptyBorder(6,12,6,12); btn.setBorder(new CompoundBorder(BorderFactory.createLineBorder(BUTTON_BG_DARK.darker()),p)); btn.addMouseListener(new MouseAdapter() { @Override public void mouseEntered(MouseEvent e){if(btn.getBackground().equals(BUTTON_BG_DARK)){btn.setBackground(BUTTON_HOVER_BG_DARK);}} @Override public void mouseExited(MouseEvent e){if(btn.getBackground().equals(BUTTON_HOVER_BG_DARK)){btn.setBackground(BUTTON_BG_DARK);}} }); }
-    private static void styleMiniButton(JButton btn, Color bg) { btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14)); btn.setMargin(new Insets(0, 2, 0, 2)); btn.setFocusPainted(false); btn.setBackground(bg); btn.setForeground(BUTTON_FG_DARK); btn.setBorder(BorderFactory.createLineBorder(bg.darker())); btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); }
+    private void loadData() {
+        // Load mock data for verification
+        verificationModel.setRowCount(0);
+        verificationModel.addRow(new Object[]{"New Hope Center", "Alice Smith", "alice@newhope.org", "2024-05-10", "Pending", "Actions"});
+        verificationModel.addRow(new Object[]{"Future Stars", "Bob Jones", "bob@futurestars.net", "2024-05-08", "Pending", "Actions"});
+        verificationModel.addRow(new Object[]{"Safe Haven Kids", "Charlie P.", "contact@safehaven.com", "2024-04-20", "Verified", "Actions"});
+        
+        // Load mock data for users
+        userModel.setRowCount(0);
+        userModel.addRow(new Object[]{"staff_user", "staff@example.com", "OrphanageStaff", "Active", "2024-01-15", "Actions"});
+        userModel.addRow(new Object[]{"donor_user", "donor@mail.net", "Donor", "Active", "2024-02-10", "Actions"});
+        userModel.addRow(new Object[]{"volunteer_A", "vol@provider.org", "Volunteer", "Active", "2024-03-01", "Actions"});
+        userModel.addRow(new Object[]{"admin_user", "admin@orphanagehub.com", "Admin", "Active", "2023-10-01", "Actions"});
+    }
 
-    static class ActionPanelEditor extends DefaultCellEditor {
-        protected JPanel panel;
-        private String actionCommand;
-        private int row;
-        private BiConsumer<String, Integer> actionListener;
-        private JButton approveBtn;
-        private JButton rejectBtn;
-        private JButton detailsBtn;
-        public ActionPanelEditor(JCheckBox checkBox, BiConsumer<String, Integer> listener) {
-            super(checkBox);
-            this.actionListener = listener;
-            panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 0));
-            panel.setOpaque(false);
-            approveBtn = new JButton("✓");
-            rejectBtn = new JButton("✕");
-            detailsBtn = new JButton("...");
-            styleMiniButton(approveBtn, BUTTON_APPROVE_BG);
-            styleMiniButton(rejectBtn, BUTTON_REJECT_BG);
-            styleMiniButton(detailsBtn, BUTTON_BG_DARK);
-            approveBtn.addActionListener(e -> fireEditingStoppedWithCommand("approve"));
-            rejectBtn.addActionListener(e -> fireEditingStoppedWithCommand("reject"));
-            detailsBtn.addActionListener(e -> fireEditingStoppedWithCommand("details"));
-            panel.add(approveBtn);
-            panel.add(rejectBtn);
-            panel.add(detailsBtn);
-        }
-        private void fireEditingStoppedWithCommand(String command) {
-            actionCommand = command;
-            fireEditingStopped();
-        }
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            this.row = row;
-            String currentStatus = (String) table.getValueAt(row, 4);
-            approveBtn.setVisible("Pending".equals(currentStatus));
-            rejectBtn.setVisible("Pending".equals(currentStatus));
-            detailsBtn.setVisible(true);
-            return panel;
-        }
-        @Override
-        public Object getCellEditorValue() {
-            if (actionListener != null && actionCommand != null) {
-                actionListener.accept(actionCommand, row);
-            }
-            return null;
-        }
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, 
+            "Error loading data: " + message, 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void styleFormLabel(JLabel label) { 
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); 
+        label.setForeground(TEXT_COLOR_DARK); 
+    }
+    
+    private void styleTextField(JTextField field) { 
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); 
+        field.setForeground(INPUT_FG_DARK); 
+        field.setBackground(INPUT_BG_DARK); 
+        Border p=new EmptyBorder(4,6,4,6); 
+        field.setBorder(new CompoundBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1),p)); 
+        field.setCaretColor(Color.LIGHT_GRAY); 
+    }
+    
+    private void styleComboBox(JComboBox<?> comboBox) { 
+        comboBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); 
+        comboBox.setForeground(INPUT_FG_DARK); 
+        comboBox.setBackground(INPUT_BG_DARK); 
+        comboBox.setBorder(BorderFactory.createLineBorder(INPUT_BORDER_DARK,1)); 
+    }
+    
+    private void styleTable(JTable table) { 
+        table.setBackground(TABLE_CELL_BG); 
+        table.setForeground(TABLE_CELL_FG); 
+        table.setGridColor(TABLE_GRID_COLOR); 
+        table.setRowHeight(28); 
+        table.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); 
+        table.setFillsViewportHeight(true); 
+        table.setSelectionBackground(TABLE_CELL_SELECTED_BG); 
+        table.setSelectionForeground(TABLE_CELL_SELECTED_FG); 
+        table.setShowGrid(true); 
+        table.setIntercellSpacing(new Dimension(0,1)); 
+        JTableHeader h=table.getTableHeader(); 
+        h.setBackground(TABLE_HEADER_BG); 
+        h.setForeground(TABLE_HEADER_FG); 
+        h.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14)); 
+        h.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); 
+    }
+    
+    private void styleScrollPane(JScrollPane scrollPane) { 
+        scrollPane.setOpaque(false); 
+        scrollPane.getViewport().setOpaque(false); 
+        scrollPane.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK)); 
+        applyScrollbarUI(scrollPane.getVerticalScrollBar()); 
+        applyScrollbarUI(scrollPane.getHorizontalScrollBar()); 
+    }
+    
+    private void applyScrollbarUI(JScrollBar scrollBar) { 
+        scrollBar.setUI(new BasicScrollBarUI() { 
+            @Override protected void configureScrollBarColors(){
+                this.thumbColor=BUTTON_BG_DARK; 
+                this.trackColor=DARK_BG_END;
+            } 
+            @Override protected JButton createDecreaseButton(int o){return createZeroButton();} 
+            @Override protected JButton createIncreaseButton(int o){return createZeroButton();} 
+            private JButton createZeroButton(){
+                JButton b=new JButton(); 
+                b.setPreferredSize(new Dimension(0,0)); 
+                return b;
+            } 
+        }); 
+        scrollBar.setUnitIncrement(16); 
+    }
+    
+    private void styleActionButton(JButton btn, String tooltip) { 
+        btn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12)); 
+        btn.setToolTipText(tooltip); 
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
+        btn.setForeground(BUTTON_FG_DARK); 
+        btn.setFocusPainted(false); 
+        btn.setBackground(BUTTON_BG_DARK); 
+        Border p=new EmptyBorder(6,12,6,12); 
+        btn.setBorder(new CompoundBorder(BorderFactory.createLineBorder(BUTTON_BG_DARK.darker()),p)); 
+        btn.addMouseListener(new MouseAdapter() { 
+            @Override public void mouseEntered(MouseEvent e){
+                if(btn.getBackground().equals(BUTTON_BG_DARK)){
+                    btn.setBackground(BUTTON_HOVER_BG_DARK);
+                }
+            } 
+            @Override public void mouseExited(MouseEvent e){
+                if(btn.getBackground().equals(BUTTON_HOVER_BG_DARK)){
+                    btn.setBackground(BUTTON_BG_DARK);
+                }
+            } 
+        }); 
     }
 }

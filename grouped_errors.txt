@@ -1,44 +1,96 @@
 ======================================================================
 COMPILATION ERROR REPORT
-Generated: 2025-08-28 12:27:57
+Generated: 2025-09-06 08:43:42
 Project Root: /home/jared/OrphanageHub_PAT2025
 ======================================================================
 
-Total Syntax Errors: 1
+Total Syntax Errors: 9
 Files Affected: 1
 Error Types: 1
 
 📁 ERRORS BY FILE (sorted by count):
 ======================================================================
 
-src/main/java/com/orphanagehub/gui/RegistrationPanel.java (1 error):
-  ❌ Line 361, Col 11: exception java.sql.SQLException is never thrown in body of corresponding try statement
-     └─ Class: com.orphanagehub.gui.RegistrationPanel
+src/main/java/com/orphanagehub/gui/HomePanel.java (9 errors):
+  ❌ Line 26, Col 63: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 27, Col 61: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 28, Col 66: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 29, Col 65: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 30, Col 67: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 31, Col 64: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 32, Col 64: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 33, Col 70: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
+  ❌ Line 188, Col 20: cannot find symbol
+     └─ Class: com.orphanagehub.gui.HomePanel
 
 ======================================================================
 📊 ERROR TYPE SUMMARY (sorted by frequency):
 ----------------------------------------
-  Other Compilation Error: 1 occurrence
+  Symbol Not Found: 9 occurrences
     → Affects 1 file
+
+⚠️ OTHER ERRORS (build/config):
+----------------------------------------
+  •   symbol:   variable DARK_BG_START
+  •   location: class com.orphanagehub.gui.OrphanageHubApp
+  •   symbol:   variable DARK_BG_END
+  •   symbol:   variable TITLE_COLOR_DARK
+  •   symbol:   variable TEXT_COLOR_DARK
+  •   symbol:   variable BORDER_COLOR_DARK
+  •   symbol:   variable BUTTON_BG_DARK
+  •   symbol:   variable BUTTON_FG_DARK
+  •   symbol:   variable BUTTON_HOVER_BG_DARK
+  •   symbol:   method setLastSelectedRole(java.lang.String)
+  ... and 1 more
 
 ======================================================================
 📝 SOURCE CODE OF FILES WITH ERRORS:
 ======================================================================
 
-╔══ RegistrationPanel.java ══╗
-Path: src/main/java/com/orphanagehub/gui/RegistrationPanel.java
+╔══ HomePanel.java ══╗
+Path: src/main/java/com/orphanagehub/gui/HomePanel.java
 ----------------------------------------------------------------------
 
-📍 Error at line 361: exception java.sql.SQLException is never thrown in body of corresponding try statement
+📍 Error at line 26: cannot find symbol
 ──────────────────────────────────────────────────
-     358:             mainApp.navigateTo(OrphanageHubApp.LOGIN_PANEL);
-     359:         } catch (IllegalArgumentException e) {
-     360:             JOptionPane.showMessageDialog(this, e.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
->>>  361:         } catch (SQLException e) {
-                   ^ Error here
-     362:             JOptionPane.showMessageDialog(this, "Registration failed due to a database error.", "Registration Error", JOptionPane.ERROR_MESSAGE);
-     363:         }
-     364:     }
+      23:     private JRadioButton radAdmin;
+      24: 
+      25:     // Import colors from main app
+>>>   26:     private static final Color DARK_BG_START = OrphanageHubApp.DARK_BG_START;
+                                                                       ^ Error here
+      27:     private static final Color DARK_BG_END = OrphanageHubApp.DARK_BG_END;
+      28:     private static final Color TITLE_COLOR_DARK = OrphanageHubApp.TITLE_COLOR_DARK;
+      29:     private static final Color TEXT_COLOR_DARK = OrphanageHubApp.TEXT_COLOR_DARK;
+
+📍 Error at line 33: cannot find symbol
+──────────────────────────────────────────────────
+      30:     private static final Color BORDER_COLOR_DARK = OrphanageHubApp.BORDER_COLOR_DARK;
+      31:     private static final Color BUTTON_BG_DARK = OrphanageHubApp.BUTTON_BG_DARK;
+      32:     private static final Color BUTTON_FG_DARK = OrphanageHubApp.BUTTON_FG_DARK;
+>>>   33:     private static final Color BUTTON_HOVER_BG_DARK = OrphanageHubApp.BUTTON_HOVER_BG_DARK;
+                                                                              ^ Error here
+      34:     private static final Color FALLBACK_BG_DARK = new Color(60, 60, 60);
+      35: 
+      36:     public HomePanel(OrphanageHubApp mainApp) {
+
+📍 Error at line 188: cannot find symbol
+──────────────────────────────────────────────────
+     185:         
+     186:         // Add role change listener
+     187:         Consumer<JRadioButton> roleListener = button -> 
+>>>  188:             mainApp.setLastSelectedRole(button.getText());
+                            ^ Error here
+     189:         
+     190:         radDonor.addActionListener(e -> roleListener.accept(radDonor));
+     191:         radOrphanageStaff.addActionListener(e -> roleListener.accept(radOrphanageStaff));
 ╚════════════════════════════════════════════════════════════════════╝
 
 ======================================================================
@@ -51,27 +103,107 @@ Path: src/main/java/com/orphanagehub/gui/RegistrationPanel.java
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
+[INFO] --- enforcer:3.4.1:enforce (enforce-maven) @ OrphanageHub ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default) @ OrphanageHub ---
+[INFO] argLine set to -javaagent:/home/jared/.m2/repository/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar=destfile=/home/jared/OrphanageHub_PAT2025/target/jacoco.exec
+[INFO] 
 [INFO] --- resources:3.3.1:resources (default-resources) @ OrphanageHub ---
 [INFO] Copying 5 resources from src/main/resources to target/classes
 [INFO] 
 [INFO] --- compiler:3.13.0:compile (default-compile) @ OrphanageHub ---
 [INFO] Recompiling the module because of changed source code.
-[INFO] Compiling 33 source files with javac [debug release 17] to target/classes
+[INFO] Compiling 36 source files with javac [debug release 17] to target/classes
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/AdminDashboardPanel.java:[20,8] serializable class com.orphanagehub.gui.AdminDashboardPanel has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/AdminDashboardPanel.java:[22,32] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/AdminDashboardPanel.java:[56,18] possible 'this' escape before subclass is fully initialized
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/OrphanageHubApp.java:[7,8] serializable class com.orphanagehub.gui.OrphanageHubApp has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/OrphanageHubApp.java:[32,33] possible 'this' escape before subclass is fully initialized
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/LoginPanel.java:[15,8] serializable class com.orphanagehub.gui.LoginPanel has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/LoginPanel.java:[17,31] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[11,8] serializable class com.orphanagehub.gui.RegistrationPanel has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[13,39] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/OrphanageDashboardPanel.java:[18,8] serializable class com.orphanagehub.gui.OrphanageDashboardPanel has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/OrphanageDashboardPanel.java:[20,36] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[359,12] serializable class com.orphanagehub.gui.DonorDashboardPanel.ButtonRenderer has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[379,12] serializable class com.orphanagehub.gui.DonorDashboardPanel.ButtonEditor has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[383,32] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[24,8] serializable class com.orphanagehub.gui.DonorDashboardPanel has no definition of serialVersionUID
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[27,32] non-transient instance field of a serializable class declared with a non-serializable type
+[WARNING] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/DonorDashboardPanel.java:[28,32] non-transient instance field of a serializable class declared with a non-serializable type
+[INFO] 17 warnings 
+[INFO] -------------------------------------------------------------
 [INFO] -------------------------------------------------------------
 [ERROR] COMPILATION ERROR : 
 [INFO] -------------------------------------------------------------
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[361,11] exception java.sql.SQLException is never thrown in body of corresponding try statement
-[INFO] 1 error
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[26,63] cannot find symbol
+  symbol:   variable DARK_BG_START
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[27,61] cannot find symbol
+  symbol:   variable DARK_BG_END
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[28,66] cannot find symbol
+  symbol:   variable TITLE_COLOR_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[29,65] cannot find symbol
+  symbol:   variable TEXT_COLOR_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[30,67] cannot find symbol
+  symbol:   variable BORDER_COLOR_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[31,64] cannot find symbol
+  symbol:   variable BUTTON_BG_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[32,64] cannot find symbol
+  symbol:   variable BUTTON_FG_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[33,70] cannot find symbol
+  symbol:   variable BUTTON_HOVER_BG_DARK
+  location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[188,20] cannot find symbol
+  symbol:   method setLastSelectedRole(java.lang.String)
+  location: variable mainApp of type com.orphanagehub.gui.OrphanageHubApp
+[INFO] 9 errors 
 [INFO] -------------------------------------------------------------
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.983 s
-[INFO] Finished at: 2025-08-28T12:27:57+02:00
+[INFO] Total time:  7.030 s
+[INFO] Finished at: 2025-09-06T08:43:41+02:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project OrphanageHub: Compilation failure
-[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/RegistrationPanel.java:[361,11] exception java.sql.SQLException is never thrown in body of corresponding try statement
-[ERROR] 
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project OrphanageHub: Compilation failure: Compilation failure: 
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[26,63] cannot find symbol
+[ERROR]   symbol:   variable DARK_BG_START
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[27,61] cannot find symbol
+[ERROR]   symbol:   variable DARK_BG_END
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[28,66] cannot find symbol
+[ERROR]   symbol:   variable TITLE_COLOR_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[29,65] cannot find symbol
+[ERROR]   symbol:   variable TEXT_COLOR_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[30,67] cannot find symbol
+[ERROR]   symbol:   variable BORDER_COLOR_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[31,64] cannot find symbol
+[ERROR]   symbol:   variable BUTTON_BG_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[32,64] cannot find symbol
+[ERROR]   symbol:   variable BUTTON_FG_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[33,70] cannot find symbol
+[ERROR]   symbol:   variable BUTTON_HOVER_BG_DARK
+[ERROR]   location: class com.orphanagehub.gui.OrphanageHubApp
+[ERROR] /home/jared/OrphanageHub_PAT2025/src/main/java/com/orphanagehub/gui/HomePanel.java:[188,20] cannot find symbol
+[ERROR]   symbol:   method setLastSelectedRole(java.lang.String)
+[ERROR]   location: variable mainApp of type com.orphanagehub.gui.OrphanageHubApp
 [ERROR] -> [Help 1]
 [ERROR] 
 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.

@@ -1,0 +1,1 @@
+# geo_cache.py\nimport requests\nimport json\nqueries = ["City A", "City B"]\nfor q in queries:\n    resp = requests.get(f"https://nominatim.openstreetmap.org/search?q={q}&format=json&limit=1")\n    print(resp.json())

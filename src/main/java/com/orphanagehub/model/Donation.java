@@ -1,52 +1,21 @@
-/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
 package com.orphanagehub.model;
 
-import java.sql.Timestamp;
+import io.vavr.control.Option;
 
-public class Donation {
-    private String id;
-    private String donorId;
-    private String orphanageId;
-    private double amount;
-    private Timestamp timestamp;
+/**
+ * Represents a Donation (added for Phase 1 completeness).
+ * Immutable.
+ */
+public record Donation(String donationId, String donorId, String orphanageId, String itemCategory,
+                       Option<String> itemDescription, Option<Integer> amount, String status,
+                       java.sql.Timestamp dateDonated) {
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDonorId() {
-        return donorId;
-    }
-
-    public void setDonorId(String donorId) {
-        this.donorId = donorId;
-    }
-
-    public String getOrphanageId() {
-        return orphanageId;
-    }
-
-    public void setOrphanageId(String orphanageId) {
-        this.orphanageId = orphanageId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp == null ? null : new Timestamp(timestamp.getTime());
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp == null ? null : new Timestamp(timestamp.getTime());
+    /**
+     * Gets formatted details.
+     * @return Details string.
+     */
+    public String getDetails() {
+        return "Donation to " + orphanageId + ": " + itemCategory + " (" + itemDescription.getOrElse("Monetary: " + amount.getOrElse(0)) + ")";
     }
 }
+
