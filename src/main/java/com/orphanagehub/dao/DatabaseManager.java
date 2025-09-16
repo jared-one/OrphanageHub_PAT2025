@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DatabaseManager {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     private static final String CONFIG_FILE = "/app.properties";  // Align with resources
-    private static final String DEFAULT_DB_PATH = "db/OrphanageHub.accdb";
+    private static final String DEFAULT_DB_PATH = "db/OrphanageHub.sqlite";  // CHANGED: .accdb to .sqlite
     private static final AtomicBoolean initialized = new AtomicBoolean(false);
     
     private static volatile HikariDataSource dataSource;
@@ -43,20 +43,16 @@ public class DatabaseManager {
             // Load configuration from properties file, with fallback to defaults
             Properties props = loadDatabaseProperties();
             
-            // Configure HikariCP for Microsoft Access via UCanAccess
-            String dbPath = props.getProperty("db.url", "jdbc:ucanaccess://" + DEFAULT_DB_PATH);
-            config.setJdbcUrl(dbPath + ";immediatelyReleaseResources=true;memory=false;openExclusive=false");
-            // Try both possible driver class names (different versions use different packages)
+            // CHANGED: Configure HikariCP for SQLite instead of UCanAccess
+            String dbPath = props.getProperty("db.url", "jdbc:sqlite:" + DEFAULT_DB_PATH);
+            config.setJdbcUrl(dbPath);  // CHANGED: Removed UCanAccess-specific parameters
+            
+            // CHANGED: Load SQLite driver instead of UCanAccess
             try {
-                Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-                config.setDriverClassName("net.ucanaccess.jdbc.UcanaccessDriver");
-            } catch (ClassNotFoundException e1) {
-                try {
-                    Class.forName("net.sf.ucanaccess.jdbc.UcanaccessDriver");
-                    config.setDriverClassName("net.sf.ucanaccess.jdbc.UcanaccessDriver");
-                } catch (ClassNotFoundException e2) {
-                    throw new RuntimeException("UCanAccess driver not found in classpath", e2);
-                }
+                Class.forName("org.sqlite.JDBC");
+                config.setDriverClassName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("SQLite JDBC driver not found in classpath", e);
             }
             
             // Connection pool settings optimized for small desktop app
@@ -66,8 +62,8 @@ public class DatabaseManager {
             config.setIdleTimeout(Long.parseLong(props.getProperty("project.build.pool.idleTimeout", "600000")));
             config.setMaxLifetime(Long.parseLong(props.getProperty("project.build.pool.maxLifetime", "1800000")));
             
-            // Connection test query for Access/HSQLDB - Use VALUES(1) instead of SELECT 1
-            config.setConnectionTestQuery("VALUES(1)");
+            // CHANGED: Connection test query for SQLite - Use SELECT 1 instead of VALUES(1)
+            config.setConnectionTestQuery("SELECT 1");
             config.setPoolName("OrphanageHubPool");
             
             // Additional optimizations for desktop use
@@ -116,7 +112,7 @@ public class DatabaseManager {
      * Set default database properties
      */
     private static void setDefaultProperties(Properties props) {
-        props.setProperty("db.url", "jdbc:ucanaccess://" + DEFAULT_DB_PATH);
+        props.setProperty("db.url", "jdbc:sqlite:" + DEFAULT_DB_PATH);  // CHANGED: jdbc:ucanaccess:// to jdbc:sqlite:
         props.setProperty("project.build.pool.maxSize", "10");
         props.setProperty("project.build.pool.minIdle", "2");
         props.setProperty("project.build.pool.connectionTimeout", "30000");

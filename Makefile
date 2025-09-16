@@ -257,7 +257,7 @@ setup: install python-setup ## Complete project setup
 	@$(MKDIR) src/test/java/com/orphanagehub
 	@if [ ! -f db/template.accdb ] && [ -f db/OrphanageHub.accdb ]; then \
 		echo "📁 Creating DB template..."; \
-		$(CP_CMD) db/OrphanageHub.accdb db/template.accdb; \
+		$(CP_CMD) db/OrphanageHub.sqlite db/template.sqlite; \
 	fi
 	@$(MAVEN) dependency:resolve
 	@echo "✅ Setup complete! Run 'make run' to start."
@@ -306,11 +306,11 @@ db-ping: quick-build ## Test database connectivity
 db-reset: ## Reset database from template
 	@echo "🔄 Resetting database..."
 	@if [ ! -f db/template.accdb ]; then \
-		echo "❌ ERROR: db/template.accdb not found"; \
+		echo "❌ ERROR: db/template.sqlite"; \
 		echo "Run 'make setup' first"; \
 		exit 1; \
 	fi
-	@$(CP_CMD) -f db/template.accdb db/OrphanageHub.accdb
+	@$(CP_CMD) -f db/template.sqlite db/OrphanageHub.sqlite
 	@echo "✅ Database reset from template"
 
 db-sql: ## Execute SQL query (usage: make db-sql q="SELECT * FROM users")
@@ -421,7 +421,7 @@ release: ci ## Create release package
 	@$(MKDIR) release
 	@$(CP_CMD) target/$(APP_NAME)-$(VERSION).jar release/
 	@$(CP_CMD) README.md release/
-	@$(CP_CMD) -r db/template.accdb release/
+	@$(CP_CMD) -r db/template.sqlite release/
 	@tar -czf release/$(APP_NAME)-$(VERSION)-release.tar.gz -C release .
 	@echo "✅ Release package: release/$(APP_NAME)-$(VERSION)-release.tar.gz"
 

@@ -1,0 +1,423 @@
+.
+├── AdminDashboardPanel.java
+├── all_code_based_on_all_commit.py
+├── all_java_code.txt
+├── backup_duplicates
+│   ├── OrphanageHubApp_project_root.java
+│   ├── OrphanageHubApp_root_package.java
+│   └── OrphanageHubApp_service.java
+├── build_output.log
+├── cat.txt
+├── collect.txt
+├── commit_outputs
+│   ├── commit_5629b843.md
+│   ├── commit_62a3c469.md
+│   ├── commit_b8c09b86.md
+│   └── commit_eb6c6c23.md
+├── compile_errors.log
+├── compile_errors_new.log
+├── compile_output.log
+├── config_query.py
+├── Configuration.txt
+├── context.txt
+├── cp.txt
+├── current.txt
+├── current.txtt
+├── db
+│   ├── db_dump.txt
+│   ├── details_database.txt
+│   ├── dump.py
+│   ├── fix2.py
+│   ├── fix_database.py
+│   ├── full_database.txt
+│   ├── OrphanageHub.accdb
+│   ├── OrphanageHub.backup_20250906_103308.db-shm
+│   ├── OrphanageHub.backup_20250906_103308.db-wal
+│   ├── OrphanageHub.backup_20250906_104559.db-shm
+│   ├── OrphanageHub.backup_20250906_104559.db-wal
+│   ├── OrphanageHub.backup_20250916_112058_746660.sqlite
+│   ├── OrphanageHub.backup_20250916_163058_856669.sqlite
+│   ├── OrphanageHub.backup_20250916_163124_105874.sqlite
+│   ├── OrphanageHub.backup_20250916_163648_797493.sqlite
+│   ├── OrphanageHub.backup_20250916_164120_772574.sqlite
+│   ├── OrphanageHub.complete_schema_20250916_165822.sqlite
+│   ├── OrphanageHub.migration_report.txt
+│   ├── OrphanageHub.sqlite
+│   ├── OrphanageHub.sqlitei
+│   ├── OrphanageHub.sqlite-shm
+│   ├── OrphanageHub.sqlite-wal
+│   ├── OrphanageHub.volunteer_create_20250916_164457.sqlite
+│   ├── OrphanageHub.volunteer_create_20250916_164731.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_142717.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_163058.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_163136.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_163256.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_163657.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_164125.sqlite
+│   ├── OrphanageHub.volunteer_fix_20250916_164144.sqlite
+│   ├── recover_backups
+│   │   ├── OrphanageHub.sqlite.20250916_105921
+│   │   ├── OrphanageHub.sqlite.20250916_105921-shm
+│   │   ├── OrphanageHub.sqlite.20250916_105921-wal
+│   │   ├── OrphanageHub.sqlite-shm
+│   │   └── OrphanageHub.sqlite-wal
+│   ├── summary.py
+│   ├── template.accdb
+│   ├── template.sqlite
+│   ├── template.sqlite-shm
+│   └── template.sqlite-wal
+├── dog.txt
+├── DonorDashboardPanel.java
+├── DriverTest.class
+├── DriverTest.java
+├── errors_to_review.txt
+├── file_summary_20250914_110843.md
+├── file.txt
+├── final_test.sh
+├── fix_database.sql
+├── fix_java_errors.sh
+├── fix_pom.sh
+├── fix_python_scripts.sh
+├── fix_spotbugs.sh
+├── FIX_SUMMARY.md
+├── full_compile.log
+├── full_tree.txt
+├── geo-cache
+├── google_checks.xml
+├── google-java-format-1.15.0-all-deps.jar
+├── google-java-format-1.17.0-all-deps.jar
+├── grouped_errors.txt
+├── HomePanel.java
+├── info.txt
+├── javac.20250814_035926.args
+├── javac.20250814_035927.args
+├── javac.20250814_035928.args
+├── latest_summary.py
+├── LoginPanel.java
+├── logs
+├── Makefile
+├── migrate_access_to_sqlite.py
+├── mvnw
+├── mvnw.cmd
+├── nbactions.xml
+├── OrphanageDashboardPanel.java
+├── OrphanageHub_schema_20250906_101049.txt
+├── OrphanageHub.sqlite
+├── pom.xml
+├── pom.xml.backup
+├── README.md
+├── RegistrationPanel.java
+├── release
+├── requirements.txt
+├── restoreguis.py
+├── restore.txt
+├── revert.txt
+├── run_and_monitor.sh
+├── run_complete.sh
+├── run_seeder.sh
+├── sample.txt
+├── scripts
+│   ├── db_manager.py
+│   ├── doctor_chimera.py
+│   ├── fix_all_panels.sh
+│   ├── fix_errors.py
+│   ├── fix_syntax.py
+│   ├── geo_cache.py
+│   ├── log_analyzer.py
+│   ├── parse_errors.py
+│   ├── quick_patch.sh
+│   ├── refactor_logging.py
+│   ├── requirements.txt
+│   ├── sanitize_sources.py
+│   ├── section_build.py
+│   ├── smart.py
+│   └── verify_setup.py
+├── select.py
+├── spotbugs-exclude.xml
+├── src
+│   ├── all_code.txt
+│   ├── all_code.txt.bak
+│   ├── all_source_code.txt
+│   ├── export_all_code.sh
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── orphanagehub
+│   │   │           ├── commit_outputs
+│   │   │           │   └── all_guis.txt
+│   │   │           ├── dao
+│   │   │           │   ├── AuditLogDAO.java
+│   │   │           │   ├── DatabaseManager.java
+│   │   │           │   ├── DatabaseManager.java.backup
+│   │   │           │   ├── DonationDAO.java
+│   │   │           │   ├── DonationItemDAO.java
+│   │   │           │   ├── file_summary_20250914_115025.md
+│   │   │           │   ├── file_summary_20250914_122240.md
+│   │   │           │   ├── file_summary_20250914_123039.md
+│   │   │           │   ├── file_summary_20250915_225513.md
+│   │   │           │   ├── info.txt
+│   │   │           │   ├── NotificationDAO.java
+│   │   │           │   ├── OrphanageDAO.java
+│   │   │           │   ├── ResourceRequestDAO.java
+│   │   │           │   ├── UserDAO.java
+│   │   │           │   ├── VolunteerApplicationDAO.java
+│   │   │           │   └── VolunteerOpportunityDAO.java
+│   │   │           ├── gui
+│   │   │           │   ├── AdminDashboardPanel.java
+│   │   │           │   ├── all_gui_code.txt
+│   │   │           │   ├── DonorDashboardPanel.java
+│   │   │           │   ├── DonorDashboardPanel.java.bak
+│   │   │           │   ├── file_summary_20250915_233357.md
+│   │   │           │   ├── file_summary_20250916_125420.md
+│   │   │           │   ├── frmHome.png
+│   │   │           │   ├── HomePanel.java
+│   │   │           │   ├── home.png
+│   │   │           │   ├── LoginPanel.java
+│   │   │           │   ├── OrphanageDashboardPanel.java
+│   │   │           │   ├── OrphanageDashboardPanel.java.bak
+│   │   │           │   ├── OrphanageHubApp.java
+│   │   │           │   ├── RegistrationPanel.java
+│   │   │           │   ├── RegistrationPanel.java.bak
+│   │   │           │   ├── updateGuis.py
+│   │   │           │   ├── VolunteerDashboardPanel.java
+│   │   │           │   ├── VolunteerDashboardPanel.java.bak
+│   │   │           │   └── WelcomePanel.java
+│   │   │           ├── model
+│   │   │           │   ├── ApplicationDetails.java
+│   │   │           │   ├── AuditLog.java
+│   │   │           │   ├── DonationItem.java
+│   │   │           │   ├── Donation.java
+│   │   │           │   ├── DonationStatistics.java
+│   │   │           │   ├── file_summary_20250915_225230.md
+│   │   │           │   ├── file_summary_20250916_064441.md
+│   │   │           │   ├── Notification.java
+│   │   │           │   ├── OpportunitySearchCriteria.java
+│   │   │           │   ├── OrphanageInfo.java
+│   │   │           │   ├── Orphanage.java
+│   │   │           │   ├── ResourceRequest.java
+│   │   │           │   ├── User.java
+│   │   │           │   ├── User.java.bak
+│   │   │           │   ├── VolunteerApplication.java
+│   │   │           │   ├── VolunteerHistory.java
+│   │   │           │   ├── VolunteerOpportunity.java
+│   │   │           │   └── VolunteerStatistics.java
+│   │   │           ├── service
+│   │   │           │   ├── AdminService.java
+│   │   │           │   ├── AuditService.java
+│   │   │           │   ├── AuthenticationService.java
+│   │   │           │   ├── AuthService.java
+│   │   │           │   ├── DonorService.java
+│   │   │           │   ├── file_summary_20250914_122737.md
+│   │   │           │   ├── file_summary_20250915_233229.md
+│   │   │           │   ├── OrphanageService.java
+│   │   │           │   ├── RegistrationService.java
+│   │   │           │   ├── ServiceException.java
+│   │   │           │   ├── UserService.java
+│   │   │           │   └── VolunteerService.java
+│   │   │           ├── test.py
+│   │   │           ├── tools
+│   │   │           │   ├── DataSeeder.java
+│   │   │           │   ├── DbDoctor.java
+│   │   │           │   ├── DbMigrator.java
+│   │   │           │   ├── DbShell.java
+│   │   │           │   ├── DbShell.java.bak
+│   │   │           │   ├── DbTest.java
+│   │   │           │   └── file_summary_20250915_233512.md
+│   │   │           ├── updateGitGuis.py
+│   │   │           └── util
+│   │   │               ├── DatabaseManager.java
+│   │   │               ├── EdtGuard.java
+│   │   │               ├── GlobalExceptionHandler.java
+│   │   │               ├── PasswordUtil.java
+│   │   │               ├── PasswordUtil.java.broken
+│   │   │               ├── SessionManager.java
+│   │   │               └── ValidationUtil.java
+│   │   └── resources
+│   │       ├── app.properties
+│   │       ├── com
+│   │       │   └── orphanagehub
+│   │       │       └── gui
+│   │       │           ├── frmHome.png
+│   │       │           └── home.png
+│   │       ├── frmHome.png
+│   │       └── home.png
+│   ├── Makefile
+│   ├── pom.xml
+│   ├── src
+│   │   ├── main
+│   │   │   └── java
+│   │   │       └── com
+│   │   │           └── orphanagehub
+│   │   │               └── tools
+│   │   │                   ├── DbDoctor.java
+│   │   │                   └── DbShell.java
+│   │   └── test
+│   │       └── java
+│   └── test
+│       ├── java
+│       └── resources
+├── target
+│   ├── classes
+│   │   ├── app.properties
+│   │   ├── com
+│   │   │   └── orphanagehub
+│   │   │       ├── dao
+│   │   │       │   ├── AuditLogDAO$ACTION.class
+│   │   │       │   ├── AuditLogDAO.class
+│   │   │       │   ├── DatabaseManager.class
+│   │   │       │   ├── DonationDAO$DonationStatistics.class
+│   │   │       │   ├── DonationDAO.class
+│   │   │       │   ├── DonationItemDAO.class
+│   │   │       │   ├── NotificationDAO$TYPE_SYSTEM.class
+│   │   │       │   ├── NotificationDAO.class
+│   │   │       │   ├── OrphanageDAO.class
+│   │   │       │   ├── ResourceRequestDAO.class
+│   │   │       │   ├── UserDAO.class
+│   │   │       │   ├── VolunteerApplicationDAO.class
+│   │   │       │   └── VolunteerOpportunityDAO.class
+│   │   │       ├── gui
+│   │   │       │   ├── AdminDashboardPanel$1.class
+│   │   │       │   ├── AdminDashboardPanel$2.class
+│   │   │       │   ├── AdminDashboardPanel$3.class
+│   │   │       │   ├── AdminDashboardPanel$4.class
+│   │   │       │   ├── AdminDashboardPanel$5.class
+│   │   │       │   ├── AdminDashboardPanel$6.class
+│   │   │       │   ├── AdminDashboardPanel$ButtonPanelEditor.class
+│   │   │       │   ├── AdminDashboardPanel$ButtonPanelRenderer.class
+│   │   │       │   ├── AdminDashboardPanel.class
+│   │   │       │   ├── DonorDashboardPanel$1.class
+│   │   │       │   ├── DonorDashboardPanel$2.class
+│   │   │       │   ├── DonorDashboardPanel$3.class
+│   │   │       │   ├── DonorDashboardPanel$4.class
+│   │   │       │   ├── DonorDashboardPanel$ButtonEditor.class
+│   │   │       │   ├── DonorDashboardPanel$ButtonRenderer.class
+│   │   │       │   ├── DonorDashboardPanel.class
+│   │   │       │   ├── frmHome.png
+│   │   │       │   ├── HomePanel$1.class
+│   │   │       │   ├── HomePanel.class
+│   │   │       │   ├── home.png
+│   │   │       │   ├── LoginPanel$1.class
+│   │   │       │   ├── LoginPanel$2.class
+│   │   │       │   ├── LoginPanel$3.class
+│   │   │       │   ├── LoginPanel$4.class
+│   │   │       │   ├── LoginPanel.class
+│   │   │       │   ├── OrphanageDashboardPanel$1.class
+│   │   │       │   ├── OrphanageDashboardPanel$2.class
+│   │   │       │   ├── OrphanageDashboardPanel$3.class
+│   │   │       │   ├── OrphanageDashboardPanel$4.class
+│   │   │       │   ├── OrphanageDashboardPanel$5.class
+│   │   │       │   ├── OrphanageDashboardPanel$6.class
+│   │   │       │   ├── OrphanageDashboardPanel$7.class
+│   │   │       │   ├── OrphanageDashboardPanel$8.class
+│   │   │       │   ├── OrphanageDashboardPanel.class
+│   │   │       │   ├── OrphanageHubApp.class
+│   │   │       │   ├── RegistrationPanel$1.class
+│   │   │       │   ├── RegistrationPanel$2.class
+│   │   │       │   ├── RegistrationPanel$3.class
+│   │   │       │   ├── RegistrationPanel.class
+│   │   │       │   ├── VolunteerDashboardPanel$1.class
+│   │   │       │   ├── VolunteerDashboardPanel$2.class
+│   │   │       │   ├── VolunteerDashboardPanel$3.class
+│   │   │       │   ├── VolunteerDashboardPanel$4.class
+│   │   │       │   ├── VolunteerDashboardPanel$5.class
+│   │   │       │   ├── VolunteerDashboardPanel$6.class
+│   │   │       │   ├── VolunteerDashboardPanel$7.class
+│   │   │       │   ├── VolunteerDashboardPanel$8.class
+│   │   │       │   ├── VolunteerDashboardPanel$9.class
+│   │   │       │   ├── VolunteerDashboardPanel$ButtonEditor.class
+│   │   │       │   ├── VolunteerDashboardPanel$ButtonRenderer.class
+│   │   │       │   ├── VolunteerDashboardPanel$StatusCellRenderer.class
+│   │   │       │   ├── VolunteerDashboardPanel.class
+│   │   │       │   ├── WelcomePanel$1.class
+│   │   │       │   └── WelcomePanel.class
+│   │   │       ├── model
+│   │   │       │   ├── ApplicationDetails.class
+│   │   │       │   ├── AuditLog.class
+│   │   │       │   ├── Donation.class
+│   │   │       │   ├── DonationItem.class
+│   │   │       │   ├── DonationStatistics.class
+│   │   │       │   ├── Notification.class
+│   │   │       │   ├── OpportunitySearchCriteria.class
+│   │   │       │   ├── Orphanage.class
+│   │   │       │   ├── OrphanageInfo.class
+│   │   │       │   ├── ResourceRequest.class
+│   │   │       │   ├── User.class
+│   │   │       │   ├── VolunteerApplication.class
+│   │   │       │   ├── VolunteerHistory.class
+│   │   │       │   ├── VolunteerOpportunity.class
+│   │   │       │   └── VolunteerStatistics.class
+│   │   │       ├── service
+│   │   │       │   ├── AdminService$AuditLogFilter.class
+│   │   │       │   ├── AdminService$ReportParameters.class
+│   │   │       │   ├── AdminService$ReportType.class
+│   │   │       │   ├── AdminService$SystemStatistics.class
+│   │   │       │   ├── AdminService.class
+│   │   │       │   ├── AuditService.class
+│   │   │       │   ├── AuthenticationService.class
+│   │   │       │   ├── AuthService.class
+│   │   │       │   ├── DonorService$DonationWithDonor.class
+│   │   │       │   ├── DonorService$DonorStatistics.class
+│   │   │       │   ├── DonorService$ItemDetails.class
+│   │   │       │   ├── DonorService$ItemDonationRequest.class
+│   │   │       │   ├── DonorService$LocationPoint.class
+│   │   │       │   ├── DonorService$MonetaryDonationRequest.class
+│   │   │       │   ├── DonorService$OrphanageDetailsWithNeeds.class
+│   │   │       │   ├── DonorService$PaymentDetails.class
+│   │   │       │   ├── DonorService$SearchCriteria.class
+│   │   │       │   ├── DonorService.class
+│   │   │       │   ├── OrphanageService.class
+│   │   │       │   ├── RegistrationService.class
+│   │   │       │   ├── ServiceException$ErrorCategory.class
+│   │   │       │   ├── ServiceException$ErrorCode.class
+│   │   │       │   ├── ServiceException.class
+│   │   │       │   ├── UserService.class
+│   │   │       │   ├── VolunteerService$ApplicationDetails.class
+│   │   │       │   ├── VolunteerService$OpportunitySearchCriteria.class
+│   │   │       │   ├── VolunteerService$VolunteerStatistics.class
+│   │   │       │   └── VolunteerService.class
+│   │   │       ├── tools
+│   │   │       │   ├── DataSeeder.class
+│   │   │       │   ├── DbDoctor.class
+│   │   │       │   ├── DbMigrator.class
+│   │   │       │   ├── DbShell.class
+│   │   │       │   ├── DbTest$TestCase.class
+│   │   │       │   ├── DbTest$TestResult.class
+│   │   │       │   └── DbTest.class
+│   │   │       └── util
+│   │   │           ├── DatabaseManager.class
+│   │   │           ├── EdtGuard$1.class
+│   │   │           ├── EdtGuard.class
+│   │   │           ├── GlobalExceptionHandler$ErrorCategory.class
+│   │   │           ├── GlobalExceptionHandler.class
+│   │   │           ├── PasswordUtil.class
+│   │   │           ├── SessionManager.class
+│   │   │           └── ValidationUtil.class
+│   │   ├── frmHome.png
+│   │   └── home.png
+│   ├── generated-sources
+│   │   └── annotations
+│   ├── generated-test-sources
+│   │   └── test-annotations
+│   ├── maven-archiver
+│   │   └── pom.properties
+│   ├── maven-status
+│   │   └── maven-compiler-plugin
+│   │       ├── compile
+│   │       │   └── default-compile
+│   │       │       ├── createdFiles.lst
+│   │       │       └── inputFiles.lst
+│   │       └── testCompile
+│   │           └── default-testCompile
+│   │               ├── createdFiles.lst
+│   │               └── inputFiles.lst
+│   ├── original-OrphanageHub-1.0.0.jar
+│   ├── OrphanageHub-1.0.0.jar
+│   └── test-classes
+├── test.py
+├── TIB_js-studiocomm_6.21.3_linux_x86_64.tgz
+├── updateConfig.py
+├── updateConfig.txt
+├── updatedb.py
+└── VolunteerDashboardPanel.java
+
+58 directories, 363 files

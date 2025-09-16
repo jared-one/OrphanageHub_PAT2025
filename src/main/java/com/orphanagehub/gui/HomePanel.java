@@ -1,26 +1,22 @@
-// src/main/java/com/orphanagehub/gui/HomePanel.java
 package com.orphanagehub.gui;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.function.Consumer;
+import io.vavr.control.Option;
 
 public class HomePanel extends JPanel {
     private final OrphanageHubApp mainApp;
     private final JRadioButton radDonor;
     private final JRadioButton radOrphanageStaff;
     private final JRadioButton radVolunteer;
-    private final JRadioButton radAdmin;
     private final ButtonGroup roleGroup;
     
-    // Define colors locally for better encapsulation
+    // Immutable color constants
     private static final Color DARK_BG_START = new Color(45, 52, 54);
     private static final Color DARK_BG_END = new Color(35, 42, 44);
     private static final Color TITLE_COLOR_DARK = new Color(223, 230, 233);
@@ -33,16 +29,13 @@ public class HomePanel extends JPanel {
 
     public HomePanel(OrphanageHubApp app) {
         this.mainApp = app;
-        setBorder(new EmptyBorder(30, 40, 30, 40));
-        setLayout(new BorderLayout(20, 20));
-        
-        // Initialize radio buttons as final
         this.radDonor = new JRadioButton("Donor", true);
         this.radOrphanageStaff = new JRadioButton("Orphanage Staff");
         this.radVolunteer = new JRadioButton("Volunteer");
-        this.radAdmin = new JRadioButton("Admin");
         this.roleGroup = new ButtonGroup();
         
+        setBorder(new EmptyBorder(30, 40, 30, 40));
+        setLayout(new BorderLayout(20, 20));
         initComponents();
     }
 
@@ -64,38 +57,27 @@ public class HomePanel extends JPanel {
         lblTitle.setBorder(new EmptyBorder(0, 0, 25, 0));
         add(lblTitle, BorderLayout.NORTH);
         
-        // Center Panel with Image and Description
+        // Center Panel
         JPanel centerPanel = new JPanel(new BorderLayout(30, 0));
         centerPanel.setOpaque(false);
         
-        // Image Label
+        // Image
         JLabel lblImage = createImageLabel();
         centerPanel.add(lblImage, BorderLayout.WEST);
         
         // Description
-        String htmlDesc = "<html><body style='width:350px; font-family: Sans-Serif; font-size: 14pt; color: rgb(200,200,200);'>"
-                + "<p><b>A better world starts with care.</b></p>"
-                + "<p>OrphanageHub connects orphanages with the donors and volunteers needed "
-                + "to create lasting change for vulnerable children.</p>"
-                + "</body></html>";
-        JLabel lblDesc = new JLabel(htmlDesc);
-        lblDesc.setVerticalAlignment(SwingConstants.CENTER);
-        lblDesc.setHorizontalAlignment(SwingConstants.LEFT);
-        lblDesc.setOpaque(false);
-        lblDesc.setBorder(new EmptyBorder(0, 10, 0, 0));
+        JLabel lblDesc = createDescriptionLabel();
         centerPanel.add(lblDesc, BorderLayout.CENTER);
         
         add(centerPanel, BorderLayout.CENTER);
         
-        // South Panel with Role Selection and Buttons
+        // South Panel with Role Selection
         JPanel southPanel = new JPanel(new BorderLayout(10, 20));
         southPanel.setOpaque(false);
         
-        // Role Panel
         JPanel rolePanel = createRolePanel();
         southPanel.add(rolePanel, BorderLayout.CENTER);
         
-        // Button Panel
         JPanel buttonPanel = createButtonPanel();
         southPanel.add(buttonPanel, BorderLayout.SOUTH);
         
@@ -112,20 +94,33 @@ public class HomePanel extends JPanel {
         lblImage.setVerticalAlignment(SwingConstants.CENTER);
         lblImage.setOpaque(false);
         
-        URL imageURL = getClass().getResource("home.png");
-        if (imageURL != null) {
-            ImageIcon icon = new ImageIcon(imageURL);
-            if (icon.getImageLoadStatus() == MediaTracker.COMPLETE && icon.getIconWidth() > 0) {
-                Image img = icon.getImage().getScaledInstance(imageSize.width, imageSize.height, Image.SCALE_SMOOTH);
-                lblImage.setIcon(new ImageIcon(img));
+        Option.of(getClass().getResource("home.png"))
+            .map(url -> new ImageIcon(url))
+            .filter(icon -> icon.getImageLoadStatus() == MediaTracker.COMPLETE)
+            .map(icon -> icon.getImage().getScaledInstance(
+                imageSize.width, imageSize.height, Image.SCALE_SMOOTH))
+            .map(img -> new ImageIcon(img))
+            .peek(icon -> {
+                lblImage.setIcon(icon);
                 lblImage.setBorder(BorderFactory.createLineBorder(BORDER_COLOR_DARK, 1));
-            } else {
-                setFallbackImageStyleDark(lblImage);
-            }
-        } else {
-            setFallbackImageStyleDark(lblImage);
-        }
+            })
+            .onEmpty(() -> setFallbackImageStyle(lblImage));
+        
         return lblImage;
+    }
+
+    private JLabel createDescriptionLabel() {
+        String htmlDesc = "<html><body style='width:350px; font-family: Sans-Serif; font-size: 14pt; color: rgb(200,200,200);'>"
+                + "<p><b>A better world starts with care.</b></p>"
+                + "<p>OrphanageHub connects orphanages with the donors and volunteers needed "
+                + "to create lasting change for vulnerable children.</p>"
+                + "</body></html>";
+        JLabel lblDesc = new JLabel(htmlDesc);
+        lblDesc.setVerticalAlignment(SwingConstants.CENTER);
+        lblDesc.setHorizontalAlignment(SwingConstants.LEFT);
+        lblDesc.setOpaque(false);
+        lblDesc.setBorder(new EmptyBorder(0, 10, 0, 0));
+        return lblDesc;
     }
 
     private JPanel createRolePanel() {
@@ -146,31 +141,32 @@ public class HomePanel extends JPanel {
         styleRadioButton(radDonor, "Select if you wish to donate or view needs.");
         styleRadioButton(radOrphanageStaff, "Select if you manage an orphanage profile.");
         styleRadioButton(radVolunteer, "Select if you want to find volunteer opportunities.");
-        styleRadioButton(radAdmin, "Select if you are an administrator.");
         
         // Add to button group
         roleGroup.add(radDonor);
         roleGroup.add(radOrphanageStaff);
         roleGroup.add(radVolunteer);
-        roleGroup.add(radAdmin);
         
-        // Add role change listener using functional approach
-        Consumer<JRadioButton> roleListener = button -> {
-            if (button.isSelected()) {
-                mainApp.setLastSelectedRole(getRoleFromButton(button));
-            }
+        // Add role change listener - FIXED to use correct strings for registration
+        Consumer<String> roleUpdater = role -> {
+            mainApp.setLastSelectedRole(role);
+            System.out.println("HomePanel: Role selected = " + role);
         };
         
-        radDonor.addActionListener(e -> roleListener.accept(radDonor));
-        radOrphanageStaff.addActionListener(e -> roleListener.accept(radOrphanageStaff));
-        radVolunteer.addActionListener(e -> roleListener.accept(radVolunteer));
-        radAdmin.addActionListener(e -> roleListener.accept(radAdmin));
+        radDonor.addActionListener(e -> {
+            if (radDonor.isSelected()) roleUpdater.accept("Donor");
+        });
+        radOrphanageStaff.addActionListener(e -> {
+            if (radOrphanageStaff.isSelected()) roleUpdater.accept("OrphanageStaff");  // Keep as OrphanageStaff for UI consistency
+        });
+        radVolunteer.addActionListener(e -> {
+            if (radVolunteer.isSelected()) roleUpdater.accept("Volunteer");
+        });
         
         // Add to panel
         rolePanel.add(radDonor);
         rolePanel.add(radOrphanageStaff);
         rolePanel.add(radVolunteer);
-        rolePanel.add(radAdmin);
         
         return rolePanel;
     }
@@ -195,7 +191,7 @@ public class HomePanel extends JPanel {
         return buttonPanel;
     }
 
-    private void setFallbackImageStyleDark(JLabel label) {
+    private void setFallbackImageStyle(JLabel label) {
         label.setText("<html><div style='text-align: center; color: #AAAAAA;'>Image<br>Not Found<br>(home.png)</div></html>");
         label.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 14));
         label.setForeground(new Color(170, 170, 170));
@@ -237,19 +233,14 @@ public class HomePanel extends JPanel {
         });
     }
 
-    private String getRoleFromButton(JRadioButton button) {
-        if (button == radDonor) return "Donor";
-        if (button == radOrphanageStaff) return "OrphanageStaff";
-        if (button == radVolunteer) return "Volunteer";
-        if (button == radAdmin) return "Admin";
-        return "Unknown";
-    }
-
+    /**
+     * Returns the selected role for registration.
+     * UI uses "OrphanageStaff" but RegistrationPanel will map to DB value
+     */
     public String getSelectedRole() {
         if (radDonor.isSelected()) return "Donor";
-        if (radOrphanageStaff.isSelected()) return "OrphanageStaff";
+        if (radOrphanageStaff.isSelected()) return "OrphanageStaff";  // Keep UI consistent
         if (radVolunteer.isSelected()) return "Volunteer";
-        if (radAdmin.isSelected()) return "Admin";
-        return "Unknown";
+        return "Donor"; // Default fallback
     }
 }

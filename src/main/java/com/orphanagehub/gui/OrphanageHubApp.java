@@ -1,19 +1,19 @@
-// src/main/java/com/orphanagehub/gui/OrphanageHubApp.java
 package com.orphanagehub.gui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
+import io.vavr.control.Option;
+import com.orphanagehub.util.SessionManager;
 
 public class OrphanageHubApp extends JFrame {
-
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
     
-    // Immutable role tracking using Optional for null safety
-    private volatile String lastSelectedRole = "Donor"; // Default role
+    // Immutable role tracking using volatile for thread safety
+    private volatile String lastSelectedRole = "Donor";
 
-    // Panel Instances (keep references)
+    // Panel Instances (lazy initialization)
     private HomePanel homePanel;
     private LoginPanel loginPanel;
     private RegistrationPanel registrationPanel;
@@ -22,7 +22,7 @@ public class OrphanageHubApp extends JFrame {
     private VolunteerDashboardPanel volunteerDashboardPanel;
     private AdminDashboardPanel adminDashboardPanel;
 
-    // Panel names for CardLayout
+    // Panel names
     public static final String HOME_PANEL = "Home";
     public static final String LOGIN_PANEL = "Login";
     public static final String REGISTRATION_PANEL = "Registration";
@@ -35,37 +35,66 @@ public class OrphanageHubApp extends JFrame {
         super("OrphanageHub");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Set Nimbus Look and Feel
+        // Set Nimbus Look and Feel for better dark theme support
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
+                    
+                    // Customize Nimbus colors for dark theme
+                    UIManager.put("control", new Color(45, 52, 54));
+                    UIManager.put("info", new Color(60, 60, 60));
+                    UIManager.put("nimbusBase", new Color(35, 42, 44));
+                    UIManager.put("nimbusAlertYellow", new Color(248, 187, 0));
+                    UIManager.put("nimbusDisabledText", new Color(128, 128, 128));
+                    UIManager.put("nimbusFocus", new Color(115, 164, 209));
+                    UIManager.put("nimbusGreen", new Color(176, 179, 50));
+                    UIManager.put("nimbusInfoBlue", new Color(66, 139, 221));
+                    UIManager.put("nimbusLightBackground", new Color(60, 60, 60));
+                    UIManager.put("nimbusOrange", new Color(191, 98, 4));
+                    UIManager.put("nimbusRed", new Color(169, 46, 34));
+                    UIManager.put("nimbusSelectedText", new Color(255, 255, 255));
+                    UIManager.put("nimbusSelectionBackground", new Color(104, 93, 156));
+                    UIManager.put("text", new Color(230, 230, 230));
                     break;
                 }
             }
         } catch (Exception e) {
-            System.err.println("CRITICAL FAILURE: Cannot set Nimbus Look and Feel. UI may appear incorrect.");
+            System.err.println("Warning: Cannot set Nimbus Look and Feel");
+            // Fallback to system default but try to apply dark colors
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                // Ignore
+            }
         }
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
+        mainPanel.setBackground(new Color(35, 42, 44)); // Dark background for main panel
         
-        initComponents(); // Initialize components and layout
+        initComponents();
 
-        // Set initial size
-        setPreferredSize(new Dimension(900, 700));
+        setPreferredSize(new Dimension(1000, 750));
         pack();
-        setMinimumSize(new Dimension(750, 550));
+        setMinimumSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
         setResizable(true);
+        
+        // Set application icon if available
+        try {
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icons/app-icon.png"));
+            setIconImage(icon.getImage());
+        } catch (Exception e) {
+            // Icon not found, use default
+        }
     }
 
     private void initComponents() {
-        // Instantiate CORE panels immediately
+        // Initialize core panels immediately
         homePanel = new HomePanel(this);
         loginPanel = new LoginPanel(this);
         registrationPanel = new RegistrationPanel(this);
-        // Dashboard panels are instantiated on demand via showDashboard()
 
         // Add core panels to the CardLayout container
         mainPanel.add(homePanel, HOME_PANEL);
@@ -75,22 +104,57 @@ public class OrphanageHubApp extends JFrame {
         setContentPane(mainPanel);
     }
 
-    /**
-     * Navigates directly to a panel already added to the CardLayout.
-     * @param panelName The name constant of the panel to show.
-     */
     public void navigateTo(String panelName) {
-        System.out.println("Navigating to: " + panelName); // Debug
+        System.out.println("Navigating to: " + panelName);
+        
+        // FIXED: Sync role from HomePanel radios *just before* showing Registration
+        if (REGISTRATION_PANEL.equals(panelName)) {
+            String radioRole = Optional.ofNullable(homePanel)
+                .map(HomePanel::getSelectedRole)
+                .orElse(lastSelectedRole);
+            setLastSelectedRole(radioRole);
+            System.out.println("Synced role for Registration: " + radioRole);
+            
+            // FIXED: Explicitly update RegistrationPanel UI post-sync
+            if (registrationPanel != null) {
+                registrationPanel.setCurrentRole(radioRole);
+            }
+        }
+        
+        // Ensure panel exists before navigating
+        if (panelName.equals(ORPHANAGE_DASHBOARD_PANEL) && orphanageDashboardPanel == null) {
+            showDashboard(ORPHANAGE_DASHBOARD_PANEL);
+            return;
+        } else if (panelName.equals(DONOR_DASHBOARD_PANEL) && donorDashboardPanel == null) {
+            showDashboard(DONOR_DASHBOARD_PANEL);
+            return;
+        } else if (panelName.equals(VOLUNTEER_DASHBOARD_PANEL) && volunteerDashboardPanel == null) {
+            showDashboard(VOLUNTEER_DASHBOARD_PANEL);
+            return;
+        } else if (panelName.equals(ADMIN_DASHBOARD_PANEL) && adminDashboardPanel == null) {
+            showDashboard(ADMIN_DASHBOARD_PANEL);
+            return;
+        }
+        
         cardLayout.show(mainPanel, panelName);
     }
 
-    /**
-     * Creates (if necessary) and navigates to a dashboard panel.
-     * Handles lazy instantiation of dashboard panels.
-     * @param panelName The name constant of the dashboard panel to show.
-     */
+    // FIXED: Properly handle dashboard creation and navigation
     public void showDashboard(String panelName) {
-        System.out.println("Attempting to show dashboard: " + panelName); // Debug
+        System.out.println("Attempting to show dashboard: " + panelName);
+        
+        // Check authorization for admin panel
+        if (ADMIN_DASHBOARD_PANEL.equals(panelName)) {
+            Option<Object> userRole = SessionManager.getInstance().getAttribute("userRole");
+            if (!userRole.map(r -> "Admin".equals(r.toString())).getOrElse(false)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Unauthorized access to admin panel", 
+                    "Access Denied", 
+                    JOptionPane.ERROR_MESSAGE);
+                navigateTo(HOME_PANEL);
+                return;
+            }
+        }
         
         boolean panelAdded = switch (panelName) {
             case ORPHANAGE_DASHBOARD_PANEL -> {
@@ -130,55 +194,118 @@ public class OrphanageHubApp extends JFrame {
                 yield false;
             }
             default -> {
-                System.err.println("Error: Attempted to show unknown or unsupported dashboard panel: " + panelName);
-                navigateTo(HOME_PANEL); // Fallback to home screen
+                System.err.println("Error: Unknown dashboard panel: " + panelName);
+                navigateTo(HOME_PANEL);
                 yield false;
             }
         };
 
-        // Revalidate the main panel if a new component was actually added
         if (panelAdded) {
             mainPanel.revalidate();
-            System.out.println(panelName + " Added and Revalidated.");
+            mainPanel.repaint();
+            System.out.println(panelName + " added and revalidated.");
         }
 
-        navigateTo(panelName); // Navigate to the requested panel
+        navigateTo(panelName);
     }
 
-    /**
-     * Gets the selected role from HomePanel in a null-safe manner.
-     * @return The selected role or "Unknown" if homePanel is null.
-     */
     public String getSelectedRole() {
         return Optional.ofNullable(homePanel)
                 .map(HomePanel::getSelectedRole)
-                .orElse(lastSelectedRole); // Use last selected role as fallback
+                .orElse(lastSelectedRole);
     }
 
-    /**
-     * Sets the last selected role for persistence across panel changes.
-     * Thread-safe using volatile field.
-     * @param role The role to remember.
-     */
     public void setLastSelectedRole(String role) {
         if (role != null && !role.trim().isEmpty()) {
             this.lastSelectedRole = role;
-            System.out.println("Role updated to: " + role); // Debug
+            System.out.println("Role updated to: " + role);
         }
     }
 
-    /**
-     * Gets the last selected role.
-     * @return The last selected role, never null.
-     */
     public String getLastSelectedRole() {
         return lastSelectedRole;
     }
+    
+    /**
+     * Logout user and return to home
+     */
+    public void logout() {
+        // Clear session
+        SessionManager.getInstance().clear();
+        
+        // Clear dashboard panels to force recreation on next login
+        orphanageDashboardPanel = null;
+        donorDashboardPanel = null;
+        volunteerDashboardPanel = null;
+        adminDashboardPanel = null;
+        
+        // Navigate to home
+        navigateTo(HOME_PANEL);
+        
+        JOptionPane.showMessageDialog(this, 
+            "You have been successfully logged out.", 
+            "Logout Successful", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Show error message dialog
+     */
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(this, 
+            message, 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+    }
+    
+    /**
+     * Show success message dialog
+     */
+    public void showSuccess(String message) {
+        JOptionPane.showMessageDialog(this, 
+            message, 
+            "Success", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /**
+     * Show confirmation dialog
+     */
+    public boolean showConfirmation(String message) {
+        int result = JOptionPane.showConfirmDialog(this, 
+            message, 
+            "Confirm", 
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        return result == JOptionPane.YES_OPTION;
+    }
 
     public static void main(String[] args) {
+        // Set system properties for better rendering on high DPI displays
+        System.setProperty("sun.java2d.uiScale.enabled", "true");
+        System.setProperty("sun.java2d.uiScale", "1.0");
+        
         SwingUtilities.invokeLater(() -> {
-            OrphanageHubApp app = new OrphanageHubApp();
-            app.setVisible(true);
+            try {
+                // Enable anti-aliasing for better text rendering
+                System.setProperty("awt.useSystemAAFontSettings", "on");
+                System.setProperty("swing.aatext", "true");
+                
+                OrphanageHubApp app = new OrphanageHubApp();
+                app.setVisible(true);
+                
+                // Show welcome message
+                System.out.println("OrphanageHub Application Started");
+                System.out.println("================================");
+                System.out.println("Ready to connect orphanages with donors and volunteers!");
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, 
+                    "Failed to start application: " + e.getMessage(), 
+                    "Startup Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
         });
     }
 }

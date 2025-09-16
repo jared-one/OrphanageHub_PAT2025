@@ -1,0 +1,1282 @@
+# 🔍 ORPHANAGEHUB CONFIGURATION QUERY
+Generated: 2025-09-14 08:59:51
+Mode: current
+Keyword: model
+================================================================================
+## MODEL FILES
+Found: 10 files
+================================================================================
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/AuditLog.java
+Source: current | Size: 2235 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable AuditLog model representing the TblAuditLog table.
+ * Tracks all system actions for security and compliance.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record AuditLog(
+    Integer logId,
+    Option<Integer> userId,
+    Option<String> username,
+    String action,
+    String entityType,
+    Option<String> entityId,
+    Option<String> oldValue,
+    Option<String> newValue,
+    Option<String> ipAddress,
+    Option<String> userAgent,
+    Option<String> sessionId,
+    LocalDateTime timestamp,
+    boolean success,
+    Option<String> errorMessage
+) {
+    
+    public static final String ACTION_LOGIN = "LOGIN";
+    public static final String ACTION_LOGOUT = "LOGOUT";
+    public static final String ACTION_CREATE = "CREATE";
+    public static final String ACTION_UPDATE = "UPDATE";
+    public static final String ACTION_DELETE = "DELETE";
+    public static final String ACTION_VERIFY = "VERIFY";
+    public static final String ACTION_APPLY = "APPLY";
+    public static final String ACTION_DONATE = "DONATE";
+    
+    /**
+     * Creates an audit log entry.
+     */
+    public static AuditLog create(Integer userId, String username, String action,
+                                 String entityType, String entityId, boolean success) {
+        return new AuditLog(
+            null, Option.of(userId), Option.of(username), action, entityType,
+            Option.of(entityId), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), LocalDateTime.now(), success, Option.none()
+        );
+    }
+    
+    /**
+     * Creates an error audit log.
+     */
+    public static AuditLog createError(Integer userId, String username, String action,
+                                      String entityType, String error) {
+        return new AuditLog(
+            null, Option.of(userId), Option.of(username), action, entityType,
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), LocalDateTime.now(), false, Option.of(error)
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/User.java
+Source: current | Size: 5390 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable User model representing the TblUsers table.
+ * Uses Option for nullable fields and records for immutability.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record User(
+    Integer userId,
+    String username,
+    String passwordHash,
+    String email,
+    String userRole,
+    LocalDateTime dateRegistered,
+    Option<LocalDateTime> lastLogin,
+    Option<String> fullName,
+    Option<String> phoneNumber,
+    Option<String> idNumber,
+    Option<LocalDate> dateOfBirth,
+    Option<String> address,
+    Option<String> city,
+    Option<String> province,
+    Option<String> postalCode,
+    String accountStatus,
+    boolean emailVerified,
+    Option<String> verificationToken,
+    Option<String> passwordResetToken,
+    Option<LocalDateTime> passwordResetExpiry,
+    Option<String> profilePicture,
+    Option<String> bio,
+    Option<String> createdBy,
+    Option<LocalDateTime> modifiedDate,
+    Option<String> modifiedBy
+) {
+    
+    /**
+     * Creates a User with minimal required fields.
+     */
+    public static User createBasic(Integer userId, String username, String passwordHash, 
+                                  String email, String userRole) {
+        return new User(
+            userId, username, passwordHash, email, userRole,
+            LocalDateTime.now(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), "Active", false, Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Gets formatted user details.
+     * @return Formatted string with user info
+     */
+    public String getDetails() {
+        return String.format("User: %s (%s), Email: %s, Role: %s, Status: %s",
+            username,
+            fullName.getOrElse(username),
+            email,
+            userRole,
+            accountStatus
+        );
+    }
+    
+    /**
+     * Gets display name (full name if available, otherwise username).
+     */
+    public String getDisplayName() {
+        return fullName.getOrElse(username);
+    }
+    
+    /**
+     * Checks if user is active.
+     */
+    public boolean isActive() {
+        return "Active".equalsIgnoreCase(accountStatus);
+    }
+    
+    /**
+     * Checks if user has a specific role.
+     */
+    public boolean hasRole(String role) {
+        return userRole != null && userRole.equalsIgnoreCase(role);
+    }
+    
+    /**
+     * Checks if user is staff (OrphanageRep or OrphanageStaff).
+     */
+    public boolean isStaff() {
+        return hasRole("OrphanageRep") || hasRole("OrphanageStaff") || hasRole("Staff");
+    }
+    
+    /**
+     * Checks if password reset token is valid.
+     */
+    public boolean isPasswordResetTokenValid() {
+        return passwordResetToken.isDefined() && 
+               passwordResetExpiry.map(exp -> exp.isAfter(LocalDateTime.now())).getOrElse(false);
+    }
+    
+    // Immutable update methods
+    public User withAccountStatus(String newStatus) {
+        return new User(userId, username, passwordHash, email, userRole, dateRegistered,
+            lastLogin, fullName, phoneNumber, idNumber, dateOfBirth, address, city,
+            province, postalCode, newStatus, emailVerified, verificationToken,
+            passwordResetToken, passwordResetExpiry, profilePicture, bio, createdBy,
+            modifiedDate, modifiedBy);
+    }
+    
+    public User withLastLogin(LocalDateTime login) {
+        return new User(userId, username, passwordHash, email, userRole, dateRegistered,
+            Option.of(login), fullName, phoneNumber, idNumber, dateOfBirth, address, city,
+            province, postalCode, accountStatus, emailVerified, verificationToken,
+            passwordResetToken, passwordResetExpiry, profilePicture, bio, createdBy,
+            modifiedDate, modifiedBy);
+    }
+    
+    public User withEmailVerified(boolean verified) {
+        return new User(userId, username, passwordHash, email, userRole, dateRegistered,
+            lastLogin, fullName, phoneNumber, idNumber, dateOfBirth, address, city,
+            province, postalCode, accountStatus, verified, Option.none(),
+            passwordResetToken, passwordResetExpiry, profilePicture, bio, createdBy,
+            modifiedDate, modifiedBy);
+    }
+    
+    public User withPasswordResetToken(String token, LocalDateTime expiry) {
+        return new User(userId, username, passwordHash, email, userRole, dateRegistered,
+            lastLogin, fullName, phoneNumber, idNumber, dateOfBirth, address, city,
+            province, postalCode, accountStatus, emailVerified, verificationToken,
+            Option.of(token), Option.of(expiry), profilePicture, bio, createdBy,
+            modifiedDate, modifiedBy);
+    }
+    
+    public User clearPasswordResetToken() {
+        return new User(userId, username, passwordHash, email, userRole, dateRegistered,
+            lastLogin, fullName, phoneNumber, idNumber, dateOfBirth, address, city,
+            province, postalCode, accountStatus, emailVerified, verificationToken,
+            Option.none(), Option.none(), profilePicture, bio, createdBy,
+            modifiedDate, modifiedBy);
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/VolunteerApplication.java
+Source: current | Size: 4645 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable VolunteerApplication model representing the TblVolunteerApplications table.
+ * Tracks volunteer applications to opportunities.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record VolunteerApplication(
+    Integer applicationId,
+    Integer opportunityId,
+    Integer volunteerId,
+    LocalDateTime applicationDate,
+    String status,
+    Option<String> motivation,
+    Option<String> experience,
+    Option<String> availability,
+    Option<LocalDateTime> interviewDate,
+    Option<String> interviewNotes,
+    Option<LocalDateTime> decisionDate,
+    Option<Integer> decidedBy,
+    Option<String> rejectionReason,
+    Option<LocalDateTime> startDate,
+    Option<LocalDateTime> endDate,
+    Option<String> completionNotes,
+    Option<Integer> hoursCompleted,
+    Option<String> performanceRating,
+    LocalDateTime createdDate,
+    Option<LocalDateTime> modifiedDate,
+    Option<Integer> modifiedBy
+) {
+    
+    public static final String STATUS_PENDING = "Pending";
+    public static final String STATUS_REVIEWING = "Reviewing";
+    public static final String STATUS_INTERVIEW_SCHEDULED = "Interview Scheduled";
+    public static final String STATUS_ACCEPTED = "Accepted";
+    public static final String STATUS_REJECTED = "Rejected";
+    public static final String STATUS_WITHDRAWN = "Withdrawn";
+    public static final String STATUS_ACTIVE = "Active";
+    public static final String STATUS_COMPLETED = "Completed";
+    
+    /**
+     * Creates a new application.
+     */
+    public static VolunteerApplication create(Integer opportunityId, Integer volunteerId,
+                                             String motivation, String experience,
+                                             String availability) {
+        return new VolunteerApplication(
+            null, opportunityId, volunteerId, LocalDateTime.now(), STATUS_PENDING,
+            Option.of(motivation), Option.of(experience), Option.of(availability),
+            Option.none(), Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(), Option.none(),
+            LocalDateTime.now(), Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Checks if application is pending review.
+     */
+    public boolean isPending() {
+        return STATUS_PENDING.equalsIgnoreCase(status) || 
+               STATUS_REVIEWING.equalsIgnoreCase(status);
+    }
+    
+    /**
+     * Checks if application was successful.
+     */
+    public boolean isAccepted() {
+        return STATUS_ACCEPTED.equalsIgnoreCase(status) || 
+               STATUS_ACTIVE.equalsIgnoreCase(status) ||
+               STATUS_COMPLETED.equalsIgnoreCase(status);
+    }
+    
+    // Update methods
+    public VolunteerApplication scheduleInterview(LocalDateTime interviewTime) {
+        return new VolunteerApplication(
+            applicationId, opportunityId, volunteerId, applicationDate,
+            STATUS_INTERVIEW_SCHEDULED, motivation, experience, availability,
+            Option.of(interviewTime), interviewNotes, decisionDate, decidedBy,
+            rejectionReason, startDate, endDate, completionNotes, hoursCompleted,
+            performanceRating, createdDate, Option.of(LocalDateTime.now()), modifiedBy
+        );
+    }
+    
+    public VolunteerApplication accept(Integer deciderId, LocalDateTime start) {
+        return new VolunteerApplication(
+            applicationId, opportunityId, volunteerId, applicationDate,
+            STATUS_ACCEPTED, motivation, experience, availability, interviewDate,
+            interviewNotes, Option.of(LocalDateTime.now()), Option.of(deciderId),
+            Option.none(), Option.of(start), endDate, completionNotes,
+            hoursCompleted, performanceRating, createdDate,
+            Option.of(LocalDateTime.now()), Option.of(deciderId)
+        );
+    }
+    
+    public VolunteerApplication reject(Integer deciderId, String reason) {
+        return new VolunteerApplication(
+            applicationId, opportunityId, volunteerId, applicationDate,
+            STATUS_REJECTED, motivation, experience, availability, interviewDate,
+            interviewNotes, Option.of(LocalDateTime.now()), Option.of(deciderId),
+            Option.of(reason), startDate, endDate, completionNotes, hoursCompleted,
+            performanceRating, createdDate, Option.of(LocalDateTime.now()),
+            Option.of(deciderId)
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/OrphanageInfo.java
+Source: current | Size: 504 bytes
+```java
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.model;
+
+public class OrphanageInfo {
+    private String orphanageID;
+    private String address;
+
+    public String getOrphanageID() {
+        return orphanageID;
+    }
+
+    public void setOrphanageID(String orphanageID) {
+        this.orphanageID = orphanageID;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+}
+
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/Orphanage.java
+Source: current | Size: 7612 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable Orphanage model representing the TblOrphanages table.
+ * Includes all fields from the expanded database schema.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record Orphanage(
+    Integer orphanageId,
+    String orphanageName,
+    Option<String> registrationNumber,
+    Option<String> taxNumber,
+    String address,
+    String city,
+    String province,
+    Option<String> postalCode,
+    String contactPerson,
+    String contactEmail,
+    String contactPhone,
+    Option<String> alternatePhone,
+    Option<String> website,
+    Option<String> description,
+    Option<String> mission,
+    Option<String> vision,
+    Option<LocalDate> establishedDate,
+    Option<Integer> capacity,
+    Option<Integer> currentOccupancy,
+    Option<Integer> ageGroupMin,
+    Option<Integer> ageGroupMax,
+    boolean acceptsDonations,
+    boolean acceptsVolunteers,
+    Option<String> bankName,
+    Option<String> bankAccountNumber,
+    Option<String> bankBranchCode,
+    LocalDateTime dateRegistered,
+    String verificationStatus,
+    Option<LocalDateTime> verificationDate,
+    Option<Integer> verifiedBy,
+    Option<String> verificationNotes,
+    Integer userId,  // The user who manages this orphanage
+    String status,
+    Option<String> logo,
+    Option<String> coverImage,
+    Option<Double> latitude,
+    Option<Double> longitude,
+    Option<LocalDateTime> modifiedDate,
+    Option<String> modifiedBy
+) {
+    
+    public static final String DEFAULT_STATUS = "Active";
+    public static final String DEFAULT_VERIFICATION_STATUS = "Pending";
+    
+    /**
+     * Creates an Orphanage with minimal required fields.
+     */
+    public static Orphanage createBasic(String name, String address, String city, 
+                                       String province, String contactPerson,
+                                       String contactEmail, String contactPhone,
+                                       Integer userId) {
+        return new Orphanage(
+            null, name, Option.none(), Option.none(), address, city, province,
+            Option.none(), contactPerson, contactEmail, contactPhone, Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(), true, true,
+            Option.none(), Option.none(), Option.none(), LocalDateTime.now(),
+            DEFAULT_VERIFICATION_STATUS, Option.none(), Option.none(), Option.none(),
+            userId, DEFAULT_STATUS, Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Gets formatted orphanage details.
+     */
+    public String getDetails() {
+        return String.format("%s at %s, %s, %s - Contact: %s (%s)",
+            orphanageName, address, city, province, contactPerson, contactEmail);
+    }
+    
+    /**
+     * Gets full address as a single string.
+     */
+    public String getFullAddress() {
+        StringBuilder addr = new StringBuilder(address);
+        addr.append(", ").append(city);
+        addr.append(", ").append(province);
+        postalCode.forEach(pc -> addr.append(", ").append(pc));
+        return addr.toString();
+    }
+    
+    /**
+     * Checks if orphanage is verified.
+     */
+    public boolean isVerified() {
+        return "Verified".equalsIgnoreCase(verificationStatus);
+    }
+    
+    /**
+     * Checks if orphanage is active.
+     */
+    public boolean isActive() {
+        return "Active".equalsIgnoreCase(status);
+    }
+    
+    /**
+     * Checks if orphanage has capacity for more children.
+     */
+    public boolean hasCapacity() {
+        if (capacity.isEmpty() || currentOccupancy.isEmpty()) {
+            return true; // Unknown capacity, assume available
+        }
+        return currentOccupancy.get() < capacity.get();
+    }
+    
+    /**
+     * Gets occupancy percentage.
+     */
+    public Option<Double> getOccupancyPercentage() {
+        if (capacity.isEmpty() || currentOccupancy.isEmpty() || capacity.get() == 0) {
+            return Option.none();
+        }
+        return Option.of((currentOccupancy.get() * 100.0) / capacity.get());
+    }
+    
+    /**
+     * Checks if age is within accepted range.
+     */
+    public boolean acceptsAge(int age) {
+        boolean aboveMin = ageGroupMin.map(min -> age >= min).getOrElse(true);
+        boolean belowMax = ageGroupMax.map(max -> age <= max).getOrElse(true);
+        return aboveMin && belowMax;
+    }
+    
+    // Immutable update methods
+    public Orphanage withVerificationStatus(String newStatus) {
+        return new Orphanage(
+            orphanageId, orphanageName, registrationNumber, taxNumber, address, city,
+            province, postalCode, contactPerson, contactEmail, contactPhone,
+            alternatePhone, website, description, mission, vision, establishedDate,
+            capacity, currentOccupancy, ageGroupMin, ageGroupMax, acceptsDonations,
+            acceptsVolunteers, bankName, bankAccountNumber, bankBranchCode,
+            dateRegistered, newStatus, verificationDate, verifiedBy, verificationNotes,
+            userId, status, logo, coverImage, latitude, longitude, modifiedDate, modifiedBy
+        );
+    }
+    
+    public Orphanage withVerification(String newStatus, Integer verifier, String notes) {
+        return new Orphanage(
+            orphanageId, orphanageName, registrationNumber, taxNumber, address, city,
+            province, postalCode, contactPerson, contactEmail, contactPhone,
+            alternatePhone, website, description, mission, vision, establishedDate,
+            capacity, currentOccupancy, ageGroupMin, ageGroupMax, acceptsDonations,
+            acceptsVolunteers, bankName, bankAccountNumber, bankBranchCode,
+            dateRegistered, newStatus, Option.of(LocalDateTime.now()),
+            Option.of(verifier), Option.of(notes), userId, status, logo, coverImage,
+            latitude, longitude, Option.of(LocalDateTime.now()), Option.of(verifier.toString())
+        );
+    }
+    
+    public Orphanage withOccupancy(int newOccupancy) {
+        return new Orphanage(
+            orphanageId, orphanageName, registrationNumber, taxNumber, address, city,
+            province, postalCode, contactPerson, contactEmail, contactPhone,
+            alternatePhone, website, description, mission, vision, establishedDate,
+            capacity, Option.of(newOccupancy), ageGroupMin, ageGroupMax, acceptsDonations,
+            acceptsVolunteers, bankName, bankAccountNumber, bankBranchCode,
+            dateRegistered, verificationStatus, verificationDate, verifiedBy,
+            verificationNotes, userId, status, logo, coverImage, latitude, longitude,
+            modifiedDate, modifiedBy
+        );
+    }
+    
+    public Orphanage withLocation(double lat, double lon) {
+        return new Orphanage(
+            orphanageId, orphanageName, registrationNumber, taxNumber, address, city,
+            province, postalCode, contactPerson, contactEmail, contactPhone,
+            alternatePhone, website, description, mission, vision, establishedDate,
+            capacity, currentOccupancy, ageGroupMin, ageGroupMax, acceptsDonations,
+            acceptsVolunteers, bankName, bankAccountNumber, bankBranchCode,
+            dateRegistered, verificationStatus, verificationDate, verifiedBy,
+            verificationNotes, userId, status, logo, coverImage, Option.of(lat),
+            Option.of(lon), modifiedDate, modifiedBy
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/VolunteerOpportunity.java
+Source: current | Size: 6386 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable VolunteerOpportunity model representing the TblVolunteerOpportunities table.
+ * Defines volunteer positions available at orphanages.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record VolunteerOpportunity(
+    Integer opportunityId,
+    Integer orphanageId,
+    String title,
+    String description,
+    String category,
+    Option<String> skillsRequired,
+    Option<String> skillLevel,
+    Option<String> timeCommitment,
+    Option<Integer> hoursPerWeek,
+    Option<String> duration,
+    Option<LocalDate> startDate,
+    Option<LocalDate> endDate,
+    Option<String> recurringSchedule,
+    Option<Integer> minAge,
+    Option<Integer> maxAge,
+    Option<Integer> maxVolunteers,
+    Integer currentVolunteers,
+    boolean backgroundCheckRequired,
+    boolean trainingProvided,
+    Option<String> trainingDetails,
+    boolean transportProvided,
+    boolean mealsProvided,
+    String status,
+    String urgencyLevel,
+    LocalDateTime createdDate,
+    Integer createdBy,
+    Option<LocalDateTime> modifiedDate,
+    Option<Integer> modifiedBy,
+    Option<LocalDateTime> publishedDate,
+    Option<LocalDateTime> closedDate
+) {
+    
+    public static final String STATUS_DRAFT = "Draft";
+    public static final String STATUS_OPEN = "Open";
+    public static final String STATUS_FILLED = "Filled";
+    public static final String STATUS_CLOSED = "Closed";
+    
+    public static final String CATEGORY_TEACHING = "Teaching";
+    public static final String CATEGORY_SPORTS = "Sports";
+    public static final String CATEGORY_ARTS = "Arts";
+    public static final String CATEGORY_MAINTENANCE = "Maintenance";
+    public static final String CATEGORY_HEALTHCARE = "Healthcare";
+    public static final String CATEGORY_ADMIN = "Administrative";
+    public static final String CATEGORY_OTHER = "Other";
+    
+    /**
+     * Creates a basic volunteer opportunity.
+     */
+    public static VolunteerOpportunity createBasic(Integer orphanageId, String title,
+                                                  String description, String category,
+                                                  Integer createdBy) {
+        return new VolunteerOpportunity(
+            null, orphanageId, title, description, category, Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), 0, false, false, Option.none(),
+            false, false, STATUS_DRAFT, "Normal", LocalDateTime.now(),
+            createdBy, Option.none(), Option.none(), Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Gets formatted opportunity details.
+     */
+    public String getDetails() {
+        StringBuilder details = new StringBuilder();
+        details.append(title).append(" - ").append(category);
+        
+        skillsRequired.forEach(skills -> details.append("\nSkills: ").append(skills));
+        timeCommitment.forEach(time -> details.append("\nTime: ").append(time));
+        hoursPerWeek.forEach(hours -> details.append(" (").append(hours).append(" hrs/week)"));
+        
+        if (backgroundCheckRequired) {
+            details.append("\n[Background Check Required]");
+        }
+        if (trainingProvided) {
+            details.append("\n[Training Provided]");
+        }
+        
+        return details.toString();
+    }
+    
+    /**
+     * Checks if opportunity is open for applications.
+     */
+    public boolean isOpen() {
+        return STATUS_OPEN.equalsIgnoreCase(status) && hasAvailableSlots();
+    }
+    
+    /**
+     * Checks if there are available volunteer slots.
+     */
+    public boolean hasAvailableSlots() {
+        return maxVolunteers.map(max -> currentVolunteers < max).getOrElse(true);
+    }
+    
+    /**
+     * Gets number of available slots.
+     */
+    public Option<Integer> getAvailableSlots() {
+        return maxVolunteers.map(max -> Math.max(0, max - currentVolunteers));
+    }
+    
+    /**
+     * Checks if age is eligible for this opportunity.
+     */
+    public boolean isAgeEligible(int age) {
+        boolean aboveMin = minAge.map(min -> age >= min).getOrElse(true);
+        boolean belowMax = maxAge.map(max -> age <= max).getOrElse(true);
+        return aboveMin && belowMax;
+    }
+    
+    /**
+     * Checks if opportunity is active within date range.
+     */
+    public boolean isActiveOnDate(LocalDate date) {
+        boolean afterStart = startDate.map(start -> !date.isBefore(start)).getOrElse(true);
+        boolean beforeEnd = endDate.map(end -> !date.isAfter(end)).getOrElse(true);
+        return afterStart && beforeEnd;
+    }
+    
+    // Immutable update methods
+  public VolunteerOpportunity withStatus(String newStatus) {
+    LocalDateTime closedTime = STATUS_CLOSED.equalsIgnoreCase(newStatus) 
+        ? LocalDateTime.now() : null;
+    LocalDateTime publishedTime = STATUS_OPEN.equalsIgnoreCase(newStatus) && publishedDate.isEmpty()
+        ? LocalDateTime.now() : publishedDate.getOrNull();
+        
+    return new VolunteerOpportunity(
+        opportunityId, orphanageId, title, description, category, skillsRequired,
+        skillLevel, timeCommitment, hoursPerWeek, duration, startDate, endDate,
+        recurringSchedule, minAge, maxAge, maxVolunteers, currentVolunteers,
+        backgroundCheckRequired, trainingProvided, trainingDetails,
+        transportProvided, mealsProvided, newStatus, urgencyLevel, createdDate,
+        createdBy, Option.of(LocalDateTime.now()), modifiedBy,
+        Option.of(publishedTime), Option.of(closedTime)  // Fixed: Option.of instead of Option.ofNullable
+    );
+}
+    
+    public VolunteerOpportunity incrementVolunteers() {
+        return new VolunteerOpportunity(
+            opportunityId, orphanageId, title, description, category, skillsRequired,
+            skillLevel, timeCommitment, hoursPerWeek, duration, startDate, endDate,
+            recurringSchedule, minAge, maxAge, maxVolunteers, currentVolunteers + 1,
+            backgroundCheckRequired, trainingProvided, trainingDetails,
+            transportProvided, mealsProvided, status, urgencyLevel, createdDate,
+            createdBy, Option.of(LocalDateTime.now()), modifiedBy, publishedDate, closedDate
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/DonationItem.java
+Source: current | Size: 2964 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable DonationItem model representing the TblDonationItems table.
+ * Tracks individual items within a donation.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record DonationItem(
+    Integer itemId,
+    Integer donationId,
+    String itemName,
+    String category,
+    Integer quantity,
+    String unit,
+    String condition,
+    Option<Double> estimatedValue,
+    Option<String> description,
+    Option<String> serialNumber,
+    Option<LocalDate> expiryDate,
+    Option<LocalDateTime> receivedDate,
+    Option<Integer> receivedBy,
+    Option<String> storageLocation,
+    Option<LocalDateTime> distributedDate,
+    Option<String> distributedTo,
+    Option<String> notes
+) {
+    
+    public static final String CONDITION_NEW = "New";
+    public static final String CONDITION_GOOD = "Good";
+    public static final String CONDITION_FAIR = "Fair";
+    public static final String CONDITION_POOR = "Poor";
+    
+    /**
+     * Creates a donation item.
+     */
+    public static DonationItem create(Integer donationId, String itemName,
+                                     String category, Integer quantity,
+                                     String unit, String condition) {
+        return new DonationItem(
+            null, donationId, itemName, category, quantity, unit, condition,
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Checks if item is perishable.
+     */
+    public boolean isPerishable() {
+        return expiryDate.isDefined();
+    }
+    
+    /**
+     * Checks if item has expired.
+     */
+    public boolean isExpired() {
+        return expiryDate.map(exp -> LocalDate.now().isAfter(exp)).getOrElse(false);
+    }
+    
+    /**
+     * Marks item as received.
+     */
+    public DonationItem markReceived(Integer receiverId, String location) {
+        return new DonationItem(
+            itemId, donationId, itemName, category, quantity, unit, condition,
+            estimatedValue, description, serialNumber, expiryDate,
+            Option.of(LocalDateTime.now()), Option.of(receiverId),
+            Option.of(location), distributedDate, distributedTo, notes
+        );
+    }
+    
+    /**
+     * Marks item as distributed.
+     */
+    public DonationItem markDistributed(String recipient) {
+        return new DonationItem(
+            itemId, donationId, itemName, category, quantity, unit, condition,
+            estimatedValue, description, serialNumber, expiryDate,
+            receivedDate, receivedBy, storageLocation,
+            Option.of(LocalDateTime.now()), Option.of(recipient), notes
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/Notification.java
+Source: current | Size: 2559 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable Notification model representing the TblNotifications table.
+ * Manages user notifications and alerts.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record Notification(
+    Integer notificationId,
+    Integer userId,
+    String type,
+    String title,
+    String message,
+    String priority,
+    String status,
+    LocalDateTime createdDate,
+    Option<LocalDateTime> readDate,
+    Option<LocalDateTime> expiryDate,
+    Option<String> actionUrl,
+    Option<String> relatedEntityType,
+    Option<Integer> relatedEntityId
+) {
+    
+    public static final String TYPE_SYSTEM = "System";
+    public static final String TYPE_DONATION = "Donation";
+    public static final String TYPE_REQUEST = "Request";
+    public static final String TYPE_VOLUNTEER = "Volunteer";
+    public static final String TYPE_VERIFICATION = "Verification";
+    
+    public static final String PRIORITY_HIGH = "High";
+    public static final String PRIORITY_NORMAL = "Normal";
+    public static final String PRIORITY_LOW = "Low";
+    
+    public static final String STATUS_UNREAD = "Unread";
+    public static final String STATUS_READ = "Read";
+    public static final String STATUS_ARCHIVED = "Archived";
+    
+    /**
+     * Creates a basic notification.
+     */
+    public static Notification create(Integer userId, String type, String title,
+                                     String message, String priority) {
+        return new Notification(
+            null, userId, type, title, message, priority, STATUS_UNREAD,
+            LocalDateTime.now(), Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Checks if notification is unread.
+     */
+    public boolean isUnread() {
+        return STATUS_UNREAD.equalsIgnoreCase(status);
+    }
+    
+    /**
+     * Checks if notification has expired.
+     */
+    public boolean isExpired() {
+        return expiryDate.map(exp -> LocalDateTime.now().isAfter(exp)).getOrElse(false);
+    }
+    
+    /**
+     * Marks notification as read.
+     */
+    public Notification markAsRead() {
+        return new Notification(
+            notificationId, userId, type, title, message, priority, STATUS_READ,
+            createdDate, Option.of(LocalDateTime.now()), expiryDate, actionUrl,
+            relatedEntityType, relatedEntityId
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/Donation.java
+Source: current | Size: 6977 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable Donation model representing the TblDonations table.
+ * Tracks monetary and item donations from donors to orphanages.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record Donation(
+    Integer donationId,
+    Integer donorId,
+    Integer orphanageId,
+    Option<Integer> requestId,
+    String donationType,
+    Option<Double> amount,
+    String currency,
+    Option<String> itemDescription,
+    Option<Double> quantity,
+    Option<String> unit,
+    Option<Double> estimatedValue,
+    LocalDateTime donationDate,
+    Option<LocalDateTime> scheduledDate,
+    String status,
+    Option<String> paymentMethod,
+    Option<String> transactionReference,
+    boolean taxDeductible,
+    boolean anonymousDonation,
+    boolean recurringDonation,
+    Option<String> recurrenceInterval,
+    Option<LocalDateTime> nextRecurrenceDate,
+    Option<String> donorMessage,
+    boolean thankYouSent,
+    Option<LocalDateTime> thankYouDate,
+    Option<String> receiptNumber,
+    boolean receiptSent,
+    Option<String> notes,
+    LocalDateTime createdDate,
+    Option<LocalDateTime> modifiedDate,
+    Option<Integer> modifiedBy
+) {
+    
+    public static final String STATUS_PENDING = "Pending";
+    public static final String STATUS_PROCESSING = "Processing";
+    public static final String STATUS_COMPLETED = "Completed";
+    public static final String STATUS_FAILED = "Failed";
+    public static final String STATUS_CANCELLED = "Cancelled";
+    
+    public static final String TYPE_MONEY = "Money";
+    public static final String TYPE_FOOD = "Food";
+    public static final String TYPE_CLOTHING = "Clothing";
+    public static final String TYPE_EDUCATIONAL = "Educational";
+    public static final String TYPE_MEDICAL = "Medical";
+    public static final String TYPE_OTHER = "Other";
+    
+    /**
+     * Creates a monetary donation.
+     */
+    public static Donation createMonetary(Integer donorId, Integer orphanageId,
+                                         Double amount, String paymentMethod) {
+        return new Donation(
+            null, donorId, orphanageId, Option.none(), TYPE_MONEY,
+            Option.of(amount), "ZAR", Option.none(), Option.none(), Option.none(),
+            Option.of(amount), LocalDateTime.now(), Option.none(), STATUS_PENDING,
+            Option.of(paymentMethod), Option.none(), true, false, false,
+            Option.none(), Option.none(), Option.none(), false, Option.none(),
+            Option.none(), false, Option.none(), LocalDateTime.now(),
+            Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Creates an item donation.
+     */
+    public static Donation createItem(Integer donorId, Integer orphanageId,
+                                     String itemType, String description,
+                                     Double qty, String unit) {
+        return new Donation(
+            null, donorId, orphanageId, Option.none(), itemType,
+            Option.none(), "ZAR", Option.of(description), Option.of(qty),
+            Option.of(unit), Option.none(), LocalDateTime.now(), Option.none(),
+            STATUS_PENDING, Option.none(), Option.none(), true, false, false,
+            Option.none(), Option.none(), Option.none(), false, Option.none(),
+            Option.none(), false, Option.none(), LocalDateTime.now(),
+            Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Gets donation details as formatted string.
+     */
+    public String getDetails() {
+        StringBuilder details = new StringBuilder();
+        
+        if (TYPE_MONEY.equals(donationType)) {
+            details.append("Monetary donation: ");
+            amount.forEach(amt -> details.append(currency).append(" ").append(String.format("%.2f", amt)));
+        } else {
+            details.append(donationType).append(" donation: ");
+            itemDescription.forEach(desc -> details.append(desc).append(" "));
+            quantity.forEach(qty -> {
+                details.append("(").append(qty);
+                unit.forEach(u -> details.append(" ").append(u));
+                details.append(")");
+            });
+        }
+        
+        details.append(" - Status: ").append(status);
+        
+        if (anonymousDonation) {
+            details.append(" [Anonymous]");
+        }
+        
+        return details.toString();
+    }
+    
+    /**
+     * Gets the total value of the donation.
+     */
+    public Double getTotalValue() {
+        if (TYPE_MONEY.equals(donationType)) {
+            return amount.getOrElse(0.0);
+        }
+        return estimatedValue.getOrElse(0.0);
+    }
+    
+    /**
+     * Checks if donation is complete.
+     */
+    public boolean isComplete() {
+        return STATUS_COMPLETED.equalsIgnoreCase(status);
+    }
+    
+    /**
+     * Checks if donation needs processing.
+     */
+    public boolean needsProcessing() {
+        return STATUS_PENDING.equalsIgnoreCase(status) || 
+               STATUS_PROCESSING.equalsIgnoreCase(status);
+    }
+    
+    // Immutable update methods
+    public Donation withStatus(String newStatus) {
+        return new Donation(
+            donationId, donorId, orphanageId, requestId, donationType, amount,
+            currency, itemDescription, quantity, unit, estimatedValue, donationDate,
+            scheduledDate, newStatus, paymentMethod, transactionReference,
+            taxDeductible, anonymousDonation, recurringDonation, recurrenceInterval,
+            nextRecurrenceDate, donorMessage, thankYouSent, thankYouDate,
+            receiptNumber, receiptSent, notes, createdDate,
+            Option.of(LocalDateTime.now()), modifiedBy
+        );
+    }
+    
+    public Donation markCompleted(String transactionRef) {
+        return new Donation(
+            donationId, donorId, orphanageId, requestId, donationType, amount,
+            currency, itemDescription, quantity, unit, estimatedValue, donationDate,
+            scheduledDate, STATUS_COMPLETED, paymentMethod,
+            Option.of(transactionRef), taxDeductible, anonymousDonation,
+            recurringDonation, recurrenceInterval, nextRecurrenceDate, donorMessage,
+            thankYouSent, thankYouDate, receiptNumber, receiptSent, notes,
+            createdDate, Option.of(LocalDateTime.now()), modifiedBy
+        );
+    }
+    
+    public Donation markThankYouSent(String receipt) {
+        return new Donation(
+            donationId, donorId, orphanageId, requestId, donationType, amount,
+            currency, itemDescription, quantity, unit, estimatedValue, donationDate,
+            scheduledDate, status, paymentMethod, transactionReference,
+            taxDeductible, anonymousDonation, recurringDonation, recurrenceInterval,
+            nextRecurrenceDate, donorMessage, true, Option.of(LocalDateTime.now()),
+            Option.of(receipt), true, notes, createdDate,
+            Option.of(LocalDateTime.now()), modifiedBy
+        );
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/model/ResourceRequest.java
+Source: current | Size: 5738 bytes
+```java
+package com.orphanagehub.model;
+
+import io.vavr.control.Option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * Immutable ResourceRequest model representing the TblResourceRequests table.
+ * Includes all fields from the expanded database schema.
+ * 
+ * @author OrphanageHub Team
+ * @version 2.0
+ * @since 2025-09-06
+ */
+public record ResourceRequest(
+    Integer requestId,
+    Integer orphanageId,
+    String resourceType,
+    String resourceDescription,
+    Double quantity,
+    Option<String> unit,
+    String urgencyLevel,
+    LocalDateTime requestDate,
+    Option<LocalDate> neededByDate,
+    String status,
+    Option<LocalDateTime> fulfilledDate,
+    Option<Integer> fulfilledBy,
+    Option<String> fulfillmentNotes,
+    Option<Double> estimatedValue,
+    Option<Double> actualValue,
+    Option<String> notes,
+    Option<String> imagePath,
+    Integer createdBy,
+    Option<LocalDateTime> modifiedDate,
+    Option<Integer> modifiedBy
+) {
+    
+    public static final String DEFAULT_STATUS = "Open";
+    public static final String STATUS_OPEN = "Open";
+    public static final String STATUS_IN_PROGRESS = "In Progress";
+    public static final String STATUS_FULFILLED = "Fulfilled";
+    public static final String STATUS_CANCELLED = "Cancelled";
+    
+    /**
+     * Creates a ResourceRequest with minimal required fields.
+     */
+    public static ResourceRequest createBasic(Integer orphanageId, String resourceType,
+                                             String resourceDescription, Double quantity,
+                                             String urgencyLevel, Integer createdBy) {
+        return new ResourceRequest(
+            null, orphanageId, resourceType, resourceDescription, quantity,
+            Option.none(), urgencyLevel, LocalDateTime.now(), Option.none(),
+            DEFAULT_STATUS, Option.none(), Option.none(), Option.none(),
+            Option.none(), Option.none(), Option.none(), Option.none(),
+            createdBy, Option.none(), Option.none()
+        );
+    }
+    
+    /**
+     * Gets formatted request details.
+     */
+    public String getRequestDetails() {
+        StringBuilder details = new StringBuilder();
+        details.append(resourceDescription);
+        details.append(" (Qty: ").append(quantity);
+        unit.forEach(u -> details.append(" ").append(u));
+        details.append(", Urgency: ").append(urgencyLevel);
+        details.append(", Status: ").append(status);
+        estimatedValue.forEach(val -> details.append(", Est. Value: R").append(String.format("%.2f", val)));
+        details.append(")");
+        return details.toString();
+    }
+    
+    /**
+     * Checks if request is urgent (Critical or High).
+     */
+    public boolean isUrgent() {
+        return "Critical".equalsIgnoreCase(urgencyLevel) || 
+               "High".equalsIgnoreCase(urgencyLevel);
+    }
+    
+    /**
+     * Checks if request is open for fulfillment.
+     */
+    public boolean isOpen() {
+        return STATUS_OPEN.equalsIgnoreCase(status);
+    }
+    
+    /**
+     * Checks if request is overdue.
+     */
+    public boolean isOverdue() {
+        return neededByDate.map(date -> LocalDate.now().isAfter(date) && isOpen()).getOrElse(false);
+    }
+    
+    /**
+     * Gets days until needed (negative if overdue).
+     */
+    public Option<Long> getDaysUntilNeeded() {
+        return neededByDate.map(date -> {
+            long days = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), date);
+            return days;
+        });
+    }
+    
+    /**
+     * Gets fulfillment percentage (if actualValue is available).
+     */
+    public Option<Double> getFulfillmentPercentage() {
+        if (estimatedValue.isEmpty() || actualValue.isEmpty() || estimatedValue.get() == 0) {
+            return Option.none();
+        }
+        return Option.of((actualValue.get() / estimatedValue.get()) * 100);
+    }
+    
+    // Immutable update methods
+    public ResourceRequest updateStatus(String newStatus) {
+        return new ResourceRequest(
+            requestId, orphanageId, resourceType, resourceDescription, quantity,
+            unit, urgencyLevel, requestDate, neededByDate, newStatus, fulfilledDate,
+            fulfilledBy, fulfillmentNotes, estimatedValue, actualValue, notes,
+            imagePath, createdBy, Option.of(LocalDateTime.now()), modifiedBy
+        );
+    }
+    
+    public ResourceRequest markFulfilled(Integer fulfilledById, String notes, Double actualVal) {
+        return new ResourceRequest(
+            requestId, orphanageId, resourceType, resourceDescription, quantity,
+            unit, urgencyLevel, requestDate, neededByDate, STATUS_FULFILLED,
+            Option.of(LocalDateTime.now()), Option.of(fulfilledById),
+            Option.of(notes), estimatedValue, Option.of(actualVal), this.notes,
+            imagePath, createdBy, Option.of(LocalDateTime.now()), Option.of(fulfilledById)
+        );
+    }
+    
+    public ResourceRequest withEstimatedValue(Double value) {
+        return new ResourceRequest(
+            requestId, orphanageId, resourceType, resourceDescription, quantity,
+            unit, urgencyLevel, requestDate, neededByDate, status, fulfilledDate,
+            fulfilledBy, fulfillmentNotes, Option.of(value), actualValue, notes,
+            imagePath, createdBy, modifiedDate, modifiedBy
+        );
+    }
+    
+    public ResourceRequest withImage(String path) {
+        return new ResourceRequest(
+            requestId, orphanageId, resourceType, resourceDescription, quantity,
+            unit, urgencyLevel, requestDate, neededByDate, status, fulfilledDate,
+            fulfilledBy, fulfillmentNotes, estimatedValue, actualValue, notes,
+            Option.of(path), createdBy, modifiedDate, modifiedBy
+        );
+    }
+}
+```
+
+================================================================================
+Total: 10 files | 45,010 bytes
+Languages: java
+

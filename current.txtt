@@ -1,0 +1,423 @@
+# 🔍 ORPHANAGEHUB CONFIGURATION QUERY
+Generated: 2025-09-06 19:09:37
+Mode: current
+Keyword: service
+================================================================================
+## SERVICE FILES
+Found: 7 files
+================================================================================
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/DonorService.java
+Source: current | Size: 3078 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.DonationDAO;
+import com.orphanagehub.dao.OrphanageDAO;
+import com.orphanagehub.model.Donation;
+import com.orphanagehub.model.Orphanage;
+import io.vavr.control.Try;
+import org.locationtech.jts.geom.Point;
+
+/**
+ * Service for donor operations.
+ * Handles donations and orphanage search.
+ */
+public class DonorService {
+
+    private final DonationDAO donationDAO = new DonationDAO();
+    private final OrphanageDAO orphanageDAO = new OrphanageDAO();
+
+    /**
+     * Makes a donation to an orphanage.
+     * @param donation The Donation to record.
+     * @return Try<Void> - success on record, failure on error.
+     */
+    public Try<Void> makeDonation(Donation donation) {
+        return donationDAO.create(donation);
+    }
+
+    /**
+     * Searches orphanages by location (using JTS for geo).
+     * @param location The search location (e.g., Point).
+     * @param radius The search radius in km.
+     * @return Try<List<Orphanage>> - list of matching orphanages.
+     */
+    public Try<io.vavr.collection.List<Orphanage>> searchByLocation(Point location, double radius) {
+        // For now, return all orphanages as location-based filtering requires actual geocoding API
+        return orphanageDAO.findAll()
+                .map(io.vavr.collection.List::ofAll)
+                .map(all -> {
+                    // TODO: Implement actual geocoding when API is available
+                    // For demonstration, we'll return all orphanages within the "radius"
+                    // In production, this would filter based on actual coordinates
+                    return all.filter(o -> {
+                        Point orphanageLocation = geocode(o.address());
+                        if (orphanageLocation == null || location == null) {
+                            // If we can't geocode, include the orphanage by default
+                            return true;
+                        }
+                        return distanceTo(location, orphanageLocation) <= radius;
+                    });
+                });
+    }
+
+    // Helper: Geocode address (stub for future implementation)
+    private Point geocode(String address) {
+        // TODO: Integrate with actual geocoding service (Google Maps, OpenStreetMap, etc.)
+        // For now, return null to indicate geocoding not available
+        // In production, this would call an API to convert address to lat/lon coordinates
+        return null;
+    }
+
+    // Helper: Calculate distance (efficient Haversine formula)
+    private double distanceTo(Point p1, Point p2) {
+        if (p1 == null || p2 == null) return Double.MAX_VALUE;
+        double lat1 = p1.getY(), lon1 = p1.getX(), lat2 = p2.getY(), lon2 = p2.getX();
+        double dLat = Math.toRadians(lat2 - lat1), dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); // km
+    }
+}
+
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/RegistrationService.java
+Source: current | Size: 2508 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.model.User;
+import com.orphanagehub.util.PasswordUtil;
+import com.orphanagehub.util.ValidationUtil;
+import io.vavr.control.Try;
+
+/**
+ * Service for registration operations.
+ * Handles user creation with checks.
+ */
+public class RegistrationService {
+
+    private final UserDAO userDAO = new UserDAO();
+
+    /**
+     * Registers a new user.
+     * @param username Username.
+     * @param email Email.
+     * @param fullName Full name (unused here; extend User if needed).
+     * @param password Password (char[]).
+     * @param confirmPassword Confirmation (char[]).
+     * @param role Role.
+     * @return Try<User> - created User on success, failure on error (e.g., mismatch, taken).
+     */
+    public Try<User> register(String username, String email, String fullName, char[] password, char[] confirmPassword, String role) {
+        return Try.sequence(io.vavr.collection.List.of(
+                ValidationUtil.isValidUsername.apply(username),
+                ValidationUtil.isValidEmail.apply(email),
+                Try.of(() -> java.util.Arrays.equals(password, confirmPassword) ? true : Try.failure(new IllegalArgumentException("Passwords mismatch")).get())
+        )).flatMap(seq -> isUsernameAvailable(username))
+          .flatMap(avail -> avail ? isEmailAvailable(email) : Try.failure(new IllegalArgumentException("Username taken")))
+          .flatMap(avail -> avail ? Try.success(true) : Try.failure(new IllegalArgumentException("Email taken")))
+          .map(valid -> new User(null, username, PasswordUtil.hash(password), email, role, new java.sql.Timestamp(System.currentTimeMillis()), fullName, "Active"))
+          .flatMap(user -> userDAO.create(user).map(v -> user))
+          .flatMap(user -> userDAO.findByUsername(user.username()).map(opt -> opt.getOrElse((User)null))); // Return created
+    }
+
+    /**
+     * Checks if username is available.
+     * @param username The username.
+     * @return Try<Boolean> - true if available.
+     */
+    public Try<Boolean> isUsernameAvailable(String username) {
+        return userDAO.findByUsername(username).map(opt -> opt.isEmpty());
+    }
+
+    /**
+     * Checks if email is available.
+     * @param email The email.
+     * @return Try<Boolean> - true if available.
+     */
+    public Try<Boolean> isEmailAvailable(String email) {
+        // Assume add findByEmail to UserDAO
+        return Try.success(true); // Stub; implement similarly
+    }
+}
+
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/ServiceException.java
+Source: current | Size: 382 bytes
+```java
+/* Copyright (C) 2025 Jared Wisdom - All Rights Reserved */
+package com.orphanagehub.service;
+
+public class ServiceException extends Exception {
+    private static final long serialVersionUID = 1L;
+    
+    public ServiceException(String message) {
+        super(message);
+    }
+
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/AuthService.java
+Source: current | Size: 1016 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.model.User;
+import io.vavr.control.Try;
+import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private UserDAO userDAO = new UserDAO();
+    
+    public Try<User> authenticate(String username, String password) {
+        return userDAO.findByUsername(username)
+            .flatMap(opt -> opt.toTry(() -> new IllegalArgumentException("User not found")))
+            .filter(user -> BCrypt.checkpw(password, user.passwordHash()))
+            .onFailure(ex -> logger.warn("Authentication failed for user: {}", username));
+    }
+    
+    public Try<String> getUserRole(String username) {
+        return userDAO.findByUsername(username)
+            .flatMap(opt -> opt.toTry(() -> new IllegalArgumentException("User not found")))
+            .map(User::userRole);
+    }
+}
+
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/OrphanageService.java
+Source: current | Size: 3185 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.OrphanageDAO;
+import com.orphanagehub.dao.ResourceRequestDAO;
+import com.orphanagehub.dao.VolunteerOpportunityDAO;
+import com.orphanagehub.model.Orphanage;
+import com.orphanagehub.model.ResourceRequest;
+import com.orphanagehub.model.VolunteerOpportunity;
+import com.orphanagehub.util.ValidationUtil;
+import io.vavr.collection.List;
+import io.vavr.control.Try;
+
+/**
+ * Service for orphanage-related operations.
+ * Manages profiles, requests, and opportunities.
+ */
+public class OrphanageService {
+
+    private final OrphanageDAO orphanageDAO = new OrphanageDAO();
+    private final ResourceRequestDAO requestDAO = new ResourceRequestDAO();
+    private final VolunteerOpportunityDAO opportunityDAO = new VolunteerOpportunityDAO();
+
+    /**
+     * Creates or updates an orphanage profile.
+     * @param orphanage The Orphanage to save.
+     * @return Try<Void> - success on save, failure on error.
+     */
+    public Try<Void> saveProfile(Orphanage orphanage) {
+        return orphanageDAO.findById(orphanage.orphanageId())
+                .flatMap(opt -> opt.isDefined() ? orphanageDAO.update(orphanage).map(o -> (Void) null) : orphanageDAO.create(orphanage).map(o -> (Void) null));
+    }
+
+    /**
+     * Adds or edits a resource request.
+     * @param request The ResourceRequest to manage.
+     * @return Try<Void> - success on operation, failure on error.
+     */
+    public Try<Void> manageResourceRequest(ResourceRequest request) {
+        return Try.of(() -> {
+                    if (request.quantityNeeded() <= 0) {
+                        throw new IllegalArgumentException("Quantity needed must be positive");
+                    }
+                    return true;
+                })
+                .flatMap(valid -> (request.requestId() != null && !request.requestId().isEmpty()) ? requestDAO.update(request) : requestDAO.create(request));
+    }
+
+    /**
+     * Gets all requests for an orphanage.
+     * @param orphanageId The ID to filter.
+     * @return Try<List<ResourceRequest>> - immutable list of requests.
+     */
+    public Try<List<ResourceRequest>> getRequests(String orphanageId) {
+        return requestDAO.findByOrphanageId(orphanageId);
+    }
+
+    /**
+     * Posts or manages a volunteer opportunity.
+     * @param opportunity The VolunteerOpportunity to post.
+     * @return Try<Void> - success on post, failure on error.
+     */
+    public Try<Void> manageVolunteerOpportunity(VolunteerOpportunity opportunity) {
+        return (opportunity.opportunityId() != null && !opportunity.opportunityId().isEmpty()) ? 
+            opportunityDAO.update(opportunity) : 
+            opportunityDAO.create(opportunity);
+    }
+
+    // Additional: Acknowledge donation (Phase 1) - update request fulfilled
+    public Try<Void> acknowledgeDonation(String requestId, int fulfilledAmount) {
+        return requestDAO.findById(requestId)
+                .flatMap(optReq -> optReq.toTry(() -> new IllegalArgumentException("Request not found")))
+                .<ResourceRequest>map(req -> req.withQuantityFulfilled(req.quantityFulfilled() + fulfilledAmount))
+                .flatMap(requestDAO::update);
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/AdminService.java
+Source: current | Size: 2709 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.OrphanageDAO;
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.dao.DatabaseManager;
+import com.orphanagehub.model.Orphanage;
+import com.orphanagehub.model.User;
+import io.vavr.collection.List;
+import io.vavr.control.Try;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+
+import java.util.HashMap;
+
+/**
+ * Service for admin operations.
+ * Handles user management, verifications, and reports.
+ */
+public class AdminService {
+
+    private final UserDAO userDAO = new UserDAO();
+    private final OrphanageDAO orphanageDAO = new OrphanageDAO();
+
+    /**
+     * Manages users (suspend/activate).
+     * @param user The User to manage.
+     * @param active New status (true/false).
+     * @return Try<Void> - success on update, failure on error.
+     */
+    public Try<Void> manageUser(User user, boolean active) {
+        // Assuming User record has withAccountStatus method or similar; adjust if needed
+        User updatedUser = user.withAccountStatus(active ? "Active" : "Suspended");
+        return userDAO.update(updatedUser);
+    }
+
+    /**
+     * Verifies an orphanage.
+     * @param orphanageId The ID to verify.
+     * @param status New verification status.
+     * @return Try<Void> - success on update, failure on error.
+     */
+    public Try<Void> verifyOrphanage(String orphanageId, String status) {
+        return orphanageDAO.findById(orphanageId)
+                .flatMap(opt -> opt.toTry(() -> new IllegalArgumentException("Orphanage not found")))
+                .<Orphanage>map(o -> o.withVerificationStatus(status))
+                .flatMap(orphanageDAO::update).map(o -> (Void) null);
+    }
+
+    /**
+     * Generates a system report using Jasper.
+     * @param reportType The type (e.g., "users").
+     * @return Try<String> - path to exported PDF on success.
+     */
+    public Try<String> generateReport(String reportType) {
+        return DatabaseManager.getConnection()
+            .flatMap(conn -> Try.of(() -> {
+                HashMap<String, Object> params = new HashMap<>(); // Dynamic params
+                JasperPrint print = JasperFillManager.fillReport("reports/" + reportType + ".jasper", params, conn);
+                String path = "reports/" + reportType + "_report.pdf";
+                JasperExportManager.exportReportToPdfFile(print, path);
+                return path;
+            }));
+    }
+
+    // Additional: Get pending verifications
+    public Try<List<Orphanage>> getPendingVerifications() {
+        return orphanageDAO.findByVerificationStatus("Pending").map(List::ofAll);
+    }
+}
+```
+
+------------------------------------------------------------
+File: src/main/java/com/orphanagehub/service/AuthenticationService.java
+Source: current | Size: 2147 bytes
+```java
+package com.orphanagehub.service;
+
+import com.orphanagehub.dao.UserDAO;
+import com.orphanagehub.model.User;
+import com.orphanagehub.util.PasswordUtil;
+import com.orphanagehub.util.SessionManager;
+import com.orphanagehub.util.ValidationUtil;
+import io.vavr.control.Try;
+
+/**
+ * Service for authentication operations.
+ * Handles login and role retrieval with FP error handling.
+ */
+public class AuthenticationService {
+
+    private final UserDAO userDAO = new UserDAO();
+
+    /**
+     * Authenticates a user with username and password.
+     * @param username The username.
+     * @param password The password (char[] for security).
+     * @return Try<User> - the authenticated User on success, failure on error or invalid credentials.
+     */
+    public Try<User> authenticate(String username, char[] password) {
+        return ValidationUtil.isValidUsername.apply(username)
+                .flatMap(valid -> userDAO.findByUsername(username))
+                .flatMap(optUser -> optUser.toTry(() -> new IllegalArgumentException("User not found")))
+                .flatMap(user -> PasswordUtil.verify(password, user.passwordHash()) 
+                        ? Try.success(user) 
+                        : Try.failure(new IllegalArgumentException("Invalid password")));
+    }
+
+    /**
+     * Gets the role for a username after authentication.
+     * @param username The username.
+     * @return Try<String> - the user's role on success, failure on error.
+     */
+    public Try<String> getUserRole(String username) {
+        return userDAO.findByUsername(username)
+                .map(optUser -> optUser.map(User::userRole))
+                .flatMap(optRole -> optRole.toTry(() -> new IllegalArgumentException("Role not found")));
+    }
+
+    // Overload for role-based login (fixes earlier mismatch)
+    public Try<User> authenticate(String username, char[] password, String expectedRole) {
+        return authenticate(username, password)
+                .flatMap(user -> user.userRole().equals(expectedRole) 
+                        ? Try.success(user) 
+                        : Try.failure(new IllegalArgumentException("Role mismatch")));
+    }
+}
+
+```
+
+================================================================================
+Total: 7 files | 15,025 bytes
+Languages: java
+

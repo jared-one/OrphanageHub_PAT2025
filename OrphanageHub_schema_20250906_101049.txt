@@ -1,0 +1,276 @@
+================================================================================
+DATABASE SCHEMA DOCUMENTATION
+================================================================================
+
+Database: OrphanageHub.accdb
+Full Path: /home/jared/OrphanageHub_PAT2025/db/OrphanageHub.accdb
+Database Size: 680.00 KB
+Generated: 2025-09-06 10:10:50
+Extraction Time: 0.09 seconds
+
+--------------------------------------------------------------------------------
+DATABASE STATISTICS
+--------------------------------------------------------------------------------
+Total Tables: 3
+Total Columns: 29
+Total Rows: 8
+Total Indexes: 0
+Total Relationships: 0
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+
+  1. TblOrphanages                            (1 rows, ~126.00 B)
+  2. TblResourceRequests                      (2 rows, ~242.00 B)
+  3. TblUsers                                 (5 rows, ~680.00 B)
+
+================================================================================
+DETAILED SCHEMA
+================================================================================
+
+
+--------------------------------------------------------------------------------
+TABLE: TblOrphanages
+--------------------------------------------------------------------------------
+
+Total Rows: 1
+Total Columns: 9
+Estimated Size: 126.00 B
+
+COLUMNS:
+----------------------------------------
+  [ 1] (                             
+      Type: TEXT
+      Nullable: Yes
+
+  [ 2] OrphanageID                   
+      Type: Text
+      Nullable: No
+
+  [ 3] UserID                        
+      Type: Text
+      Nullable: Yes
+
+  [ 4] Name                          
+      Type: Text
+      Nullable: Yes
+
+  [ 5] Address                       
+      Type: Text
+      Nullable: Yes
+
+  [ 6] ContactPerson                 
+      Type: Text
+      Nullable: Yes
+
+  [ 7] ContactEmail                  
+      Type: Text
+      Nullable: Yes
+
+  [ 8] ContactPhone                  
+      Type: Text
+      Nullable: Yes
+
+  [ 9] VerificationStatus            
+      Type: Text
+      Nullable: Yes
+
+
+SAMPLE DATA (First 1 rows):
+----------------------------------------
+
+Row 1:
+  ORPH01: ORPH02
+  U002: U001
+  Hope Childrens Home: Sunshine Shelter
+  123 Charity Lane: 456 Kindness Ave
+  Alice Smith: Bob Ray
+  contact@hope.org: contact@sunshine.org
+  555-0101: 555-0102
+  Verified: Pending
+
+
+--------------------------------------------------------------------------------
+TABLE: TblResourceRequests
+--------------------------------------------------------------------------------
+
+Total Rows: 2
+Total Columns: 11
+Estimated Size: 242.00 B
+
+COLUMNS:
+----------------------------------------
+  [ 1] (                             
+      Type: TEXT
+      Nullable: Yes
+
+  [ 2] RequestID                     
+      Type: Text
+      Nullable: No
+
+  [ 3] OrphanageID                   
+      Type: Text
+      Nullable: Yes
+
+  [ 4] UserID                        
+      Type: Text
+      Nullable: Yes
+
+  [ 5] ItemCategory                  
+      Type: Text
+      Nullable: Yes
+
+  [ 6] ItemDescription               
+      Type: Memo
+      Nullable: Yes
+
+  [ 7] QuantityNeeded                
+      Type: Long
+      Nullable: Yes
+
+  [ 8] QuantityFulfilled             
+      Type: Long
+      Nullable: Yes
+
+  [ 9] Urgency                       
+      Type: Text
+      Nullable: Yes
+
+  [10] Status                        
+      Type: Text
+      Nullable: Yes
+
+  [11] DatePosted                    
+      Type: DateTime
+      Nullable: Yes
+
+
+SAMPLE DATA (First 2 rows):
+----------------------------------------
+
+Row 1:
+  REQ01: REQ02
+  ORPH01: ORPH01
+  U002: U002
+  Food: Clothing
+  Canned vegetables and rice: Winter jackets for ages 5-12
+  100: 50
+  20: 50
+  High: Medium
+  Open: Fulfilled
+  05/01/24 15:00:00: 05/02/24 10:00:00
+
+Row 2:
+  REQ01: REQ03
+  ORPH01: ORPH02
+  U002: U001
+  Food: Medical
+  Canned vegetables and rice: Diapers and baby formula
+  100: 200
+  20: 0
+  High: High
+  Open: Open
+  05/01/24 15:00:00: 05/10/24 08:00:00
+
+
+--------------------------------------------------------------------------------
+TABLE: TblUsers
+--------------------------------------------------------------------------------
+
+Total Rows: 5
+Total Columns: 9
+Estimated Size: 680.00 B
+
+COLUMNS:
+----------------------------------------
+  [ 1] (                             
+      Type: TEXT
+      Nullable: Yes
+
+  [ 2] UserID                        
+      Type: Text
+      Nullable: No
+
+  [ 3] Username                      
+      Type: Text
+      Nullable: Yes
+
+  [ 4] PasswordHash                  
+      Type: Text
+      Nullable: Yes
+
+  [ 5] Email                         
+      Type: Text
+      Nullable: Yes
+
+  [ 6] UserRole                      
+      Type: Text
+      Nullable: Yes
+
+  [ 7] DateRegistered                
+      Type: DateTime
+      Nullable: Yes
+
+  [ 8] FullName                      
+      Type: Text
+      Nullable: Yes
+
+  [ 9] AccountStatus                 
+      Type: Text
+      Nullable: Yes
+
+
+SAMPLE DATA (First 5 rows):
+----------------------------------------
+
+Row 1:
+  U001: U002
+  admin: staff_hope
+  hash_admin_pw: hash_staff_pw
+  admin@app.com: staff@hope.org
+  Admin: OrphanageStaff
+  01/01/24 10:00:00: 02/15/24 11:30:00
+  : NULL
+  Active: Active
+
+Row 2:
+  U001: U003
+  admin: donor_jane
+  hash_admin_pw: hash_donor_pw
+  admin@app.com: jane.d@email.com
+  Admin: Donor
+  01/01/24 10:00:00: 03/20/24 09:00:00
+  : NULL
+  Active: Active
+
+Row 3:
+  U001: U004
+  admin: vol_sam
+  hash_admin_pw: hash_vol_pw
+  admin@app.com: sam.g@email.com
+  Admin: Volunteer
+  01/01/24 10:00:00: 04/10/24 14:00:00
+  : NULL
+  Active: Active
+
+Row 4:
+  U001: 3509DC0E-6
+  admin: John
+  hash_admin_pw: $2a$10$WBfEZJdY94GcMzgAMkG9ROr7UUXiTfyIzMAaoYooQ1rhm59SQzola
+  admin@app.com: john@gmail.com
+  Admin: Donor
+  01/01/24 10:00:00: 09/04/25 15:28:34
+  : NULL
+  Active: Active
+
+Row 5:
+  U001: 19aa07ac-2
+  admin: dude
+  hash_admin_pw: $2a$12$1oA809UXtQM4gPU8K0IK3ONNCxPraCqfcYEbejFltmEC9WfCxlgou
+  admin@app.com: dude@gmail.com
+  Admin: Donor
+  01/01/24 10:00:00: 09/05/25 18:28:33
+  : dudee
+  Active: Active
+
